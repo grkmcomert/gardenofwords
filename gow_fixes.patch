@@ -1,0 +1,654 @@
+diff --git a/assets/game/index.html b/assets/game/index.html
+index f85d7a1..840e69a 100644
+--- a/assets/game/index.html
++++ b/assets/game/index.html
+@@ -395,9 +395,9 @@ transform-origin: center center; transform-box: border-box;
+       justify-content: space-between;
+       width: 100%;
+       max-width: none;
+-      height: 31px;
++      height: 18px;
+       gap: clamp(2px, .8vw, 4px);
+-      padding: 5px max(8px, env(safe-area-inset-right, 0px)) 4px max(8px, env(safe-area-inset-left, 0px));
++      padding: 3px max(8px, env(safe-area-inset-right, 0px)) 2px max(8px, env(safe-area-inset-left, 0px));
+       pointer-events: none;
+       opacity: .96;
+       transform: translateY(2px);
+@@ -405,9 +405,9 @@ transform-origin: center center; transform-box: border-box;
+     }
+     .home-music-bar {
+       display: block;
+-      width: clamp(3px, .9vw, 5px);
++      width: clamp(2px, .55vw, 3px);
+       min-width: 0;
+-      height: 21px;
++      height: 12px;
+       border-radius: 99px;
+       background: #FFFFFF;
+       box-shadow: 0 0 0 1px rgba(43, 62, 52, .22), 0 0 7px rgba(255, 255, 255, .88), 0 1px 3px rgba(20, 34, 28, .44);
+@@ -425,9 +425,14 @@ transform-origin: center center; transform-box: border-box;
+       opacity: .45;
+       transform: scaleY(.22);
+     }
+-    /* In the puzzle, the WebView ends immediately above the native ad. */
++    /* Deliberately independent of --native-banner-h: the native banner ad
++       is a separate sibling below the WebView in Flutter's own layout (not
++       an overlay drawn on top of it), so it already has its own dedicated
++       space and can't be covered by this bar. Keeping this rule simple and
++       ad-height-agnostic means it can never nudge or otherwise affect the
++       ad's own layout. */
+     body.game-active #homeMusicVisualizer {
+-      bottom: max(2px, calc(env(safe-area-inset-bottom, 0px) + 2px));
++      bottom: max(2px, env(safe-area-inset-bottom, 0px));
+     }
+     /* The home screen is a single, non-scrollable canvas. JS scales this canvas
+        down when the real device viewport is shorter than its natural content.
+@@ -1284,7 +1289,7 @@ transform-origin: center center; transform-box: border-box;
+       transform: translateZ(0);
+     }
+     .game-active {
+-      background-image: linear-gradient(rgba(239, 247, 225, .24), rgba(217, 232, 205, .42)), url("images/themes/garden.png");
++      background-image: linear-gradient(rgba(239, 247, 225, .24), rgba(217, 232, 205, .42)), url("images/themes/garden.webp");
+       background-position: center top;
+       background-size: cover;
+       background-repeat: no-repeat;
+@@ -1295,91 +1300,91 @@ transform-origin: center center; transform-box: border-box;
+     /* A small theme gallery gives each puzzle a different garden mood. The
+        scenes are CSS-only so they stay light inside the embedded WebView. */
+     body.game-active {
+-      --game-page-bg: url("images/themes/garden.png");
++      --game-page-bg: url("images/themes/garden.webp");
+       --game-shell-bg: linear-gradient(145deg, rgba(246, 250, 235, .48), rgba(210, 229, 205, .24));
+       --game-top-bg: rgba(248, 252, 238, .82);
+       --game-border: rgba(62, 86, 54, .16);
+       --game-speckle: rgba(62, 86, 54, .15);
+       background-color: #C9DCC7;
+-      background-image: linear-gradient(rgba(239, 247, 225, .24), rgba(217, 232, 205, .42)), url("images/themes/garden.png");
++      background-image: linear-gradient(rgba(239, 247, 225, .24), rgba(217, 232, 205, .42)), url("images/themes/garden.webp");
+       background-position: center top;
+       background-size: cover;
+       background-repeat: no-repeat;
+       background-attachment: scroll;
+     }
+     body.game-active[data-game-theme="moonlit"] {
+-      --game-page-bg: url("images/themes/moonlit.png");
++      --game-page-bg: url("images/themes/moonlit.webp");
+       --game-shell-bg: linear-gradient(145deg, rgba(242, 247, 255, .52), rgba(196, 213, 234, .3));
+       --game-top-bg: rgba(243, 248, 255, .86);
+       --game-border: rgba(65, 88, 126, .2);
+       --game-speckle: rgba(65, 88, 126, .15);
+       background-color: #A7BBD5;
+-      background-image: linear-gradient(rgba(29, 51, 89, .2), rgba(82, 108, 143, .3)), url("images/themes/moonlit.png");
++      background-image: linear-gradient(rgba(29, 51, 89, .2), rgba(82, 108, 143, .3)), url("images/themes/moonlit.webp");
+     }
+     body.game-active[data-game-theme="autumn"] {
+-      --game-page-bg: url("images/themes/autumn.png");
++      --game-page-bg: url("images/themes/autumn.webp");
+       --game-shell-bg: linear-gradient(145deg, rgba(255, 247, 226, .54), rgba(239, 203, 162, .32));
+       --game-top-bg: rgba(255, 248, 231, .88);
+       --game-border: rgba(155, 78, 49, .2);
+       --game-speckle: rgba(155, 78, 49, .14);
+       background-color: #D89D78;
+-      background-image: linear-gradient(rgba(246, 224, 193, .22), rgba(208, 143, 99, .34)), url("images/themes/autumn.png");
++      background-image: linear-gradient(rgba(246, 224, 193, .22), rgba(208, 143, 99, .34)), url("images/themes/autumn.webp");
+     }
+     body.game-active[data-game-theme="seaside"] {
+-      --game-page-bg: url("images/themes/seaside.png");
++      --game-page-bg: url("images/themes/seaside.webp");
+       --game-shell-bg: linear-gradient(145deg, rgba(244, 254, 247, .54), rgba(188, 228, 223, .32));
+       --game-top-bg: rgba(244, 253, 247, .88);
+       --game-border: rgba(47, 117, 127, .2);
+       --game-speckle: rgba(47, 117, 127, .14);
+       background-color: #8FC8D0;
+-      background-image: linear-gradient(rgba(218, 243, 235, .22), rgba(120, 192, 201, .34)), url("images/themes/seaside.png");
++      background-image: linear-gradient(rgba(218, 243, 235, .22), rgba(120, 192, 201, .34)), url("images/themes/seaside.webp");
+     }
+     body.game-active[data-game-theme="rose"] {
+-      --game-page-bg: url("images/themes/rose-cottage.png");
++      --game-page-bg: url("images/themes/rose-cottage.webp");
+       --game-shell-bg: linear-gradient(145deg, rgba(255, 248, 244, .54), rgba(246, 211, 207, .3));
+       --game-top-bg: rgba(255, 250, 245, .9);
+       --game-border: rgba(151, 79, 91, .2);
+       --game-speckle: rgba(151, 79, 91, .14);
+       background-color: #E8C5C5;
+-      background-image: linear-gradient(rgba(255, 237, 239, .2), rgba(214, 156, 167, .32)), url("images/themes/rose-cottage.png");
++      background-image: linear-gradient(rgba(255, 237, 239, .2), rgba(214, 156, 167, .32)), url("images/themes/rose-cottage.webp");
+     }
+     body.game-active[data-game-theme="forest"] {
+-      --game-page-bg: url("images/themes/forest-mist.png");
++      --game-page-bg: url("images/themes/forest-mist.webp");
+       --game-shell-bg: linear-gradient(145deg, rgba(238, 250, 233, .54), rgba(180, 214, 180, .3));
+       --game-top-bg: rgba(245, 252, 239, .9);
+       --game-border: rgba(53, 96, 67, .22);
+       --game-speckle: rgba(53, 96, 67, .14);
+       background-color: #B7D3B6;
+-      background-image: linear-gradient(rgba(226, 247, 224, .2), rgba(92, 139, 102, .32)), url("images/themes/forest-mist.png");
++      background-image: linear-gradient(rgba(226, 247, 224, .2), rgba(92, 139, 102, .32)), url("images/themes/forest-mist.webp");
+     }
+     body.game-active[data-game-theme="lavender"] {
+-      --game-page-bg: url("images/themes/lavender.png");
++      --game-page-bg: url("images/themes/lavender.webp");
+       --game-shell-bg: linear-gradient(145deg, rgba(255, 247, 234, .54), rgba(225, 201, 221, .3));
+       --game-top-bg: rgba(255, 250, 239, .9);
+       --game-border: rgba(111, 77, 123, .2);
+       --game-speckle: rgba(111, 77, 123, .14);
+       background-color: #DEC9DA;
+-      background-image: linear-gradient(rgba(255, 235, 217, .2), rgba(146, 105, 154, .28)), url("images/themes/lavender.png");
++      background-image: linear-gradient(rgba(255, 235, 217, .2), rgba(146, 105, 154, .28)), url("images/themes/lavender.webp");
+     }
+     body.game-active[data-game-theme="winter"] {
+-      --game-page-bg: url("images/themes/winter-hearth.png");
++      --game-page-bg: url("images/themes/winter-hearth.webp");
+       --game-shell-bg: linear-gradient(145deg, rgba(241, 248, 255, .56), rgba(191, 213, 231, .32));
+       --game-top-bg: rgba(246, 251, 255, .9);
+       --game-border: rgba(63, 91, 120, .2);
+       --game-speckle: rgba(63, 91, 120, .14);
+       background-color: #B6CDE0;
+-      background-image: linear-gradient(rgba(226, 241, 255, .2), rgba(91, 124, 158, .3)), url("images/themes/winter-hearth.png");
++      background-image: linear-gradient(rgba(226, 241, 255, .2), rgba(91, 124, 158, .3)), url("images/themes/winter-hearth.webp");
+     }
+     body.home-active {
+       background-color: #C9DCC7;
+-      background-image: linear-gradient(rgba(239, 247, 225, .24), rgba(217, 232, 205, .42)), url("images/themes/garden.png");
++      background-image: linear-gradient(rgba(239, 247, 225, .24), rgba(217, 232, 205, .42)), url("images/themes/garden.webp");
+       background-position: center;
+       background-size: cover;
+       background-attachment: scroll;
+     }
+     body.level-active {
+       background-color: #C9DCC7;
+-      background-image: linear-gradient(rgba(239, 247, 225, .24), rgba(217, 232, 205, .42)), url("images/themes/garden.png");
++      background-image: linear-gradient(rgba(239, 247, 225, .24), rgba(217, 232, 205, .42)), url("images/themes/garden.webp");
+       background-position: center top;
+       background-size: 100% auto;
+       background-repeat: repeat-y;
+@@ -1388,37 +1393,37 @@ transform-origin: center center; transform-box: border-box;
+     body.home-active[data-game-theme="moonlit"],
+     body.level-active[data-game-theme="moonlit"] {
+       background-color: #A7BBD5;
+-      background-image: linear-gradient(rgba(29, 51, 89, .2), rgba(82, 108, 143, .3)), url("images/themes/moonlit.png");
++      background-image: linear-gradient(rgba(29, 51, 89, .2), rgba(82, 108, 143, .3)), url("images/themes/moonlit.webp");
+     }
+     body.home-active[data-game-theme="autumn"],
+     body.level-active[data-game-theme="autumn"] {
+       background-color: #D89D78;
+-      background-image: linear-gradient(rgba(246, 224, 193, .22), rgba(208, 143, 99, .34)), url("images/themes/autumn.png");
++      background-image: linear-gradient(rgba(246, 224, 193, .22), rgba(208, 143, 99, .34)), url("images/themes/autumn.webp");
+     }
+     body.home-active[data-game-theme="seaside"],
+     body.level-active[data-game-theme="seaside"] {
+       background-color: #8FC8D0;
+-      background-image: linear-gradient(rgba(218, 243, 235, .22), rgba(120, 192, 201, .34)), url("images/themes/seaside.png");
++      background-image: linear-gradient(rgba(218, 243, 235, .22), rgba(120, 192, 201, .34)), url("images/themes/seaside.webp");
+     }
+     body.home-active[data-game-theme="rose"],
+     body.level-active[data-game-theme="rose"] {
+       background-color: #E8C5C5;
+-      background-image: linear-gradient(rgba(255, 237, 239, .2), rgba(214, 156, 167, .32)), url("images/themes/rose-cottage.png");
++      background-image: linear-gradient(rgba(255, 237, 239, .2), rgba(214, 156, 167, .32)), url("images/themes/rose-cottage.webp");
+     }
+     body.home-active[data-game-theme="forest"],
+     body.level-active[data-game-theme="forest"] {
+       background-color: #B7D3B6;
+-      background-image: linear-gradient(rgba(226, 247, 224, .2), rgba(92, 139, 102, .32)), url("images/themes/forest-mist.png");
++      background-image: linear-gradient(rgba(226, 247, 224, .2), rgba(92, 139, 102, .32)), url("images/themes/forest-mist.webp");
+     }
+     body.home-active[data-game-theme="lavender"],
+     body.level-active[data-game-theme="lavender"] {
+       background-color: #DEC9DA;
+-      background-image: linear-gradient(rgba(255, 235, 217, .2), rgba(146, 105, 154, .28)), url("images/themes/lavender.png");
++      background-image: linear-gradient(rgba(255, 235, 217, .2), rgba(146, 105, 154, .28)), url("images/themes/lavender.webp");
+     }
+     body.home-active[data-game-theme="winter"],
+     body.level-active[data-game-theme="winter"] {
+       background-color: #B6CDE0;
+-      background-image: linear-gradient(rgba(226, 241, 255, .2), rgba(91, 124, 158, .3)), url("images/themes/winter-hearth.png");
++      background-image: linear-gradient(rgba(226, 241, 255, .2), rgba(91, 124, 158, .3)), url("images/themes/winter-hearth.webp");
+     }
+     body.game-active .app { background: transparent; }
+     .game-screen {
+@@ -1485,14 +1490,14 @@ transform-origin: center center; transform-box: border-box;
+     .game-theme-art.seaside::before { left: 8px; right: 8px; bottom: 10px; height: 3px; border-radius: 50%; background: rgba(235, 255, 247, .72); box-shadow: 12px 9px 0 rgba(235,255,247,.5), 42px -5px 0 rgba(235,255,247,.6); }
+     .game-theme-art.seaside::after { left: 18px; bottom: 13px; width: 22px; height: 17px; border-left: 3px solid #3D7655; border-radius: 50%; transform: rotate(-28deg); }
+     .game-theme-art.garden, .game-theme-art.moonlit, .game-theme-art.autumn, .game-theme-art.seaside, .game-theme-art.rose, .game-theme-art.forest, .game-theme-art.lavender, .game-theme-art.winter { background-size: cover; background-position: center 24%; }
+-    .game-theme-art.garden { background-image: url("images/themes/garden.png"); }
+-    .game-theme-art.moonlit { background-image: url("images/themes/moonlit.png"); }
+-    .game-theme-art.autumn { background-image: url("images/themes/autumn.png"); }
+-    .game-theme-art.seaside { background-image: url("images/themes/seaside.png"); }
+-    .game-theme-art.rose { background-image: url("images/themes/rose-cottage.png"); }
+-    .game-theme-art.forest { background-image: url("images/themes/forest-mist.png"); }
+-    .game-theme-art.lavender { background-image: url("images/themes/lavender.png"); }
+-    .game-theme-art.winter { background-image: url("images/themes/winter-hearth.png"); }
++    .game-theme-art.garden { background-image: url("images/themes/garden.webp"); }
++    .game-theme-art.moonlit { background-image: url("images/themes/moonlit.webp"); }
++    .game-theme-art.autumn { background-image: url("images/themes/autumn.webp"); }
++    .game-theme-art.seaside { background-image: url("images/themes/seaside.webp"); }
++    .game-theme-art.rose { background-image: url("images/themes/rose-cottage.webp"); }
++    .game-theme-art.forest { background-image: url("images/themes/forest-mist.webp"); }
++    .game-theme-art.lavender { background-image: url("images/themes/lavender.webp"); }
++    .game-theme-art.winter { background-image: url("images/themes/winter-hearth.webp"); }
+     .game-theme-art.garden::before, .game-theme-art.garden::after,
+     .game-theme-art.moonlit::before, .game-theme-art.moonlit::after,
+     .game-theme-art.autumn::before, .game-theme-art.autumn::after,
+@@ -2417,7 +2422,7 @@ transform-origin: center center; transform-box: border-box;
+       <div class="celebration"><svg class="icon"><use href="#icon-lock"></use></svg></div>
+       <h2 id="pinModalTitle">Enter PIN</h2>
+       <p id="pinModalText">Type the 4-digit code to toggle Premium test mode and remove ads.</p>
+-      <input id="pinInput" class="pin-field" type="password" inputmode="numeric" maxlength="4" autocomplete="one-time-code" aria-label="PIN code" />
++      <input id="pinInput" class="pin-field" type="password" inputmode="numeric" maxlength="4" autocomplete="one-time-code" enterkeyhint="done" aria-label="PIN code" />
+       <p id="pinStatus" class="pin-status"></p>
+       <div class="pin-actions">
+         <button id="pinCancelButton" class="ghost-button" type="button">Cancel</button>
+@@ -2431,7 +2436,7 @@ transform-origin: center center; transform-box: border-box;
+       <div class="celebration"><svg class="icon"><use href="#icon-flower"></use></svg></div>
+       <h2 id="nicknameModalTitle">Name your garden</h2>
+       <p id="nicknameModalText">Pick a nickname and an avatar for your garden journal. Shown on every bed's leaderboard.</p>
+-      <input id="nicknameInput" class="pin-field nickname-field" type="text" maxlength="18" placeholder="e.g. Wildflower Wren" autocomplete="off" aria-label="Nickname" />
++      <input id="nicknameInput" class="pin-field nickname-field" type="text" maxlength="18" placeholder="e.g. Wildflower Wren" autocomplete="off" enterkeyhint="done" aria-label="Nickname" />
+       <p id="avatarPickerLabel" class="avatar-picker-label">Choose an avatar</p>
+       <div id="avatarPickerGrid" class="avatar-picker-grid" role="radiogroup" aria-label="Choose an avatar"></div>
+       <p id="nicknameStatus" class="pin-status"></p>
+@@ -2456,7 +2461,7 @@ transform-origin: center center; transform-box: border-box;
+       </div>
+       <div class="leaderboard-jump">
+         <label id="leaderboardJumpLabel" for="leaderboardJumpInput">Jump to bed</label>
+-        <input id="leaderboardJumpInput" type="number" inputmode="numeric" min="1" placeholder="#" aria-label="Bed number" />
++        <input id="leaderboardJumpInput" type="number" inputmode="numeric" min="1" placeholder="#" enterkeyhint="go" aria-label="Bed number" />
+         <button id="leaderboardJumpButton" class="soft-button" type="button">Go</button>
+       </div>
+       <p id="leaderboardHint" class="onboarding-lock-note">Select a player to see their time, ID, and emoji.</p>
+@@ -2924,7 +2929,7 @@ transform-origin: center center; transform-box: border-box;
+         wordsToFind: "Words to find", wordProgress: "Word-finding progress", letterGrid: "Letter grid", backHome: "Back to home", backGarden: "Back to the garden",
+         viewBedLeaderboard: "View {bed}'s leaderboard", viewThisBedLeaderboard: "View this bed's leaderboard", nextBed: "Next bed", wellGrown: "Well grown!",
+         completedBed: "You've completed the bed.", leaderboard: "Leaderboard", wholeGardenBloom: "The whole garden's in bloom!", finalCompletion: "You tended all {count} beds in <strong>{time}</strong>. Replay any bed whenever you like.",
+-        bedCompletion: "Bed {id} is fully bloomed. Time: <strong>{time}</strong>", newBest: "New best time!", hintEarned: "+2 Hints earned!", hintRewardTitle: "New hints bloomed!", hintRewardMessage: "Three beds completed · +2 hints",
++        bedCompletion: "Bed {id} is fully bloomed. Time: <strong>{time}</strong>", newBest: "New best time!", hintEarned: "+1 Hint earned!", hintRewardTitle: "A new hint bloomed!", hintRewardMessage: "Six beds completed · +1 hint",
+         enterPin: "Enter PIN", pinDescription: "Type the 4-digit code to toggle Premium test mode and remove ads.", pinCode: "PIN code", cancel: "Cancel", confirm: "Confirm",
+         nameGarden: "Name your garden", nicknameDescription: "Pick a nickname and an avatar for your garden journal. Shown on every bed's leaderboard.",
+         nicknamePlaceholder: "e.g. Wildflower Wren", nickname: "Nickname", avatar: "Avatar", chooseAvatar: "Choose an avatar", nicknameLock: "You can update your name and avatar from the edit button once every 24 hours.", plantName: "Plant my name", editProfile: "Edit profile", editProfileDescription: "Update your garden name and avatar. You can edit once every 24 hours.", profileEditCooldown: "You can edit again in {time}.", profileSaved: "Profile updated.", profileSaveFailed: "Profile could not be updated.", profileEditOffline: "Connect to the internet to edit your profile.", saveProfile: "Save changes",
+@@ -2950,7 +2955,7 @@ transform-origin: center center; transform-box: border-box;
+         wordsToFind: "Zu findende Wörter", wordProgress: "Wortsuche-Fortschritt", letterGrid: "Buchstabengitter", backHome: "Zurück zum Start", backGarden: "Zurück zum Garten",
+         viewBedLeaderboard: "Bestenliste von {bed} ansehen", viewThisBedLeaderboard: "Bestenliste dieses Beets ansehen", nextBed: "Nächstes Beet", wellGrown: "Gut gewachsen!",
+         completedBed: "Du hast das Beet abgeschlossen.", leaderboard: "Bestenliste", wholeGardenBloom: "Der ganze Garten blüht!", finalCompletion: "Du hast alle {count} Beete in <strong>{time}</strong> gepflegt. Du kannst jedes Beet jederzeit erneut spielen.",
+-        bedCompletion: "Beet {id} ist vollständig erblüht. Zeit: <strong>{time}</strong>", newBest: "Neue Bestzeit!", hintEarned: "+2 Tipps erhalten!", hintRewardTitle: "Neue Tipps blühen!", hintRewardMessage: "Drei Beete abgeschlossen · +2 Tipps",
++        bedCompletion: "Beet {id} ist vollständig erblüht. Zeit: <strong>{time}</strong>", newBest: "Neue Bestzeit!", hintEarned: "+1 Tipp erhalten!", hintRewardTitle: "Ein neuer Tipp blüht!", hintRewardMessage: "Sechs Beete abgeschlossen · +1 Tipp",
+         enterPin: "PIN eingeben", pinDescription: "Gib den vierstelligen Code ein, um den Premium-Testmodus und werbefreies Spielen zu aktivieren.", pinCode: "PIN-Code", cancel: "Abbrechen", confirm: "Bestätigen",
+         nameGarden: "Gib deinem Garten einen Namen", nicknameDescription: "Wähle einen Namen und einen Avatar für dein Gartenjournal. Beides erscheint in der Bestenliste jedes Beets.",
+         nicknamePlaceholder: "z. B. Wildblumenfink", nickname: "Spitzname", avatar: "Avatar", chooseAvatar: "Avatar auswählen", nicknameLock: "Du kannst Name und Avatar über die Bearbeiten-Schaltfläche alle 24 Stunden ändern.", plantName: "Namen pflanzen", editProfile: "Profil bearbeiten", editProfileDescription: "Ändere deinen Gartennamen und Avatar. Bearbeiten ist alle 24 Stunden möglich.", profileEditCooldown: "Du kannst in {time} wieder bearbeiten.", profileSaved: "Profil aktualisiert.", profileSaveFailed: "Profil konnte nicht aktualisiert werden.", profileEditOffline: "Verbinde dich mit dem Internet, um dein Profil zu bearbeiten.", saveProfile: "Änderungen speichern",
+@@ -2975,7 +2980,7 @@ transform-origin: center center; transform-box: border-box;
+         wordsToFind: "Bulunacak kelimeler", wordProgress: "Kelime bulma ilerlemesi", letterGrid: "Harf ızgarası", backHome: "Ana sayfaya dön", backGarden: "Bahçeye dön",
+         viewBedLeaderboard: "{bed} skor tablosunu gör", viewThisBedLeaderboard: "Bu bölümün skor tablosunu gör", nextBed: "Sonraki bölüm", wellGrown: "Harika yetişti!",
+         completedBed: "Bu bölümü tamamladın.", leaderboard: "Skor tablosu", wholeGardenBloom: "Bütün bahçe çiçek açtı!", finalCompletion: "Tüm {count} bölümü <strong>{time}</strong> sürede tamamladın. Dilediğin bölümü yeniden oynayabilirsin.",
+-        bedCompletion: "Bölüm {id} tamamen çiçek açtı. Süre: <strong>{time}</strong>", newBest: "Yeni en iyi süre!", hintEarned: "+2 ipucu kazandın!", hintRewardTitle: "Yeni ipuçları filizlendi!", hintRewardMessage: "3 bölüm tamamlandı · +2 ipucu",
++        bedCompletion: "Bölüm {id} tamamen çiçek açtı. Süre: <strong>{time}</strong>", newBest: "Yeni en iyi süre!", hintEarned: "+1 ipucu kazandın!", hintRewardTitle: "Yeni bir ipucu filizlendi!", hintRewardMessage: "6 bölüm tamamlandı · +1 ipucu",
+         enterPin: "PIN gir", pinDescription: "Premium test modunu ve reklamsız oynamayı açmak için 4 haneli kodu yaz.", pinCode: "PIN kodu", cancel: "İptal", confirm: "Onayla",
+         nameGarden: "Bahçene bir isim ver", nicknameDescription: "Bahçe günlüğün için bir kullanıcı adı ve avatar seç. İkisi de her bölümün skor tablosunda görünür.",
+         nicknamePlaceholder: "ör. Çiçekçi Arı", nickname: "Kullanıcı adı", avatar: "Avatar", chooseAvatar: "Avatar seç", nicknameLock: "İsim ve avatarını düzenle butonundan 24 saatte bir değiştirebilirsin.", plantName: "Adımı dik", editProfile: "Profili düzenle", editProfileDescription: "Bahçe ismini ve avatarını güncelle. 24 saatte bir düzenleyebilirsin.", profileEditCooldown: "Tekrar düzenleyebilmen için {time} kaldı.", profileSaved: "Profil güncellendi.", profileSaveFailed: "Profil güncellenemedi.", profileEditOffline: "Profilini düzenlemek için internete bağlan.", saveProfile: "Değişiklikleri kaydet",
+@@ -3005,7 +3010,7 @@ transform-origin: center center; transform-box: border-box;
+       wordsToFind: "Zu findende Wörter", wordProgress: "Fortschritt bei der Wortsuche", letterGrid: "Buchstabengitter", backHome: "Zurück zum Start", backGarden: "Zurück zum Garten",
+       viewBedLeaderboard: "Bestenliste von {bed} anzeigen", viewThisBedLeaderboard: "Bestenliste dieses Beets anzeigen", nextBed: "Nächstes Beet", wellGrown: "Gut gepflegt!",
+       completedBed: "Du hast das Beet abgeschlossen.", leaderboard: "Bestenliste", wholeGardenBloom: "Der ganze Garten steht in Blüte!", finalCompletion: "Du hast alle {count} Beete in <strong>{time}</strong> gepflegt. Spiele jederzeit ein Beet erneut.",
+-      bedCompletion: "Beet {id} steht vollständig in Blüte. Zeit: <strong>{time}</strong>", newBest: "Neue Bestzeit!", hintEarned: "+2 Tipps erhalten!", hintRewardTitle: "Neue Tipps verfügbar!", hintRewardMessage: "Drei Beete abgeschlossen · +2 Tipps",
++      bedCompletion: "Beet {id} steht vollständig in Blüte. Zeit: <strong>{time}</strong>", newBest: "Neue Bestzeit!", hintEarned: "+1 Tipp erhalten!", hintRewardTitle: "Ein neuer Tipp ist verfügbar!", hintRewardMessage: "Sechs Beete abgeschlossen · +1 Tipp",
+       enterPin: "PIN eingeben", pinDescription: "Gib den vierstelligen Code ein, um den Premium-Testmodus zu aktivieren und Werbung zu entfernen.", pinCode: "PIN-Code", cancel: "Abbrechen", confirm: "Bestätigen",
+       nameGarden: "Deinen Garten benennen", nicknameDescription: "Wähle einen Spitznamen und einen Avatar für dein Gartenjournal. Beides wird in der Bestenliste jedes Beets angezeigt.",
+       nicknamePlaceholder: "z. B. Wildblumenfink", nickname: "Spitzname", avatar: "Avatar", chooseAvatar: "Avatar auswählen", nicknameLock: "Du kannst deinen Namen und Avatar über die Bearbeiten-Schaltfläche einmal alle 24 Stunden aktualisieren.", plantName: "Namen pflanzen", editProfile: "Profil bearbeiten", editProfileDescription: "Aktualisiere deinen Gartennamen und Avatar. Du kannst sie einmal alle 24 Stunden ändern.", profileEditCooldown: "Du kannst dein Profil in {time} wieder bearbeiten.", profileSaved: "Profil aktualisiert.", profileSaveFailed: "Profil konnte nicht aktualisiert werden.", profileEditOffline: "Verbinde dich mit dem Internet, um dein Profil zu bearbeiten.", saveProfile: "Änderungen speichern",
+@@ -3032,7 +3037,7 @@ transform-origin: center center; transform-box: border-box;
+       wordsToFind: "Bulunacak kelimeler", wordProgress: "Kelime bulma ilerlemesi", letterGrid: "Harf ızgarası", backHome: "Ana sayfaya dön", backGarden: "Bahçeye dön",
+       viewBedLeaderboard: "{bed} skor tablosunu gör", viewThisBedLeaderboard: "Bu bölümün skor tablosunu gör", nextBed: "Sonraki bölüm", wellGrown: "Harika iş!",
+       completedBed: "Bu bölümü tamamladın.", leaderboard: "Skor tablosu", wholeGardenBloom: "Bütün bahçe çiçek açtı!", finalCompletion: "Tüm {count} bölümü <strong>{time}</strong> sürede tamamladın. İstediğin bölümü dilediğin zaman yeniden oynayabilirsin.",
+-      bedCompletion: "{id}. bölüm tamamen tamamlandı. Süre: <strong>{time}</strong>", newBest: "Yeni en iyi süre!", hintEarned: "+2 ipucu kazandın!", hintRewardTitle: "Yeni ipuçları hazır!", hintRewardMessage: "Üç bölüm tamamlandı · +2 ipucu",
++      bedCompletion: "{id}. bölüm tamamen tamamlandı. Süre: <strong>{time}</strong>", newBest: "Yeni en iyi süre!", hintEarned: "+1 ipucu kazandın!", hintRewardTitle: "Yeni bir ipucu hazır!", hintRewardMessage: "Altı bölüm tamamlandı · +1 ipucu",
+       enterPin: "PIN'i gir", pinDescription: "Premium test modunu etkinleştirmek ve reklamları kaldırmak için 4 haneli kodu gir.", pinCode: "PIN kodu", cancel: "İptal", confirm: "Onayla",
+       nameGarden: "Bahçene bir isim ver", nicknameDescription: "Bahçe günlüğün için bir kullanıcı adı ve avatar seç. İkisi de her bölümün skor tablosunda gösterilir.",
+       nicknamePlaceholder: "örn. Çiçekçi Arı", nickname: "Kullanıcı adı", avatar: "Avatar", chooseAvatar: "Avatar seç", nicknameLock: "İsim ve avatarını düzenleme düğmesinden 24 saatte bir güncelleyebilirsin.", plantName: "Adımı bahçeye ekle", editProfile: "Profili düzenle", editProfileDescription: "Bahçe adını ve avatarını güncelle. 24 saatte bir düzenleyebilirsin.", profileEditCooldown: "Profilini {time} sonra yeniden düzenleyebilirsin.", profileSaved: "Profil güncellendi.", profileSaveFailed: "Profil güncellenemedi.", profileEditOffline: "Profilini düzenlemek için internete bağlan.", saveProfile: "Değişiklikleri kaydet",
+@@ -3122,9 +3127,9 @@ transform-origin: center center; transform-box: border-box;
+       "finalCompletion": "Tam {count} bölümü <strong>{time}</strong> sürede tamamladın. İstediğin bölümü dilediğin zaman tekrar oynayabilirsin.",
+       "bedCompletion": "{id}. bölüm tamamen çiçek açtı. Süre: <strong>{time}</strong>",
+       "newBest": "Yeni rekor!",
+-      "hintEarned": "+2 İpucu kazandın!",
+-      "hintRewardTitle": "Yeni ipuçları filizlendi!",
+-      "hintRewardMessage": "Üç bölüm tamamlandı · +2 ipucu",
++      "hintEarned": "+1 İpucu kazandın!",
++      "hintRewardTitle": "Yeni bir ipucu filizlendi!",
++      "hintRewardMessage": "Altı bölüm tamamlandı · +1 ipucu",
+       "enterPin": "PIN'i gir",
+       "pinDescription": "Premium test modunu açmak ve reklamları kaldırmak için 4 haneli kodu gir.",
+       "pinCode": "PIN kodu",
+@@ -3330,9 +3335,9 @@ transform-origin: center center; transform-box: border-box;
+       "finalCompletion": "Du hast alle {count} Beete in <strong>{time}</strong> gepflegt. Spiele jedes Beet, wann immer du möchtest.",
+       "bedCompletion": "Beet {id} steht in voller Blüte. Zeit: <strong>{time}</strong>",
+       "newBest": "Neuer Rekord!",
+-      "hintEarned": "+2 Tipps erhalten!",
+-      "hintRewardTitle": "Neue Tipps sind gesprießt!",
+-      "hintRewardMessage": "Drei Beete geschafft · +2 Tipps",
++      "hintEarned": "+1 Tipp erhalten!",
++      "hintRewardTitle": "Ein neuer Tipp ist gesprießt!",
++      "hintRewardMessage": "Sechs Beete geschafft · +1 Tipp",
+       "enterPin": "PIN eingeben",
+       "pinDescription": "Gib den 4-stelligen Code ein, um den Premium-Testmodus zu aktivieren und Werbung zu entfernen.",
+       "pinCode": "PIN-Code",
+@@ -3753,7 +3758,7 @@ transform-origin: center center; transform-box: border-box;
+ 
+     // --- Sound Effects (Web Audio API, dosya gerektirmez, sıcak/doğal tını) ---
+     const SoundFX = (() => {
+-      let ctx, masterBus, noiseBuffer;
++      let ctx, masterBus, noiseBuffer, outputGain;
+ 
+       function createNoiseBuffer(audio) {
+         const bufferSize = Math.floor(audio.sampleRate * 0.2);
+@@ -3770,7 +3775,17 @@ transform-origin: center center; transform-box: border-box;
+           const masterFilter = ctx.createBiquadFilter();
+           masterFilter.type = "lowpass";
+           masterFilter.frequency.value = 6500;
+-          masterFilter.connect(ctx.destination);
++
++          // Everything ends up here before hitting the speakers. Suspending
++          // or resuming the AudioContext directly (as before) cuts the
++          // signal instantly, which reads as an audible crackle/pop,
++          // especially with the delay feedback loop below still carrying
++          // energy. Ramping this gain instead gives a clean fade.
++          outputGain = ctx.createGain();
++          outputGain.gain.value = 1;
++          outputGain.connect(ctx.destination);
++
++          masterFilter.connect(outputGain);
+ 
+           const delay = ctx.createDelay();
+           delay.delayTime.value = 0.15;
+@@ -3780,7 +3795,7 @@ transform-origin: center center; transform-box: border-box;
+           delayWet.gain.value = 0.14;
+           masterFilter.connect(delay);
+           delay.connect(delayFeedback).connect(delay);
+-          delay.connect(delayWet).connect(ctx.destination);
++          delay.connect(delayWet).connect(outputGain);
+ 
+           masterBus = masterFilter;
+           noiseBuffer = createNoiseBuffer(ctx);
+@@ -3795,12 +3810,33 @@ transform-origin: center center; transform-box: border-box;
+       // explicit resume attempt when the app comes back to the foreground,
+       // sound randomly stops working every other launch. This is called
+       // from a handful of global lifecycle listeners further down the file.
++      //
++      // Both resume() and pauseForBackground() fade the output gain instead
++      // of calling ctx.suspend()/ctx.resume() cold: suspending/resuming the
++      // context abruptly while the delay-feedback loop still holds energy
++      // is what produced the audible "cızt" crackle on minimize/restore.
+       function resume() {
+-        if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
++        if (!ctx || ctx.state !== "suspended") return;
++        ctx.resume().then(() => {
++          if (!outputGain) return;
++          const now = ctx.currentTime;
++          outputGain.gain.cancelScheduledValues(now);
++          outputGain.gain.setValueAtTime(0.0001, now);
++          outputGain.gain.linearRampToValueAtTime(1, now + 0.09);
++        }).catch(() => {});
+       }
+ 
+       function pauseForBackground() {
+-        if (ctx && ctx.state === "running") ctx.suspend().catch(() => {});
++        if (!ctx || ctx.state !== "running") return;
++        const now = ctx.currentTime;
++        if (outputGain) {
++          outputGain.gain.cancelScheduledValues(now);
++          outputGain.gain.setValueAtTime(outputGain.gain.value, now);
++          outputGain.gain.linearRampToValueAtTime(0.0001, now + 0.06);
++        }
++        window.setTimeout(() => {
++          if (ctx && ctx.state === "running") ctx.suspend().catch(() => {});
++        }, 90);
+       }
+ 
+       // Zil/kalimba karakterinde, doğal harmoniklere sahip yumuşak bir ton
+@@ -4315,22 +4351,29 @@ transform-origin: center center; transform-box: border-box;
+         const media = getAudio();
+         if (userGestureUnlocked) connectAnalyser(media);
+         if (!mediaSource) prepareDecodedTrack(currentTrack, String(media.currentSrc || media.src || ""));
+-        restoreMusicOutput();
+-        if (context?.state === "suspended") context.resume().catch(() => {});
+-        try {
+-          const result = media.play();
+-          result?.catch?.(error => {
++        // Ramping the gain up before the (async) context.resume() has
++        // actually settled meant the fade-in played against a still-frozen
++        // graph, then the real audio started underneath it a beat later -
++        // heard as a crackle right as the app comes back to the foreground.
++        // Wait for resume to finish first, then fade in.
++        const ready = context?.state === "suspended" ? context.resume().catch(() => {}) : Promise.resolve();
++        ready.then(() => {
++          restoreMusicOutput();
++          try {
++            const result = media.play();
++            result?.catch?.(error => {
++              playing = false;
++              setVisualizerState(false);
++              if (!/interrupted|abort/i.test(String(error?.message || error))) {
++                console.warn("Background music could not start:", error);
++              }
++            });
++          } catch (error) {
+             playing = false;
+             setVisualizerState(false);
+-            if (!/interrupted|abort/i.test(String(error?.message || error))) {
+-              console.warn("Background music could not start:", error);
+-            }
+-          });
+-        } catch (error) {
+-          playing = false;
+-          setVisualizerState(false);
+-          console.warn("Background music unavailable:", error);
+-        }
++            console.warn("Background music unavailable:", error);
++          }
++        });
+       }
+ 
+       function init() {
+@@ -4352,9 +4395,8 @@ transform-origin: center center; transform-box: border-box;
+         else {
+           if (userGestureUnlocked) connectAnalyser(media);
+           if (!mediaSource) prepareDecodedTrack(currentTrack, String(media.currentSrc || media.src || ""));
+-          restoreMusicOutput();
+-          if (context?.state === "suspended") context.resume().catch(() => {});
+-          startVisualizer();
++          const ready = context?.state === "suspended" ? context.resume().catch(() => {}) : Promise.resolve();
++          ready.then(() => { restoreMusicOutput(); startVisualizer(); });
+         }
+       }
+ 
+@@ -8799,7 +8841,9 @@ transform-origin: center center; transform-box: border-box;
+       let earnedHint = false;
+       if (wasNewCompletion) {
+         progress.hintStreak = (progress.hintStreak || 0) + 1;
+-        // 1 free hint every 6 completed beds.
++        // +1 free hint every 6 completed beds. Must stay in sync with the
++        // hintRewardMessage strings below - these two previously drifted
++        // apart (message said "3 beds / +2 hints" while this said 6/+1).
+         if (progress.hintStreak >= 6) {
+           progress.hintStreak -= 6;
+           progress.hints = (progress.hints || 0) + 1;
+@@ -10160,6 +10204,11 @@ transform-origin: center center; transform-box: border-box;
+       const cell = pointToCell(event);
+       if (!cell || modalBackdrop.classList.contains("open")) return;
+       event.preventDefault();
++      // Defensive reset: if a previous drag never received its pointerup/
++      // pointercancel (some WebViews drop it during a fast re-touch), its
++      // cells would otherwise stay stuck with the "selecting" highlight
++      // forever since nothing else clears them.
++      if (isDrawing) clearLiveSelection();
+       isDrawing = true;
+       startCell = cell;
+       board.setPointerCapture(event.pointerId);
+@@ -10179,7 +10228,23 @@ transform-origin: center center; transform-box: border-box;
+         });
+       }
+     }, { passive: false });
+-    function stopDrawing(event) { if (!isDrawing) return; if (event) event.preventDefault(); completeSelection(); isDrawing = false; startCell = null; }
++    function stopDrawing(event) {
++      if (!isDrawing) return;
++      if (event) {
++        event.preventDefault();
++        // The rAF throttle above means the very last finger position before
++        // lift-off can arrive without ever being painted (pointerup isn't a
++        // pointermove). Without this, releasing on the correct last letter
++        // could still complete against a stale, one-cell-short selection -
++        // read by players as the word needing to be "a millimeter" more
++        // precise than it actually does.
++        const finalCell = pointToCell(event);
++        if (finalCell) paintLiveSelection(finalCell);
++      }
++      completeSelection();
++      isDrawing = false;
++      startCell = null;
++    }
+     board.addEventListener("pointerup", stopDrawing);
+     board.addEventListener("pointercancel", stopDrawing);
+     board.addEventListener("lostpointercapture", () => { if (isDrawing) stopDrawing(); });
+diff --git a/ios/Runner/AppDelegate.swift b/ios/Runner/AppDelegate.swift
+index 3742891..edb58fc 100644
+--- a/ios/Runner/AppDelegate.swift
++++ b/ios/Runner/AppDelegate.swift
+@@ -1,4 +1,5 @@
+ import Flutter
++import ObjectiveC
+ import UIKit
+ 
+ @main
+@@ -21,6 +22,7 @@ import UIKit
+       // keyboard notification so the newly focused HTML input is included.
+       DispatchQueue.main.async {
+         self?.clearInputAssistantItems()
++        self?.suppressWKContentViewAccessoryBar()
+       }
+     }
+   }
+@@ -44,7 +46,63 @@ import UIKit
+     }
+   }
+ 
++  // The "< > Done" bar with prev/next chevrons is WKWebView's own form
++  // navigation accessory view, separate from inputAssistantItem above.
++  // It's rendered by a private WKContentView subview and has no public
++  // API to hide - the standard workaround is to dynamically subclass that
++  // view so its inputAccessoryView getter returns nil.
++  private func suppressWKContentViewAccessoryBar() {
++    let windows = UIApplication.shared.connectedScenes
++      .compactMap { $0 as? UIWindowScene }
++      .flatMap(\.windows)
++
++    for window in windows {
++      suppressWKContentViewAccessoryBar(in: window)
++    }
++  }
++
++  private func suppressWKContentViewAccessoryBar(in view: UIView) {
++    if String(describing: type(of: view)).hasPrefix("WKContent") {
++      removeAccessoryView(from: view)
++    }
++    for subview in view.subviews {
++      suppressWKContentViewAccessoryBar(in: subview)
++    }
++  }
++
++  private func removeAccessoryView(from view: UIView) {
++    let noAccessoryClassName = "\(type(of: view))_NoInputAccessory"
++    var noAccessoryClass: AnyClass? = NSClassFromString(noAccessoryClassName)
++
++    if noAccessoryClass == nil {
++      guard let existingClass = object_getClass(view) else { return }
++      guard let newClass = objc_allocateClassPair(existingClass, noAccessoryClassName, 0) else { return }
++
++      if let method = class_getInstanceMethod(EmptyAccessoryViewProvider.self, #selector(getter: EmptyAccessoryViewProvider.inputAccessoryView)) {
++        class_addMethod(
++          newClass,
++          #selector(getter: UIResponder.inputAccessoryView),
++          method_getImplementation(method),
++          method_getTypeEncoding(method)
++        )
++      }
++      objc_registerClassPair(newClass)
++      noAccessoryClass = newClass
++    }
++
++    if let noAccessoryClass {
++      object_setClass(view, noAccessoryClass)
++    }
++  }
++
+   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
+     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+   }
+ }
++
++// Donor class purely so we can borrow a real `inputAccessoryView` getter
++// implementation (returning nil) to graft onto the dynamically created
++// WKContentView subclass above via class_addMethod.
++private class EmptyAccessoryViewProvider: UIView {
++  @objc override var inputAccessoryView: UIView? { nil }
++}
+diff --git a/lib/main.dart b/lib/main.dart
+index e5131dd..3fb4dc4 100644
+--- a/lib/main.dart
++++ b/lib/main.dart
+@@ -85,7 +85,7 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
+   // message reaches Flutter. Keep the native banner frame on that same surface
+   // from the very first frame, otherwise the ad gets a garden-coloured surround.
+   Color _themeSurfaceColor = const Color(0xFFA7BBD5);
+-  String _themeBackgroundAsset = 'assets/game/images/themes/moonlit.png';
++  String _themeBackgroundAsset = 'assets/game/images/themes/moonlit.webp';
+   bool _bannerVisible = false;
+   bool _bannerLoading = false;
+   bool _bannerRequested = false;
+@@ -283,6 +283,28 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
+         state == AppLifecycleState.hidden ||
+         state == AppLifecycleState.paused ||
+         state == AppLifecycleState.detached) {
++      // The page's own visibilitychange/pagehide handlers are supposed to
++      // pause/fade audio without a native bridge call, but that JS event is
++      // unreliable in an embedded WebView (especially on Android, which can
++      // suspend the WebView without dispatching it at all). __nativeAppBackground
++      // exists in the game JS specifically to cover that gap, but nothing on
++      // this side was ever calling it - only the foreground hook was wired
++      // up. Fire it here, best-effort, while we're still definitely alive
++      // (didChangeAppLifecycleState itself proves that), before flipping
++      // the flags that block further JS evaluation.
++      if (!_isDisposed && _controllerReady && _webViewPageReady) {
++        try {
++          unawaited(
++            _controller
++                .runJavaScript('window.__nativeAppBackground?.();')
++                .catchError((error) {
++              debugPrint('WebView background hook ignored: $error');
++            }),
++          );
++        } catch (error) {
++          debugPrint('WebView background hook ignored: $error');
++        }
++      }
+       // iOS emits inactive/hidden/paused while an app-close transition may
+       // already be tearing down WKWebView. The page's visibilitychange and
+       // pagehide handlers pause audio without a native bridge call, so do not
+@@ -645,14 +667,14 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
+       _ => const Color(0xFFC9DCC7),
+     };
+     final nextBackgroundAsset = switch (theme) {
+-      'moonlit' => 'assets/game/images/themes/moonlit.png',
+-      'autumn' => 'assets/game/images/themes/autumn.png',
+-      'seaside' => 'assets/game/images/themes/seaside.png',
+-      'rose' => 'assets/game/images/themes/rose-cottage.png',
+-      'forest' => 'assets/game/images/themes/forest-mist.png',
+-      'lavender' => 'assets/game/images/themes/lavender.png',
+-      'winter' => 'assets/game/images/themes/winter-hearth.png',
+-      _ => 'assets/game/images/themes/garden.png',
++      'moonlit' => 'assets/game/images/themes/moonlit.webp',
++      'autumn' => 'assets/game/images/themes/autumn.webp',
++      'seaside' => 'assets/game/images/themes/seaside.webp',
++      'rose' => 'assets/game/images/themes/rose-cottage.webp',
++      'forest' => 'assets/game/images/themes/forest-mist.webp',
++      'lavender' => 'assets/game/images/themes/lavender.webp',
++      'winter' => 'assets/game/images/themes/winter-hearth.webp',
++      _ => 'assets/game/images/themes/garden.webp',
+     };
+     if (_themeSurfaceColor == nextColor &&
+         _themeBackgroundAsset == nextBackgroundAsset) {

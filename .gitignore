@@ -1,0 +1,9 @@
+build/
+.dart_tool/
+node_modules/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.expo/
+.idea/libraries/
+.idea/workspace.xml

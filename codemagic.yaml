@@ -1,0 +1,151 @@
+definitions:
+  environment: &ios_environment
+    flutter: 3.47.2
+    # Match the verified 1.1.27+31 release (Codemagic build 45).
+    xcode: 26.4.1
+    cocoapods: 1.16.2
+    ios_signing:
+      distribution_type: app_store
+      bundle_identifier: com.grkmcomert.gardenofwords
+    vars: &ios_vars
+      BUILD_NAME: "1.1.27"
+      BUILD_NUMBER: "31"
+      BUNDLE_ID: "com.grkmcomert.gardenofwords"
+      FLUTTER_VERSION: "3.47.2"
+      # CI publishing credential; never pass to Dart or bundle in assets.
+      SHOREBIRD_TOKEN: "sb_api_2NJ8CQwUzUawtx88xVrnjVryCKdwq93OUpq7S2ZUchE"
+
+  scripts:
+    - &install_shorebird
+      name: Install Shorebird
+      script: |
+        set -euo pipefail
+        test -n "${SHOREBIRD_TOKEN:-}" || { echo "SHOREBIRD_TOKEN is missing."; exit 1; }
+        curl --proto '=https' --tlsv1.2 -sSf \
+          https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh | bash
+        echo "PATH=$HOME/.shorebird/bin:$PATH" >> "$CM_ENV"
+
+    - &prepare_game
+      name: Prepare Flutter and patchable game code
+      script: |
+        set -euo pipefail
+        flutter config --no-enable-swift-package-manager
+        flutter pub get --enforce-lockfile
+        dart tooling/build_shorebird_game.dart
+        flutter test test/shorebird_game_test.dart
+
+    - &install_pods
+      name: Install CocoaPods dependencies
+      script: |
+        set -euo pipefail
+        cd ios
+        # Preserve Podfile.lock so patches use the release's native libraries.
+        pod install
+
+    - &configure_ios
+      name: Configure iOS bundle and signing
+      script: |
+        set -euo pipefail
+        project_file="ios/Runner.xcodeproj/project.pbxproj"
+        if ! grep -Fq "PRODUCT_BUNDLE_IDENTIFIER = $BUNDLE_ID;" "$project_file"; then
+          echo "ERROR: Bundle ID does not match."
+          exit 1
+        fi
+        perl -0pi -e 's/TARGETED_DEVICE_FAMILY = "1,2";/TARGETED_DEVICE_FAMILY = "1";/g' "$project_file"
+        if grep -q 'TARGETED_DEVICE_FAMILY = "1,2";' "$project_file"; then
+          echo "ERROR: iPad target is still enabled."
+          exit 1
+        fi
+        xcode-project use-profiles \
+          --custom-export-options='{"manageAppVersionAndBuildNumber":false}'
+
+workflows:
+  # First Shorebird install, then native/media updates. Bump the version for
+  # each new store release. Keep the existing Codemagic workflow identifier.
+  kelimeler-bahcesi-ios:
+    name: Garden of Words - Shorebird Release + TestFlight
+    instance_type: mac_mini_m2
+    max_build_duration: 90
+    integrations:
+      app_store_connect: gow
+    environment: *ios_environment
+    scripts:
+      - *install_shorebird
+      - *prepare_game
+      - *install_pods
+      - *configure_ios
+      - name: Build and publish Shorebird iOS release
+        script: |
+          set -euo pipefail
+          shorebird release ios \
+            --flutter-version="$FLUTTER_VERSION" \
+            --export-options-plist=/Users/builder/export_options.plist \
+            -- \
+            --build-name="$BUILD_NAME" \
+            --build-number="$BUILD_NUMBER"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - build/ios/archive/*.xcarchive/dSYMs/**/*.dSYM
+      - /tmp/xcodebuild_logs/*.log
+      - ios/Podfile.lock
+      - shorebird.yaml
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false
+
+  # Both workflows are manual: an initial push must not race a patch against
+  # the first release or accidentally re-upload an existing TestFlight build.
+  kelimeler-bahcesi-ios-patch:
+    name: Garden of Words - Shorebird Patch
+    instance_type: mac_mini_m2
+    max_build_duration: 90
+    integrations:
+      app_store_connect: gow
+    environment:
+      <<: *ios_environment
+      vars:
+        <<: *ios_vars
+        PATCH_RELEASE_VERSION: ${{ inputs.release_version }}
+        PATCH_TRACK: ${{ inputs.track }}
+    inputs:
+      release_version:
+        description: "Installed Shorebird release to patch (version+build)"
+        default: "1.1.27+31"
+        type: string
+      track:
+        description: "stable delivers to users; staging is for preview testing"
+        default: stable
+        type: choice
+        options:
+          - stable
+          - staging
+    scripts:
+      - *install_shorebird
+      - *prepare_game
+      - *install_pods
+      - *configure_ios
+      - name: Publish game update with Shorebird
+        script: |
+          set -euo pipefail
+          if [[ ! "$PATCH_RELEASE_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+\+[0-9]+$ ]]; then
+            echo "ERROR: Enter an exact release version, for example 1.1.27+31."
+            exit 1
+          fi
+          case "$PATCH_TRACK" in
+            stable|staging) ;;
+            *) echo "ERROR: Invalid patch track."; exit 1 ;;
+          esac
+          # Native/media differences stop this build; never bypass those checks.
+          # Shorebird automatically uses the Flutter revision of this release.
+          shorebird patch ios \
+            --release-version="$PATCH_RELEASE_VERSION" \
+            --track="$PATCH_TRACK" \
+            --export-options-plist=/Users/builder/export_options.plist \
+            -- \
+            --build-name="${PATCH_RELEASE_VERSION%+*}" \
+            --build-number="${PATCH_RELEASE_VERSION##*+}"
+    artifacts:
+      - /tmp/xcodebuild_logs/*.log
+    # No App Store publishing: the patch goes directly to Shorebird.

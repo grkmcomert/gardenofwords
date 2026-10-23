@@ -1,0 +1,3 @@
+# Public application identifier; the publishing API key belongs in CI only.
+app_id: 26269317-00c5-49c5-8dae-42ac7c2f24eb
+auto_update: true

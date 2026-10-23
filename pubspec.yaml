@@ -1,0 +1,52 @@
+name: kelimeler_bahcesi_webview
+
+description: Garden of Words
+
+publish_to: 'none'
+
+version: 1.1.27+31
+
+environment:
+  sdk: '>=3.10.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  webview_flutter: ^4.14.1
+  webview_flutter_android: 4.14.0
+  webview_flutter_wkwebview: 3.26.0
+  flutter_soloud: ^4.1.7
+  audio_session: ^0.2.4
+  google_mobile_ads: 9.0.0
+  app_tracking_transparency: ^2.0.6+1
+  device_info_plus: ^13.2.0
+  purchases_flutter: ^10.9.1
+  purchases_ui_flutter: ^10.9.1
+  url_launcher: ^6.3.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  webview_flutter_platform_interface: ^2.15.1
+
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - shorebird.yaml
+    - assets/game/shorebird_bootstrap.html
+    - assets/game/privacy-policy.html
+    - assets/game/audio/
+    - assets/game/images/
+    - assets/game/images/themes/
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon.png"
+  adaptive_icon_background: "#F5E6C8"
+  adaptive_icon_foreground: "assets/icon.png"

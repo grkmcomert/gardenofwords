@@ -1,0 +1,46 @@
+If your generated android/app/src/main/AndroidManifest.xml does not already contain it, add this directly under <manifest ...>:
+
+<uses-permission android:name="android.permission.INTERNET" />
+
+The HTML currently loads Google Fonts and can use a remote leaderboard endpoint, so internet permission is useful for those parts. The local game itself does not need a website.
+
+NOTE: setup_flutter_project.ps1 now adds this automatically. This file is
+kept as a manual fallback / reference in case you ever run `flutter create`
+by hand instead of using the script.
+
+---
+
+AdMob App ID (required once google_mobile_ads is added)
+---------------------------------------------------------
+Add this meta-data tag inside <application ...> (anywhere inside it, alongside
+the existing flutterEmbedding meta-data):
+
+<meta-data
+    android:name="com.google.android.gms.ads.APPLICATION_ID"
+    android:value="ca-app-pub-7480771330660307~8773437111"/>
+
+Without this, the app crashes on launch as soon as MobileAds.instance.initialize()
+runs. This is the AdMob App ID (has a ~), not an ad unit ID (has a /) - do not
+mix them up.
+
+NOTE: setup_flutter_project.ps1 now adds this automatically too.
+
+---
+
+Firebase (google-services.json)
+---------------------------------
+setup_flutter_project.ps1 now does all of this automatically:
+
+1. Copies firebase_config_for_android/google-services.json to
+   android/app/google-services.json.
+2. Forces applicationId (and namespace) in android/app/build.gradle(.kts)
+   to com.grkmcomert.gardenofwords, since that is the exact package name
+   the uploaded google-services.json was generated for. If this doesn't
+   match, Firebase.initializeApp() throws on Android at startup.
+3. Adds the google-services classpath to android/build.gradle(.kts) and
+   applies the plugin at the bottom of android/app/build.gradle(.kts).
+
+If you ever re-register a different Android app in the Firebase console
+with a different package name, replace google-services.json AND update
+$FIREBASE_APP_ID at the top of the Firebase section in
+setup_flutter_project.ps1 to match, then re-run the script.

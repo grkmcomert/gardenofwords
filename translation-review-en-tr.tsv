@@ -1,0 +1,208 @@
+# Garden of Words - English/Turkish/German translation review
+
+Edit only the Current Turkish and Current German columns and send this file back. The key column must stay unchanged.
+
+Key	English	Current Turkish	Current German
+hintPackMostPreferred	Most preferred	En çok tercih edilen	Am beliebtesten
+languageName	English	Türkçe	Deutsch
+homeTitleLead	Find the hidden	Sarmaşıkların arasındaki saklı	Finde die verborgenen
+homeTitleAccent	words among the vines.	kelimeleri bul.	Wörter zwischen den Ranken.
+homeHeroCopy	Uncover hidden words tucked beneath the leaves and guide your garden from sprout to canopy. A serene word journey through lush botanical trails.	Yaprakların arasına gizlenmiş kelimeleri bul ve bahçeni ilk filizden gür bir yaprak örtüsüne dönüştür. Yemyeşil patikalarda sakin bir kelime yolculuğuna çık.	Entdecke verborgene Wörter zwischen den Blättern und führe deinen Garten vom ersten Spross bis zum Blätterdach. Eine ruhige Wortreise durch üppige Gartenpfade.
+gardenHerbarium	Garden Herbarium	Bahçe Herbaryumu	Garten-Herbarium
+todayInGarden	Today in the Garden	Bahçede bugün	Heute im Garten
+bedsBloomed	Beds Bloomed	Tamamlanan bölümler	Erblühte Beete
+gardenGrowth	Garden Growth	Bahçe gelişimi	Gartenfortschritt
+achievements	Achievements	Başarımlar	Erfolge
+leaderboards	Leaderboards	Skor tabloları	Bestenlisten
+users	Users	Oyuncular	Spieler
+market	Market	Market	Markt
+settings	Settings	Ayarlar	Einstellungen
+help	Help	Yardım	Hilfe
+play	Play	Oyna	Spielen
+seeGarden	See the garden	Bahçeyi keşfet	Garten entdecken
+levelList	Level list	Bölüm listesi	Beetliste
+gardenIdentity	Your garden identity	Bahçe kimliğin	Deine Gartenidentität
+guest	Guest	Misafir	Gast
+levelsTitle	The Garden	Bahçe	Der Garten
+levelsDescription	Pick any bed you've unlocked, or carry on from where you left off.	Açtığın bir bölümü seç veya kaldığın yerden devam et.	Wähle ein freigeschaltetes Beet oder spiele dort weiter, wo du aufgehört hast.
+progress	Progress	İlerleme	Fortschritt
+open	open	açık	offen
+continue	Continue	Devam et	Fortsetzen
+whereLeftOff	Where you left off	Kaldığın yer	Zuletzt gespielt
+chooseBed	Choose a bed	Bölüm seç	Beet auswählen
+bed	Bed	Bölüm	Beet
+words	words	kelimeler	Wörter
+word	word	kelime	Wort
+best	Best	En iyi	Beste
+row	Row	Satır	Zeile
+column	column	Sütun	Spalte
+time	Time	Süre	Zeit
+hint	Hint	İpucu	Tipp
+hintLimitReached	You have no hints left in your balance.	İpucu bakiyende ipucu kalmadı.	Dein Tippvorrat ist leer.
+watchAd	Watch Ad	Reklam izle	Werbung ansehen
+needMore	Need More?	Daha fazla ipucu?	Mehr Tipps?
+watchVideoHint	Watch video for +1 hint	Kısa bir video izle, +1 ipucu kazan	Video ansehen und +1 Tipp erhalten
+hintMoreSubtitle	Watch a short video to get +1 hint.	+1 ipucu kazanmak için kısa bir video izle.	Sieh dir ein kurzes Video an und erhalte +1 Tipp.
+hintVideoLoading	Loading video...	Video yükleniyor …	Video wird geladen …
+hintVideoSuccess	+1 hint added to your garden.	Bahçene +1 ipucu eklendi.	+1 Tipp wurde deinem Garten hinzugefügt.
+hintVideoUnavailable	The video is not available right now. Try again shortly.	Video şu anda kullanılamıyor. Lütfen biraz sonra tekrar dene.	Das Video ist gerade nicht verfügbar. Bitte versuche es später erneut.
+toFind	To find	Bulunacak kelimeler	Zu finden
+found	Found	Bulundu	Gefunden
+wordsToFind	Words to find	Bulunacak kelimeler	Zu findende Wörter
+wordProgress	Word-finding progress	Kelime bulma ilerlemesi	Fortschritt bei der Wortsuche
+letterGrid	Letter grid	Harf ızgarası	Buchstabengitter
+backHome	Back to home	Ana sayfaya dön	Zurück zum Start
+backGarden	Back to the garden	Bahçeye dön	Zurück zum Garten
+viewBedLeaderboard	View {bed}'s leaderboard	{bed} skor tablosunu gör	Bestenliste von {bed} anzeigen
+viewThisBedLeaderboard	View this bed's leaderboard	Bu bölümün skor tablosunu gör	Bestenliste dieses Beets anzeigen
+nextBed	Next bed	Sonraki bölüm	Nächstes Beet
+wellGrown	Well grown!	Harika iş!	Gut gepflegt!
+completedBed	You've completed the bed.	Bu bölümü tamamladın.	Du hast das Beet abgeschlossen.
+leaderboard	Leaderboard	Skor tablosu	Bestenliste
+wholeGardenBloom	The whole garden's in bloom!	Bütün bahçe çiçek açtı!	Der ganze Garten steht in Blüte!
+finalCompletion	You tended all {count} beds in <strong>{time}</strong>. Replay any bed whenever you like.	Tüm {count} bölümü <strong>{time}</strong> sürede tamamladın. İstediğin bölümü dilediğin zaman yeniden oynayabilirsin.	Du hast alle {count} Beete in <strong>{time}</strong> gepflegt. Spiele jederzeit ein Beet erneut.
+bedCompletion	Bed {id} is fully bloomed. Time: <strong>{time}</strong>	{id}. bölüm tamamen tamamlandı. Süre: <strong>{time}</strong>	Beet {id} steht vollständig in Blüte. Zeit: <strong>{time}</strong>
+newBest	New best time!	Yeni en iyi süre!	Neue Bestzeit!
+hintEarned	+1 Hint earned!	+1 ipucu kazandın!	+1 Tipp erhalten!
+hintRewardTitle	A new hint bloomed!	Yeni bir ipucu filizlendi!	Ein neuer Tipp blüht!
+hintRewardMessage	Six beds completed · +1 hint	6 bölüm tamamlandı · +1 ipucu	Sechs Beete abgeschlossen · +1 Tipp
+enterPin	Enter PIN	PIN'i gir	PIN eingeben
+pinDescription	Type the 4-digit code to toggle Premium test mode and remove ads.	Premium test modunu etkinleştirmek ve reklamları kaldırmak için 4 haneli kodu gir.	Gib den vierstelligen Code ein, um den Premium-Testmodus zu aktivieren und Werbung zu entfernen.
+pinCode	PIN code	PIN kodu	PIN-Code
+cancel	Cancel	İptal	Abbrechen
+confirm	Confirm	Onayla	Bestätigen
+nameGarden	Name your garden	Bahçene bir isim ver	Deinen Garten benennen
+nicknameDescription	Pick a nickname and an avatar for your garden journal. Shown on every bed's leaderboard.	Bahçe günlüğün için bir kullanıcı adı ve avatar seç. İkisi de her bölümün skor tablosunda gösterilir.	Wähle einen Spitznamen und einen Avatar für dein Gartenjournal. Beides wird in der Bestenliste jedes Beets angezeigt.
+nicknamePlaceholder	e.g. Wildflower Wren	örn. Çiçekçi Arı	z. B. Wildblumenfink
+nickname	Nickname	Kullanıcı adı	Spitzname
+avatar	Avatar	Avatar	Avatar
+chooseAvatar	Choose an avatar	Avatar seç	Avatar auswählen
+nicknameLock	You can update your name and avatar from the edit button once every 24 hours.	İsim ve avatarını düzenleme düğmesinden 24 saatte bir güncelleyebilirsin.	Du kannst deinen Namen und Avatar über die Bearbeiten-Schaltfläche einmal alle 24 Stunden aktualisieren.
+plantName	Plant my name	Adımı bahçeye ekle	Namen pflanzen
+editProfile	Edit profile	Profili düzenle	Profil bearbeiten
+editProfileDescription	Update your garden name and avatar. You can edit once every 24 hours.	Bahçe adını ve avatarını güncelle. 24 saatte bir düzenleyebilirsin.	Aktualisiere deinen Gartennamen und Avatar. Du kannst sie einmal alle 24 Stunden ändern.
+profileEditCooldown	You can edit again in {time}.	Profilini {time} sonra yeniden düzenleyebilirsin.	Du kannst dein Profil in {time} wieder bearbeiten.
+profileSaved	Profile updated.	Profil güncellendi.	Profil aktualisiert.
+profileSaveFailed	Profile could not be updated.	Profil güncellenemedi.	Profil konnte nicht aktualisiert werden.
+profileEditOffline	Connect to the internet to edit your profile.	Profilini düzenlemek için internete bağlan.	Verbinde dich mit dem Internet, um dein Profil zu bearbeiten.
+saveProfile	Save changes	Değişiklikleri kaydet	Änderungen speichern
+previousLeaderboard	Previous bed's leaderboard	Önceki bölümün skor tablosu	Bestenliste des vorherigen Beets
+nextLeaderboard	Next bed's leaderboard	Sonraki bölümün skor tablosu	Bestenliste des nächsten Beets
+jumpToBed	Jump to bed	Bölüme git	Zu einem Beet springen
+bedNumber	Bed number	Bölüm numarası	Beetnummer
+go	Go	Git	Los
+loading	Loading...	Yükleniyor …	Wird geladen …
+noBlooms	No blooms yet. Be the first to finish this bed!	Henüz tamamlayan yok. Bu bölümü ilk tamamlayan sen ol!	Noch keine Blüten. Sei die erste Person, die dieses Beet abschließt!
+close	Close	Kapat	Schließen
+bestTimes	Best times for this bed	Bu bölümün en iyi süreleri	Beste Zeiten für dieses Beet
+leaderboardHint	Names and completion times for this bed.	Bu bölümdeki isimler ve tamamlanma süreleri.	Namen und Abschlusszeiten für dieses Beet.
+playerDetails	Player details	Oyuncu detayları	Spielerdetails
+level	Level	Bölüm	Beet
+username	Username	Kullanıcı adı	Spitzname
+entryId	ID	ID	ID
+emoji	Emoji	Emoji	Emoji
+viewLeaderboardEntry	View {name}'s details	{name} detaylarını gör	Details von {name} anzeigen
+usersHint	Select a username to view the full profile.	Tam profili görmek için bir kullanıcı adına dokun.	Wähle einen Spitznamen aus, um das vollständige Profil anzuzeigen.
+userDetails	User details	Kullanıcı bilgileri	Spielerdetails
+device	Device	Cihaz	Gerät
+country	Country	Ülke	Land
+deviceLocale	device locale	Cihaz dili	Geräteeinstellung
+appLanguage	App language	Uygulama dili	App-Sprache
+platform	Platform	Platform	Plattform
+completedLevels	Completed levels	Tamamlanan bölümler	Abgeschlossene Beete
+unlockedLevels	Unlocked levels	Açılan bölümler	Freigeschaltete Beete
+lastSeen	Last seen	Son görülme	Zuletzt gesehen
+createdAt	Created	Oluşturulma tarihi	Erstellt am
+changeUsername	Change username	Kullanıcı adını değiştir	Spitznamen ändern
+saveName	Save name	İsmi kaydet	Namen speichern
+nameSaved	Name updated.	İsim güncellendi.	Name aktualisiert.
+nameSaveFailed	Name could not be updated.	İsim güncellenemedi.	Name konnte nicht aktualisiert werden.
+editOnlyOwn	You can change your own username here.	Burada yalnızca kendi kullanıcı adını değiştirebilirsin.	Hier kannst du nur deinen eigenen Spitznamen ändern.
+noUsers	No users yet.	Henüz oyuncu yok.	Noch keine Spieler.
+viewUser	View {name}'s profile	{name} profilini gör	Profil von {name} anzeigen
+settingsIntro	Tune how the garden looks and sounds on this device. Your choices are remembered.	Bu cihazda bahçenin görünümünü ve seslerini ayarla. Seçimlerin hatırlanır.	Lege fest, wie der Garten auf diesem Gerät aussieht und klingt. Deine Auswahl wird gespeichert.
+language	Language	Dil	Sprache
+languageDescription	Choose the language used throughout the game.	Oyunda kullanılacak dili seç.	Wähle die Sprache für das gesamte Spiel.
+soundEffects	Sound Effects	Ses efektleri	Soundeffekte
+soundDescription	Chimes for found words and finished beds.	Bulunan kelimeler ve tamamlanan bölümler için sesler.	Klänge für gefundene Wörter und abgeschlossene Beete.
+done	Done	Bitti	Fertig
+helpTitle	Help	Yardım	Hilfe
+helpDescription	Find the information and support links for Garden of Words.	Garden of Words için bilgi ve destek bağlantılarını burada bulabilirsin.	Hier findest du Informationen und Support-Links zu Garden of Words.
+privacyPolicy	Privacy Policy	Gizlilik Politikası	Datenschutzerklärung
+eula	EULA	EULA	EULA
+contactUs	Contact us	Bize ulaşın	Kontakt
+premiumSpecialThemes	Special Themes	Özel Temalar	Besondere Themen
+getPremium	Get Premium	Premium'a geç	Premium freischalten
+marketKicker	Garden of Words Pro	Garden of Words Pro	Garden of Words Pro
+marketTitle	Let your garden bloom	Bahçen çiçek açsın	Lass deinen Garten erblühen
+marketSubtitle	A calmer, more generous word garden with no interruptions.	Reklamsız, daha sakin ve daha cömert bir kelime bahçesi.	Ein ruhigerer, großzügigerer Wortgarten ohne Unterbrechungen.
+premiumNoAds	No ads	Reklamsız oyun	Werbefreies Spielen
+premiumDailyHint	+2 hints every day	Her gün +2 ipucu	+2 Tipps jeden Tag
+premiumNameChange	Change your username	Kullanıcı adını değiştir	Spitznamen ändern
+marketChoose	Choose	Seç	Auswählen
+marketPopular	Popular	Popüler	Beliebt
+marketWeekly	Weekly	Haftalık	Wöchentlich
+marketMonthly	Monthly	Aylık	Monatlich
+marketYearly	Yearly	Yıllık	Jährlich
+marketWeeklyDescription	Flexible garden access	Esnek bahçe erişimi	Flexibler Gartenzugang
+marketMonthlyDescription	A steady rhythm for your garden	Bahçen için düzenli erişim	Ein beständiger Rhythmus für deinen Garten
+marketYearlyDescription	Best value for a full year	Tüm yıl için en avantajlı seçenek	Die beste Wahl für ein ganzes Jahr
+marketActive	Premium is active on this account.	Premium bu hesapta aktif.	Premium ist für dieses Konto aktiv.
+marketLoading	Loading plans...	Paketler yükleniyor …	Tarife werden geladen …
+marketUnavailable	Plans are temporarily unavailable. Try again shortly.	Paketler şu anda kullanılamıyor. Lütfen biraz sonra tekrar dene.	Die Tarife sind gerade nicht verfügbar. Bitte versuche es später erneut.
+marketPurchaseSuccess	Premium is active. Welcome to the greener side of the garden!	Premium aktif. Bahçenin daha yeşil tarafına hoş geldin!	Premium ist aktiv. Willkommen auf der grüneren Seite des Gartens!
+marketPurchaseCancelled	Purchase cancelled.	Satın alma iptal edildi.	Kauf abgebrochen.
+marketRestore	Restore purchases	Satın alımları geri yükle	Käufe wiederherstellen
+marketManage	Manage subscription	Aboneliği yönet	Abo verwalten
+marketPaywall	Open full paywall	Tam satın alma ekranını aç	Vollständigen Kaufbildschirm öffnen
+marketEula	Apple Standard EULA	Apple Standard EULA	Apple Standard EULA
+hintPacksTitle	Extra hints	Ekstra ipuçları	Zusätzliche Tipps
+hintPacksSubtitle	Add hints instantly whenever you need a boost.	İhtiyaç duyduğunda anında ipucu ekle.	Fülle deine Tipps jederzeit sofort auf.
+hintPackName	{amount} hints	{amount} ipucu	{amount} Tipps
+hintPack10Description	Instant hint refill	Anında ipucu takviyesi	Sofortige Tipp-Auffüllung
+hintPack25Description	A bigger hint garden	Daha büyük bir ipucu paketi	Ein größerer Tippvorrat
+hintPack50Description	The full hint harvest	Tüm ipuçlarına erişim	Der vollständige Tippvorrat
+hintPackBuy	Get hints	İpucu al	Tipps erhalten
+hintPackSuccess	{amount} hints added to your garden.	Bahçene {amount} ipucu eklendi.	{amount} Tipps wurden deinem Garten hinzugefügt.
+hintPackUnavailable	Hint packs are temporarily unavailable. Try again shortly.	İpucu paketleri şu anda kullanılamıyor. Lütfen biraz sonra tekrar dene.	Die Tipp-Pakete sind gerade nicht verfügbar. Bitte versuche es später erneut.
+premiumNameRequired	Changing your username is a Premium feature.	Kullanıcı adını değiştirmek Premium özelliğidir.	Das Ändern deines Spitznamens ist eine Premium-Funktion.
+premiumHintWaiting	Your daily Premium hint has already been used. Come back tomorrow for another one.	Bugünkü Premium ipucunu zaten kullandın. Yarın yeni bir ipucu alabilirsin.	Dein täglicher Premium-Tipp wurde bereits verwendet. Morgen wartet ein neuer auf dich.
+achievementsEarned	{unlocked} of {total} badges earned	{total} başarımın {unlocked} tanesini kazandın	{unlocked} von {total} Abzeichen freigeschaltet
+achievementUnlocked	Achievement Unlocked	Başarım açıldı	Erfolg freigeschaltet
+earned	Earned	Kazanıldı	Freigeschaltet
+continueBed	Continue · Bed {id}	Devam et · Bölüm {id}	Fortsetzen · Beet {id}
+opening	Opening...	Açılıyor …	Wird geöffnet …
+wrongPin	That PIN is not correct.	Bu PIN doğru değil.	Diese PIN ist nicht korrekt.
+useTwoChars	Please use at least 2 characters.	Lütfen en az 2 karakter kullan.	Bitte gib mindestens 2 Zeichen ein.
+usernameTaken	That username is already taken. Please choose another one.	Bu kullanıcı adı zaten alınmış. Lütfen başka bir isim seç.	Dieser Spitzname ist bereits vergeben. Bitte wähle einen anderen.
+usernameCheckFailed	Couldn't verify that username right now. Please try again.	Bu kullanıcı adı şu anda doğrulanamadı. Lütfen tekrar dene.	Dieser Spitzname konnte gerade nicht überprüft werden. Bitte versuche es erneut.
+adsBypass	Premium test mode active · themes and hints unlocked.	Premium test modu açık · temalar ve ipuçları açıldı.	Premium-Testmodus aktiv · Themen und Tipps freigeschaltet.
+adsEnabled	Premium test mode disabled.	Premium test modu kapatıldı.	Premium-Testmodus deaktiviert.
+hintCaption	Start with 1 hint · use hints from your balance anytime · earn +1 hint every 6 beds completed · watch an ad anytime for +1 hint	Oyuna 1 ipucuyla başla · ipuçlarını bakiyenden istediğin zaman kullan · tamamlanan her 6 bölümde +1 ipucu · istediğin zaman reklam izleyerek +1 ipucu al	Starte mit 1 Tipp · nutze deine Tipps jederzeit aus deinem Vorrat · +1 Tipp nach jeweils 6 abgeschlossenen Beeten · jederzeit Werbung für +1 Tipp ansehen
+streak	Streak ×{count}	Seri ×{count}	Serie ×{count}
+you	you	sen	du
+earnedOn	Earned on {date}	Kazanılma tarihi: {date}	Freigeschaltet am {date}
+themes	Themes	Temalar	Themen
+premium	Premium	Premium	Premium
+themeSubtitle	Give your garden a different mood.	Bahçene farklı bir hava kat.	Gib deinem Garten eine neue Stimmung.
+themeGarden	Garden Path	Bahçe Yolu	Gartenweg
+themeMoonlit	Moonlit	Ay Işığı	Mondlicht
+themeAutumn	Autumn Nook	Sonbahar Köşesi	Herbstwinkel
+themeSeaside	Seaside	Sahil	Küste
+themeRose	Rose Cottage	Gül Bahçesi	Rosengarten
+themeForest	Forest Mist	Orman Sisi	Waldnebel
+themeLavender	Lavender Field	Lavanta Tarlası	Lavendelfeld
+themeWinter	Winter Hearth	Kış Bahçesi	Wintergarten
+difficulty.easy	Sprout	Filiz	Spross
+difficulty.medium	Bloom	Çiçek	Blüte
+difficulty.hard	Thorn	Diken	Dorn
+difficulty.extreme	Wildwood	Yaban	Wildnis
+feedback.combo	COMBO ×{count}	KOMBO ×{count}	KOMBO ×{count}
+feedback.wild	BLOOMING WILD!	YABANİ ÇİÇEK!	WILDE BLÜTE!
+feedback.thumb	GREEN THUMB!	YEŞİL PARMAK!	GRÜNER DAUMEN!
+feedback.lovely	LOVELY!	HARİKA!	WUNDERVOLL!
+feedback.bloom	IN BLOOM!	ÇİÇEK AÇTI!	IN VOLLER BLÜTE!
+feedback.blossomed	BLOSSOMED!	ÇİÇEKLENDİ!	ERBLÜHT!
+feedback.rooted	WELL ROOTED!	KÖK SALDI!	GUT VERWURZELT!
+music	Music	Müzik	Musik
+musicDescription	Play calm background music throughout the garden.	Bahçenin her yerinde sakin arka plan müzikleri çalsın.	Ruhige Hintergrundmusik im gesamten Garten abspielen.

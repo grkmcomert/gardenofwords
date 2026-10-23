@@ -1,0 +1,35 @@
+{
+  "source": "C:\\Users\\grkm\\Downloads\\cok_zor_2304_kelime_768_TR_EN_DE_KONTROLLU_V2.json",
+  "inputWordsPerLanguage": 768,
+  "importedExtremeLevels": 128,
+  "wordsPerExtremeLevel": 6,
+  "minWordLength": 6,
+  "maxWordLength": 10,
+  "unsafeMatchesAfterFixes": 0,
+  "replacementCount": 3,
+  "replacements": [
+    {
+      "row": 549,
+      "language": "turkish",
+      "from": "XENOLİT",
+      "to": "KSENOLİT"
+    },
+    {
+      "row": 570,
+      "language": "english",
+      "from": "IDIOTROPIC",
+      "to": "POLYMERIC"
+    },
+    {
+      "row": 632,
+      "language": "turkish",
+      "from": "XEROFİT",
+      "to": "KSEROFİT"
+    }
+  ],
+  "preservedExistingExtremeLevelIds": [
+    940,
+    944,
+    947
+  ]
+}

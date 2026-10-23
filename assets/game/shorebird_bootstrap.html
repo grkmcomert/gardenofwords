@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>html, body { margin: 0; background: #a7bbd5; }</style>
+</head>
+<body>
+  <script>
+    // Keep a file URL in the original game directory so existing relative
+    // media URLs and the WebView's persistent localStorage keep working.
+    (function requestGame() {
+      const channel = window.FlutterGameContent;
+      if (channel && typeof channel.postMessage === "function") {
+        channel.postMessage("load");
+      } else {
+        window.setTimeout(requestGame, 50);
+      }
+    })();
+  </script>
+</body>
+</html>

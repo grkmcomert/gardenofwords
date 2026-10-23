@@ -1,0 +1,605 @@
+{
+  "source": "C:\\Users\\grkm\\Downloads\\kelimeler_804_final.json",
+  "inputRows": 804,
+  "easyLevels": 201,
+  "wordsPerEasyLevel": 4,
+  "maxWordLength": 8,
+  "unsafeMatchesAfterFixes": 0,
+  "replacementCount": 99,
+  "replacements": [
+    {
+      "row": 159,
+      "language": "turkish",
+      "from": "Et",
+      "to": "Kuzu"
+    },
+    {
+      "row": 159,
+      "language": "english",
+      "from": "Meat",
+      "to": "Lamb"
+    },
+    {
+      "row": 159,
+      "language": "german",
+      "from": "Fleisch",
+      "to": "Lamm"
+    },
+    {
+      "row": 457,
+      "language": "english",
+      "from": "Passenger",
+      "to": "Rider"
+    },
+    {
+      "row": 457,
+      "language": "german",
+      "from": "Passagier",
+      "to": "Fahrgast"
+    },
+    {
+      "row": 505,
+      "language": "german",
+      "from": "Reißverschluss",
+      "to": "Zipper"
+    },
+    {
+      "row": 510,
+      "language": "german",
+      "from": "Baumwolle",
+      "to": "Cotton"
+    },
+    {
+      "row": 528,
+      "language": "german",
+      "from": "Geschmack",
+      "to": "Aroma"
+    },
+    {
+      "row": 531,
+      "language": "english",
+      "from": "Silhouette",
+      "to": "Outline"
+    },
+    {
+      "row": 531,
+      "language": "german",
+      "from": "Silhouette",
+      "to": "Umriss"
+    },
+    {
+      "row": 541,
+      "language": "german",
+      "from": "Gesundheit",
+      "to": "Wohlsein"
+    },
+    {
+      "row": 542,
+      "language": "german",
+      "from": "Krankheit",
+      "to": "Leiden"
+    },
+    {
+      "row": 553,
+      "language": "german",
+      "from": "Schnupfen",
+      "to": "Katarrh"
+    },
+    {
+      "row": 561,
+      "language": "german",
+      "from": "Gegengift",
+      "to": "Antidot"
+    },
+    {
+      "row": 565,
+      "language": "german",
+      "from": "OP",
+      "to": "Eingriff"
+    },
+    {
+      "row": 574,
+      "language": "turkish",
+      "from": "Depresyon",
+      "to": "Bunalım"
+    },
+    {
+      "row": 574,
+      "language": "english",
+      "from": "Depression",
+      "to": "Sadness"
+    },
+    {
+      "row": 574,
+      "language": "german",
+      "from": "Depression",
+      "to": "Trübsal"
+    },
+    {
+      "row": 583,
+      "language": "german",
+      "from": "Make-up",
+      "to": "Schminke"
+    },
+    {
+      "row": 585,
+      "language": "german",
+      "from": "Lippenstift",
+      "to": "Rouge"
+    },
+    {
+      "row": 592,
+      "language": "german",
+      "from": "Bademantel",
+      "to": "Robe"
+    },
+    {
+      "row": 593,
+      "language": "german",
+      "from": "Hausschuh",
+      "to": "Slipper"
+    },
+    {
+      "row": 601,
+      "language": "german",
+      "from": "Handschuh",
+      "to": "Glove"
+    },
+    {
+      "row": 602,
+      "language": "turkish",
+      "from": "Krawat",
+      "to": "Kravat"
+    },
+    {
+      "row": 609,
+      "language": "german",
+      "from": "Fußkettchen",
+      "to": "Fußring"
+    },
+    {
+      "row": 630,
+      "language": "english",
+      "from": "Orchestra",
+      "to": "Band"
+    },
+    {
+      "row": 630,
+      "language": "german",
+      "from": "Orchester",
+      "to": "Band"
+    },
+    {
+      "row": 636,
+      "language": "english",
+      "from": "Backstage",
+      "to": "Offstage"
+    },
+    {
+      "row": 640,
+      "language": "german",
+      "from": "Schauspieler",
+      "to": "Akteur"
+    },
+    {
+      "row": 641,
+      "language": "german",
+      "from": "Schauspielerin",
+      "to": "Aktrice"
+    },
+    {
+      "row": 646,
+      "language": "german",
+      "from": "Untertitel",
+      "to": "Subtitel"
+    },
+    {
+      "row": 648,
+      "language": "turkish",
+      "from": "Prodüktör",
+      "to": "Yapımcı"
+    },
+    {
+      "row": 648,
+      "language": "german",
+      "from": "Produzent",
+      "to": "Macher"
+    },
+    {
+      "row": 649,
+      "language": "german",
+      "from": "Regisseur",
+      "to": "Leiter"
+    },
+    {
+      "row": 661,
+      "language": "german",
+      "from": "Schlagzeile",
+      "to": "Headline"
+    },
+    {
+      "row": 663,
+      "language": "english",
+      "from": "Interview",
+      "to": "Talk"
+    },
+    {
+      "row": 663,
+      "language": "german",
+      "from": "Interview",
+      "to": "Gespräch"
+    },
+    {
+      "row": 668,
+      "language": "turkish",
+      "from": "Konferans",
+      "to": "Toplantı"
+    },
+    {
+      "row": 668,
+      "language": "english",
+      "from": "Conference",
+      "to": "Meeting"
+    },
+    {
+      "row": 668,
+      "language": "german",
+      "from": "Konferenz",
+      "to": "Tagung"
+    },
+    {
+      "row": 671,
+      "language": "turkish",
+      "from": "Sempozyum",
+      "to": "Forum"
+    },
+    {
+      "row": 671,
+      "language": "english",
+      "from": "Symposium",
+      "to": "Forum"
+    },
+    {
+      "row": 671,
+      "language": "german",
+      "from": "Symposium",
+      "to": "Tagung"
+    },
+    {
+      "row": 673,
+      "language": "german",
+      "from": "Einspruch",
+      "to": "Protest"
+    },
+    {
+      "row": 674,
+      "language": "english",
+      "from": "Compromise",
+      "to": "Tradeoff"
+    },
+    {
+      "row": 674,
+      "language": "german",
+      "from": "Kompromiss",
+      "to": "Konsens"
+    },
+    {
+      "row": 676,
+      "language": "english",
+      "from": "Monologue",
+      "to": "Solo"
+    },
+    {
+      "row": 677,
+      "language": "english",
+      "from": "Discourse",
+      "to": "Speech"
+    },
+    {
+      "row": 680,
+      "language": "english",
+      "from": "Paragraph",
+      "to": "Section"
+    },
+    {
+      "row": 682,
+      "language": "german",
+      "from": "Redewendung",
+      "to": "Wendung"
+    },
+    {
+      "row": 683,
+      "language": "german",
+      "from": "Sprichwort",
+      "to": "Sage"
+    },
+    {
+      "row": 688,
+      "language": "english",
+      "from": "Philosophy",
+      "to": "Wisdom"
+    },
+    {
+      "row": 688,
+      "language": "german",
+      "from": "Philosophie",
+      "to": "Weisheit"
+    },
+    {
+      "row": 691,
+      "language": "english",
+      "from": "Aesthetic",
+      "to": "Artistic"
+    },
+    {
+      "row": 692,
+      "language": "turkish",
+      "from": "Metafizik",
+      "to": "Öte"
+    },
+    {
+      "row": 692,
+      "language": "english",
+      "from": "Metaphysic",
+      "to": "Beyond"
+    },
+    {
+      "row": 692,
+      "language": "german",
+      "from": "Metaphysik",
+      "to": "Jenseits"
+    },
+    {
+      "row": 693,
+      "language": "german",
+      "from": "Ontologie",
+      "to": "Wesen"
+    },
+    {
+      "row": 694,
+      "language": "turkish",
+      "from": "Epistemoloji",
+      "to": "Bilgi"
+    },
+    {
+      "row": 694,
+      "language": "english",
+      "from": "Epistemology",
+      "to": "Know"
+    },
+    {
+      "row": 694,
+      "language": "german",
+      "from": "Erkenntnistheorie",
+      "to": "Wissen"
+    },
+    {
+      "row": 696,
+      "language": "turkish",
+      "from": "Safsatası",
+      "to": "Safsata"
+    },
+    {
+      "row": 696,
+      "language": "german",
+      "from": "Trugschluss",
+      "to": "Irrtum"
+    },
+    {
+      "row": 697,
+      "language": "english",
+      "from": "Syllogism",
+      "to": "Logic"
+    },
+    {
+      "row": 697,
+      "language": "german",
+      "from": "Syllogismus",
+      "to": "Logik"
+    },
+    {
+      "row": 699,
+      "language": "english",
+      "from": "Hypothesis",
+      "to": "Theory"
+    },
+    {
+      "row": 699,
+      "language": "german",
+      "from": "Hypothese",
+      "to": "These"
+    },
+    {
+      "row": 702,
+      "language": "english",
+      "from": "Postulate",
+      "to": "Tenet"
+    },
+    {
+      "row": 705,
+      "language": "german",
+      "from": "Gleichung",
+      "to": "Formel"
+    },
+    {
+      "row": 710,
+      "language": "english",
+      "from": "Derivative",
+      "to": "Slope"
+    },
+    {
+      "row": 710,
+      "language": "german",
+      "from": "Ableitung",
+      "to": "Steigung"
+    },
+    {
+      "row": 711,
+      "language": "turkish",
+      "from": "Fonksiyon",
+      "to": "İşlev"
+    },
+    {
+      "row": 716,
+      "language": "english",
+      "from": "Probability",
+      "to": "Chance"
+    },
+    {
+      "row": 716,
+      "language": "german",
+      "from": "Wahrscheinlichkeit",
+      "to": "Chance"
+    },
+    {
+      "row": 717,
+      "language": "turkish",
+      "from": "İstatistik",
+      "to": "Veri"
+    },
+    {
+      "row": 717,
+      "language": "english",
+      "from": "Statistics",
+      "to": "Data"
+    },
+    {
+      "row": 717,
+      "language": "german",
+      "from": "Statistik",
+      "to": "Daten"
+    },
+    {
+      "row": 721,
+      "language": "turkish",
+      "from": "Üs",
+      "to": "Güç"
+    },
+    {
+      "row": 721,
+      "language": "english",
+      "from": "Exponent",
+      "to": "Power"
+    },
+    {
+      "row": 721,
+      "language": "german",
+      "from": "Exponent",
+      "to": "Potenz"
+    },
+    {
+      "row": 724,
+      "language": "english",
+      "from": "Remainder",
+      "to": "Rest"
+    },
+    {
+      "row": 726,
+      "language": "english",
+      "from": "Difference",
+      "to": "Delta"
+    },
+    {
+      "row": 726,
+      "language": "german",
+      "from": "Differenz",
+      "to": "Abstand"
+    },
+    {
+      "row": 728,
+      "language": "english",
+      "from": "Perimeter",
+      "to": "Border"
+    },
+    {
+      "row": 728,
+      "language": "german",
+      "from": "Ufmgang",
+      "to": "Umfang"
+    },
+    {
+      "row": 729,
+      "language": "german",
+      "from": "Durchmesser",
+      "to": "Diameter"
+    },
+    {
+      "row": 738,
+      "language": "turkish",
+      "from": "İş",
+      "to": "Emek"
+    },
+    {
+      "row": 745,
+      "language": "turkish",
+      "from": "Manyet",
+      "to": "Mıknatıs"
+    },
+    {
+      "row": 746,
+      "language": "german",
+      "from": "Widerstand",
+      "to": "Abwehr"
+    },
+    {
+      "row": 749,
+      "language": "english",
+      "from": "Frequency",
+      "to": "Rate"
+    },
+    {
+      "row": 751,
+      "language": "english",
+      "from": "Evolution",
+      "to": "Change"
+    },
+    {
+      "row": 751,
+      "language": "german",
+      "from": "Evolution",
+      "to": "Wandel"
+    },
+    {
+      "row": 759,
+      "language": "english",
+      "from": "Atmos",
+      "to": "Air"
+    },
+    {
+      "row": 759,
+      "language": "german",
+      "from": "Atmosphäre",
+      "to": "Luft"
+    },
+    {
+      "row": 761,
+      "language": "english",
+      "from": "Continent",
+      "to": "Land"
+    },
+    {
+      "row": 761,
+      "language": "german",
+      "from": "Kontinent",
+      "to": "Erdteil"
+    },
+    {
+      "row": 767,
+      "language": "german",
+      "from": "Jahrhundert",
+      "to": "Jahr"
+    },
+    {
+      "row": 787,
+      "language": "german",
+      "from": "Handgelenk",
+      "to": "Gelenk"
+    },
+    {
+      "row": 796,
+      "language": "turkish",
+      "from": "Caba",
+      "to": "Çaba"
+    }
+  ]
+}

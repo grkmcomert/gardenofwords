@@ -1,0 +1,156 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function validEntry() {
+      let data = request.resource.data;
+      return data.keys().hasOnly([
+        'uid', 'levelId', 'name', 'avatar', 'time', 'leaderboardVisible', 'updatedAt'
+      ])
+      && data.uid == request.auth.uid
+      && data.name is string
+      && data.name.size() >= 2
+      && data.name.size() <= 24
+      && data.avatar is string
+      && data.avatar.size() <= 8
+      && data.levelId is int
+      && data.levelId >= 1
+      && data.levelId <= 950
+      && data.time is int
+      && data.time >= 0
+      && data.time <= 86400
+      && (!('leaderboardVisible' in data) || data.leaderboardVisible is bool)
+      && data.updatedAt == request.time;
+    }
+
+    function validProfile() {
+      let data = request.resource.data;
+      return data.keys().hasOnly([
+        'uid', 'name', 'nameLower', 'avatar', 'device', 'country',
+        'countrySource', 'language', 'platform', 'completedLevels',
+        'unlockedLevels', 'bestTimesCount', 'hints', 'createdAt', 'lastSeenAt',
+        'profileEditedAt', 'manualPremium', 'purchasePremium', 'isPremium'
+      ])
+      && data.uid == request.auth.uid
+      && data.name is string
+      && data.name.size() >= 2
+      && data.name.size() <= 24
+      && data.nameLower is string
+      && data.nameLower == data.name.lower()
+      && data.avatar is string
+      && data.avatar.size() <= 8
+      && data.device is string
+      && data.country is string
+      && data.countrySource is string
+      && data.language is string
+      && data.platform is string
+      && data.completedLevels is int
+      && data.completedLevels >= 0
+      && data.unlockedLevels is int
+      && data.unlockedLevels >= 0
+      && data.bestTimesCount is int
+      && data.bestTimesCount >= 0
+      && data.hints is int
+      && data.hints >= 0
+      && data.createdAt is timestamp
+      && data.lastSeenAt == request.time
+      && (!('profileEditedAt' in data) || data.profileEditedAt is timestamp)
+      && (!('manualPremium' in data) || data.manualPremium is bool)
+      && (!('purchasePremium' in data) || data.purchasePremium is bool)
+      && (!('isPremium' in data) || data.isPremium is bool);
+    }
+
+    function identityChanged() {
+      return request.resource.data.name != resource.data.name
+        || request.resource.data.avatar != resource.data.avatar;
+    }
+
+    function profileIdentityEditAllowed() {
+      return !identityChanged()
+        || (
+          request.resource.data.profileEditedAt == request.time
+          && (!('profileEditedAt' in resource.data)
+            || request.time >= resource.data.profileEditedAt + duration.value(24, 'h'))
+        );
+    }
+
+    function validAdLog() {
+      let data = request.resource.data;
+      return data.keys().hasOnly([
+        'uid', 'event', 'format', 'adUnitId', 'platform', 'modelName',
+        'osVersion', 'errorCode', 'errorDomain', 'errorMessage', 'error',
+        'responseId', 'mediationAdapter', 'responseInfo',
+        'adapterResponses', 'rewardAmount', 'rewardType', 'isNoFill',
+        'createdAt'
+      ])
+      && data.uid == request.auth.uid
+      && data.event is string
+      && data.event.size() <= 40
+      && data.format is string
+      && data.format.size() <= 20
+      && data.adUnitId is string
+      && data.adUnitId.size() <= 100
+      && data.platform is string
+      && data.platform.size() <= 20
+      && data.modelName is string
+      && data.modelName.size() <= 100
+      && data.osVersion is string
+      && data.osVersion.size() <= 40
+      && data.createdAt == request.time
+      && (!('errorCode' in data) || data.errorCode is int)
+      && (!('isNoFill' in data) || data.isNoFill is bool)
+      && (!('errorDomain' in data) || data.errorDomain is string)
+      && (!('errorMessage' in data) || data.errorMessage is string)
+      && (!('error' in data) || data.error is string)
+      && (!('responseId' in data) || data.responseId is string)
+      && (!('mediationAdapter' in data) || data.mediationAdapter is string)
+      && (!('responseInfo' in data) || data.responseInfo is string)
+      && (!('adapterResponses' in data) || data.adapterResponses is string)
+      && (!('rewardAmount' in data) || data.rewardAmount is string)
+      && (!('rewardType' in data) || data.rewardType is string);
+    }
+
+    match /leaderboards/{levelId}/entries/{profileId} {
+      allow read: if signedIn();
+      // Legacy path: the app migrates and deletes these rows, but never
+      // creates or updates them again.
+      allow create: if false;
+      allow update: if false;
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+
+    match /leaderboards/{levelId}/users/{profileId} {
+      allow read: if signedIn();
+      allow create: if signedIn() && validEntry();
+      allow update: if signedIn()
+        && resource.data.uid == request.auth.uid
+        && validEntry()
+        && request.resource.data.time <= resource.data.time;
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+
+    match /users/{profileId} {
+      allow read: if signedIn();
+      allow create: if signedIn() && validProfile()
+        && request.resource.data.get('manualPremium', false) == false;
+      allow update: if signedIn()
+        && resource.data.uid == request.auth.uid
+        && validProfile()
+        // Console/Admin SDK grants are retained by every client profile write.
+        && request.resource.data.get('manualPremium', false) == resource.data.get('manualPremium', false)
+        && profileIdentityEditAllowed();
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+
+    match /ad_debug_logs/{logId} {
+      // Logs are write-only from the app. Inspect them in Firebase Console;
+      // clients must not be able to read another device's diagnostics.
+      allow create: if signedIn() && validAdLog();
+      allow read, update, delete: if false;
+    }
+  }
+}

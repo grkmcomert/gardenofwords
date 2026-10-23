@@ -1,0 +1,101 @@
+PODS:
+  - app_tracking_transparency (0.0.1):
+    - Flutter
+  - audio_session (0.0.1):
+    - Flutter
+  - device_info_plus (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+  - flutter_soloud (0.0.1):
+    - Flutter
+  - Google-Mobile-Ads-SDK (13.3.0):
+    - GoogleUserMessagingPlatform (>= 1.1)
+  - google_mobile_ads (9.0.0):
+    - Flutter
+    - Google-Mobile-Ads-SDK (~> 13.3.0)
+    - webview_flutter_wkwebview
+  - GoogleUserMessagingPlatform (3.1.0)
+  - purchases_flutter (10.9.1):
+    - Flutter
+    - PurchasesHybridCommon (= 18.31.0)
+  - purchases_ui_flutter (10.9.1):
+    - Flutter
+    - PurchasesHybridCommonUI (= 18.31.0)
+  - PurchasesHybridCommon (18.31.0):
+    - RevenueCat (= 5.84.0)
+  - PurchasesHybridCommonUI (18.31.0):
+    - PurchasesHybridCommon (= 18.31.0)
+    - RevenueCatUI (= 5.84.0)
+  - RevenueCat (5.84.0)
+  - RevenueCatUI (5.84.0):
+    - RevenueCat (= 5.84.0)
+  - url_launcher_ios (0.0.1):
+    - Flutter
+  - webview_flutter_wkwebview (0.0.1):
+    - Flutter
+    - FlutterMacOS
+
+DEPENDENCIES:
+  - app_tracking_transparency (from `.symlinks/plugins/app_tracking_transparency/ios`)
+  - audio_session (from `.symlinks/plugins/audio_session/ios`)
+  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
+  - Flutter (from `Flutter`)
+  - flutter_soloud (from `.symlinks/plugins/flutter_soloud/ios`)
+  - google_mobile_ads (from `.symlinks/plugins/google_mobile_ads/ios`)
+  - purchases_flutter (from `.symlinks/plugins/purchases_flutter/ios`)
+  - purchases_ui_flutter (from `.symlinks/plugins/purchases_ui_flutter/ios`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
+
+SPEC REPOS:
+  trunk:
+    - Google-Mobile-Ads-SDK
+    - GoogleUserMessagingPlatform
+    - PurchasesHybridCommon
+    - PurchasesHybridCommonUI
+    - RevenueCat
+    - RevenueCatUI
+
+EXTERNAL SOURCES:
+  app_tracking_transparency:
+    :path: ".symlinks/plugins/app_tracking_transparency/ios"
+  audio_session:
+    :path: ".symlinks/plugins/audio_session/ios"
+  device_info_plus:
+    :path: ".symlinks/plugins/device_info_plus/ios"
+  Flutter:
+    :path: Flutter
+  flutter_soloud:
+    :path: ".symlinks/plugins/flutter_soloud/ios"
+  google_mobile_ads:
+    :path: ".symlinks/plugins/google_mobile_ads/ios"
+  purchases_flutter:
+    :path: ".symlinks/plugins/purchases_flutter/ios"
+  purchases_ui_flutter:
+    :path: ".symlinks/plugins/purchases_ui_flutter/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
+  webview_flutter_wkwebview:
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
+
+SPEC CHECKSUMS:
+  app_tracking_transparency: 3d84f147f67ca82d3c15355c36b1fa6b66ca7c92
+  audio_session: 9bb7f6c970f21241b19f5a3658097ae459681ba0
+  device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
+  Flutter: 71a624a5bc0c04062bf19101d501e466baf2fb47
+  flutter_soloud: a49c4dfe436fd99e47f4777fa270c557f6190054
+  Google-Mobile-Ads-SDK: 7692126a35ed859f20635af281c50a2162be8bea
+  google_mobile_ads: bab325fd4e31c9705cab0cb298e4f5a9bdb7370f
+  GoogleUserMessagingPlatform: befe603da6501006420c206222acd449bba45a9c
+  purchases_flutter: 065239e32634b88dd09c631645bed871c800dea0
+  purchases_ui_flutter: bad41039ed11f8dfaf9fdc2c7ccfb3104a938027
+  PurchasesHybridCommon: c3e8f89551e2c8b66691b9f3460ff0ba2e387ea8
+  PurchasesHybridCommonUI: 26679cd6c41ac3b972448fe1d32035dd664a28bb
+  RevenueCat: ab894398514fbeec7b1f9f5ae058be2c997f1403
+  RevenueCatUI: f93167c7677b0e3ac01971b85787483c278c2e7c
+  url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
+  webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
+
+PODFILE CHECKSUM: df6c64ca096d99ea6a1a919aa98580dd8c4dca82
+
+COCOAPODS: 1.16.2

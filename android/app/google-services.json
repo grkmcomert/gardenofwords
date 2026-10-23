@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "13485211063",
+    "project_id": "gardenofwords-ef918",
+    "storage_bucket": "gardenofwords-ef918.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:13485211063:android:73db4a46423e9675817c32",
+        "android_client_info": {
+          "package_name": "com.grkmcomert.gardenofwords"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzP43oSPXFssXOfrYERGiZzbZW_5uqd9w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

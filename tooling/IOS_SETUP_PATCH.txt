@@ -1,0 +1,44 @@
+iOS setup for AdMob + Firebase
+================================
+These steps only apply once ios/ exists (after `flutter create --platforms=android,ios .`
+or after running setup_flutter_project.ps1) and only need Xcode/macOS to finish.
+
+1) AdMob App ID + App Tracking Transparency
+--------------------------------------------
+Open ios/Runner/Info.plist and add, as direct children of the top-level <dict>:
+
+<key>GADApplicationIdentifier</key>
+<string>ca-app-pub-7480771330660307~8773437111</string>
+
+<key>NSUserTrackingUsageDescription</key>
+<string>Bu izin, reklamların sana daha uygun şekilde gösterilmesi için kullanılır.</string>
+
+GADApplicationIdentifier is required or the app crashes on launch once
+MobileAds.instance.initialize() runs. NSUserTrackingUsageDescription is
+required on iOS 14+ for the App Tracking Transparency prompt that AdMob
+triggers; without it Apple will reject the build at review.
+
+2) Firebase config file
+--------------------------------------------
+Drag GoogleService-Info.plist into ios/Runner/ inside Xcode itself (not just
+the file system) so it gets added to the Runner target:
+
+  - Xcode > right-click the Runner folder > "Add Files to Runner..."
+  - Select GoogleService-Info.plist
+  - Make sure "Copy items if needed" is checked and the Runner target is ticked
+
+IMPORTANT bundle ID check: the uploaded GoogleService-Info.plist was
+generated for bundle ID com.grkmcomert.gardenofwords. Whatever --org you
+pass to `flutter create` must result in ios/Runner's bundle identifier
+matching that exactly, or set it manually in Xcode:
+  Runner target > General tab > Identity > Bundle Identifier
+    -> com.grkmcomert.gardenofwords
+If these don't match, Firebase.initializeApp() will fail or silently talk
+to the wrong Firebase project on iOS.
+
+3) Pod install
+--------------------------------------------
+cd ios
+pod install
+cd ..
+flutter build ios --release

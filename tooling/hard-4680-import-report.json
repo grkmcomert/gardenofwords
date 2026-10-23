@@ -1,0 +1,160 @@
+{
+  "source": "C:\\Users\\grkm\\Downloads\\zor_4680_kelime_TR_DE_KARAKTER_KONTROLLU.json",
+  "totalWords": 4680,
+  "wordsPerLanguage": 1560,
+  "importedHardLevels": 312,
+  "wordsPerHardLevel": 5,
+  "minWordLength": 5,
+  "maxWordLength": 9,
+  "shuffleSeeds": {
+    "tr": 1297699922,
+    "en": 1297696078,
+    "de": 1297695813
+  },
+  "replacementCount": 22,
+  "replacements": [
+    {
+      "row": 570,
+      "language": "tr",
+      "from": "CİHANÎ",
+      "to": "CİHANİ"
+    },
+    {
+      "row": 574,
+      "language": "tr",
+      "from": "DEHAÎ",
+      "to": "DEHAİ"
+    },
+    {
+      "row": 881,
+      "language": "tr",
+      "from": "QUARTZ",
+      "to": "KUVARS"
+    },
+    {
+      "row": 899,
+      "language": "tr",
+      "from": "ABADÎ",
+      "to": "ABADİ"
+    },
+    {
+      "row": 967,
+      "language": "tr",
+      "from": "AŞİKÂR",
+      "to": "AŞİKAR"
+    },
+    {
+      "row": 985,
+      "language": "tr",
+      "from": "BESTEKÂR",
+      "to": "BESTEKAR"
+    },
+    {
+      "row": 1014,
+      "language": "tr",
+      "from": "DİVANÎ",
+      "to": "DİVANİ"
+    },
+    {
+      "row": 1027,
+      "language": "tr",
+      "from": "GÜZERGÂH",
+      "to": "GÜZERGAH"
+    },
+    {
+      "row": 1148,
+      "language": "tr",
+      "from": "AHKÂM",
+      "to": "AHKAM"
+    },
+    {
+      "row": 1194,
+      "language": "tr",
+      "from": "CENGÂVER",
+      "to": "CENGAVER"
+    },
+    {
+      "row": 1197,
+      "language": "tr",
+      "from": "DAİMÎ",
+      "to": "DAİMİ"
+    },
+    {
+      "row": 1204,
+      "language": "tr",
+      "from": "DERGÂH",
+      "to": "DERGAH"
+    },
+    {
+      "row": 1206,
+      "language": "tr",
+      "from": "DEVRİÂLEM",
+      "to": "DEVRİALEM"
+    },
+    {
+      "row": 1220,
+      "language": "tr",
+      "from": "ERKÂN",
+      "to": "ERKAN"
+    },
+    {
+      "row": 1245,
+      "language": "tr",
+      "from": "HAREKÂT",
+      "to": "HAREKAT"
+    },
+    {
+      "row": 1278,
+      "language": "tr",
+      "from": "KANAATKÂR",
+      "to": "KANAATKAR"
+    },
+    {
+      "row": 1359,
+      "language": "tr",
+      "from": "DESTANÎ",
+      "to": "DESTANİ"
+    },
+    {
+      "row": 1444,
+      "language": "tr",
+      "from": "ABANOZÎ",
+      "to": "ABANOZİ"
+    },
+    {
+      "row": 1497,
+      "language": "tr",
+      "from": "EFKÂR",
+      "to": "EFKAR"
+    },
+    {
+      "row": 1511,
+      "language": "tr",
+      "from": "İSTİHZAÎ",
+      "to": "İSTİHZAİ"
+    },
+    {
+      "row": 1512,
+      "language": "tr",
+      "from": "İTİKADÎ",
+      "to": "İTİKADİ"
+    },
+    {
+      "row": 1535,
+      "language": "tr",
+      "from": "ZIMNÎ",
+      "to": "ZIMNİ"
+    }
+  ],
+  "safeTechnicalWordsAllowedByExactMatch": {
+    "tr": [
+      "BOKSİT"
+    ],
+    "en": [
+      "ASSENTOR",
+      "ASSESS"
+    ],
+    "de": []
+  },
+  "crossDifficultyMixing": false
+}
