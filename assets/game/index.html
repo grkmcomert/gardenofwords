@@ -196,2519 +196,13 @@
   <script defer src="https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore-compat.js"></script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#EFE6D2" />
+  <meta name="theme-color" content="#0E1A16" />
   <title>Garden of Words</title>
   <link rel="icon" type="image/png" href="images/garden-of-words-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500;1,600&family=Work+Sans:wght@400;500;600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --paper: #EFE6D2;
-      --paper-deep: #E4D5B4;
-      --card: #FBF4E4;
-      --card-soft: #F6EDDA;
-      --ink: #2B3B28;
-      --ink-soft: #5B6B52;
-      --ink-faint: #92987F;
-      --moss: #5F8152;
-      --moss-deep: #3E5636;
-      --moss-pale: #DCE6D1;
-      --marigold: #E0A438;
-      --marigold-deep: #B9822A;
-      --dahlia: #CE6478;
-      --dahlia-deep: #A8455B;
-      --thistle: #7D6FA0;
-      --thistle-deep: #5D5080;
-      --terracotta: #BE6644;
-      --terracotta-deep: #9A4E33;
-      --line: rgba(43, 59, 40, .18);
-      --line-soft: rgba(43, 59, 40, .1);
-      --shadow-soft: 0 18px 38px rgba(63, 46, 20, .16);
-      --shadow-card: 0 10px 22px rgba(63, 46, 20, .13);
-      --shadow-pop: 0 8px 20px rgba(63, 46, 20, .24);
-      --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
-      --font-body: "Work Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
-      /* Native Flutter banner yüksekliği - JS tarafından güncellenir */
-      --native-banner-h: 0px;
-      color-scheme: light;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      min-width: 320px;
-      min-height: 100vh;
-      margin: 0;
-      overflow-x: hidden;
-      color: var(--ink);
-      font-family: var(--font-body);
-      background-color: var(--paper);
-      background-image:
-        radial-gradient(circle at 12% 6%, rgba(224, 164, 56, .14), transparent 40%),
-        radial-gradient(circle at 90% 12%, rgba(95, 129, 82, .13), transparent 38%),
-        radial-gradient(circle at 18% 94%, rgba(206, 100, 120, .10), transparent 36%),
-        radial-gradient(rgba(43, 59, 40, .05) 1px, transparent 1px);
-      background-size: auto, auto, auto, 3px 3px;
-      /* Fixed backgrounds force expensive full-surface repaints in Android
-         WebView during screen changes. The page itself never needs them to
-         stay fixed, so let the background scroll with its surface. */
-      background-attachment: scroll;
-
-      overscroll-behavior-y: none;
-      user-select: none;
-      -webkit-user-select: none;
-      -webkit-tap-highlight-color: transparent;
-      /* Dikey kaydırmayı koru, çift dokunuşla sayfanın büyümesini engelle. */
-      touch-action: manipulation;
-    }
-
-    html, body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      overflow: hidden;
-      overscroll-behavior: none;
-    }
-
-    button {
-      border: 0;
-      cursor: pointer;
-      font: inherit;
-      touch-action: manipulation;
-      transition: transform .12s cubic-bezier(.2, .8, .2, 1), background .16s ease, border-color .16s ease, box-shadow .16s ease, color .16s ease;
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-      /* Do not let a lingering WebView/BlueStacks hover state move or
-         reshape controls after the user has stopped touching the screen. */
-      button:hover { filter: none; transform: none; }
-    }
-    button:active { transform: translateY(1px); }
-    button:focus-visible { outline: 3px solid var(--terracotta-deep); outline-offset: 3px; }
-    button:disabled { cursor: not-allowed; filter: grayscale(.25); opacity: .55; transform: none; }
-
-    .icon { display: inline-block; flex: none; }
-
-    .app {
-      width: min(1180px, 100%);
-      min-height: 100%;
-      height: 100%;
-      margin: 0 auto;
-      padding-top: max(22px, calc(env(safe-area-inset-top, 0px) + 10px));
-      padding-left: clamp(15px, 4vw, 46px);
-      padding-right: clamp(15px, 4vw, 46px);
-      /* Flutter tarafında AdMob banner'ı WebView'in altına native widget olarak
-         eklenirken bazı cihazlarda WebView anında yeniden boyutlanmıyor; bu yüzden
-         her ekran kendi alt boşluğunda banner yüksekliğini (--native-banner-h)
-         de hesaba katmak zorunda, yoksa banner içeriğin üstüne biner. */
-      padding-bottom: max(44px, calc(var(--native-banner-h) + env(safe-area-inset-bottom, 0px) + 10px));
-    }
-
-    /* ---------- home screen: locked to one viewport, no scrolling ---------- */
-    html:has(body.home-active), body.home-active {
-      height: 100%;
-      overflow: hidden;
-      overscroll-behavior: none;
-    }
-    body.home-active {
-      height: 100dvh;
-      overflow: hidden;
-      overscroll-behavior: none;
-    }
-    body.home-active .app {
-      height: 100%;
-      min-height: 0;
-      max-height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding-top: 8px;
-      padding-bottom: max(8px, calc(var(--native-banner-h) + env(safe-area-inset-bottom, 0px)));
-      overflow: hidden;
-    }
-
-    /* Bahçe ekranı uzun bir liste: kök sayfa burada gerçekten kayabilmeli. */
-    html:has(body.level-active), body.level-active {
-      height: auto;
-      min-height: 100%;
-      overflow-x: hidden;
-      overflow-y: auto;
-      overscroll-behavior-y: auto;
-    }
-    body.level-active .app {
-      height: auto;
-      min-height: 100dvh;
-    }
-    body.level-active .level-screen {
-      margin-top: clamp(12px, 2.6vh, 28px);
-    }
-
-    .ghost-button, .soft-button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      min-height: 40px;
-      padding: 9px 14px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: var(--card);
-      color: var(--ink);
-      font-size: .86rem;
-      font-weight: 650;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .55);
-    }
-    .ghost-button:hover, .soft-button:hover { background: var(--card-soft); }
-
-    /* ---------- screens ---------- */
-    .screen { display: none; }
-    .screen:not(.active) { display: none; }
-    .screen.active { display: block; animation: screenIn .24s ease-out both; will-change: opacity; }
-    /* Enter the puzzle immediately. The staggered fade made the Play tap
-       feel delayed and left a partially painted game surface on WebView. */
-    body.game-active .screen.active.game-screen { animation: none; }
-    /* A screen is a single WebView surface, not a card in a horizontal
-       carousel. Never inject a horizontal transform during back-swipe: the
-       home PNG and every child layer must stay anchored to the WebView. */
-    .screen.swipe-dragging { animation: none !important; }
-    @keyframes screenIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    /* ---------- home / hero ---------- */
-    .home-screen {
-      position: relative; display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; max-width: 1240px; margin: 0 auto;
-transform-origin: center center; transform-box: border-box;
-      flex: 0 0 auto;
-      overflow: visible;
-    }
-    .home-screen > .home-player-row { width: min(100%, 980px); order: 1; justify-content: center; margin: 0 auto; }
-    .home-screen > .hero { width: min(100%, 1200px); order: 2; margin: 0 auto; }
-    .home-screen > .home-daily-banner { width: min(100%, 980px); order: 3; margin: 0 auto; text-align: center; }
-    body:not(.home-active):not(.game-active) #homeMusicControls { display: none; }
-    .home-screen > .hero .hero-copy-shell { text-align: center; }
-    .home-screen > .hero h1,
-    .home-screen > .hero .hero-copy { margin-left: auto; margin-right: auto; }
-    .home-screen > .hero .home-cta-row { width: min(100%, 420px); align-items: stretch; margin-left: auto; margin-right: auto; }
-    .home-brand {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      order: 0;
-      margin: 0 auto;
-      color: var(--ink);
-      text-align: center;
-    }
-    .home-brand-main {
-      display: flex;
-      width: min(83vw, 460px);
-      align-items: center;
-      justify-content: center;
-    }
-    .home-brand-logo {
-      display: block;
-      width: 100%;
-      height: auto;
-      max-height: 170px;
-      object-fit: contain;
-      transform: scale(1.12);
-      transform-origin: center center;
-    }
-    .home-brand-kicker {
-      color: var(--moss-deep);
-      font-size: .64rem;
-      font-style: italic;
-      font-weight: 800;
-      letter-spacing: .18em;
-      line-height: 1;
-      text-transform: uppercase;
-    }
-    .home-brand-title {
-      display: block;
-      color: var(--moss-deep);
-      font-family: var(--font-display);
-      font-size: clamp(2.05rem, 8.2vw, 3.35rem);
-      font-weight: 650;
-      letter-spacing: -.06em;
-      line-height: .92;
-      white-space: nowrap;
-      text-shadow: 0 2px 0 rgba(255, 255, 255, .35);
-    }
-    .home-music-controls {
-      position: fixed;
-      left: 50%;
-      bottom: max(2px, calc(var(--native-banner-h) + env(safe-area-inset-bottom, 0px) + 2px));
-      z-index: 20;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      max-width: calc(100vw - 12px);
-      pointer-events: auto;
-      opacity: .94;
-      transform: translate(-50%, 2px);
-      transition: opacity .25s ease;
-    }
-    .home-music-controls.is-disabled,
-    body.game-active #homeMusicControls.is-disabled { display: none; opacity: 0; }
-    .home-music-control-button,
-    .home-music-main-button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex: none;
-      padding: 0;
-      border: 1px solid rgba(255, 255, 255, .48);
-      color: #FFFFFF;
-      cursor: pointer;
-      -webkit-backdrop-filter: blur(7px);
-      backdrop-filter: blur(7px);
-      box-shadow: 0 4px 14px rgba(20, 34, 28, .18), inset 0 1px 0 rgba(255, 255, 255, .22);
-      transition: background .16s ease, border-color .16s ease, transform .16s ease;
-    }
-    .home-music-control-button {
-      width: 29px;
-      height: 29px;
-      border-radius: 50%;
-      background: rgba(31, 52, 78, .48);
-    }
-    .home-music-control-button .icon { width: 14px; height: 14px; }
-    .home-music-main-button {
-      position: relative;
-      width: min(148px, 42vw);
-      height: 34px;
-      min-width: 0;
-      box-sizing: border-box;
-      border-radius: 999px;
-      background: rgba(31, 52, 78, .34);
-      overflow: hidden;
-    }
-    .home-music-main-button .music-toggle-icon {
-      position: absolute;
-      right: 8px;
-      width: 12px;
-      height: 12px;
-      color: rgba(255, 255, 255, .92);
-      filter: drop-shadow(0 1px 2px rgba(20, 34, 28, .45));
-    }
-    .home-music-control-button:hover,
-    .home-music-main-button:hover { border-color: rgba(255, 255, 255, .82); background: rgba(31, 52, 78, .62); }
-    .home-music-control-button:active,
-    .home-music-main-button:active { transform: scale(.94); }
-    .home-music-control-button:focus-visible,
-    .home-music-main-button:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 2px; }
-    .home-music-visualizer {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      height: 100%;
-      min-width: 0;
-      box-sizing: border-box;
-      gap: 3px;
-      padding: 6px 27px 6px 10px;
-      pointer-events: none;
-      overflow: hidden;
-      opacity: 1;
-    }
-    .home-music-bar {
-      display: block;
-      flex: 0 1 4px;
-      width: 4px;
-      min-width: 2px;
-      height: 20px;
-      max-height: 100%;
-      border-radius: 99px;
-      background: linear-gradient(180deg, #fff 0%, #d7f5e9 48%, #93d2ba 100%);
-      box-shadow: 0 0 4px rgba(222, 255, 240, .42), 0 1px 2px rgba(20, 34, 28, .3);
-      opacity: .98;
-      transform: scaleY(clamp(.16, var(--bar-scale, .3), 1));
-      transform-origin: center;
-      transition: transform .065s ease-out, opacity .12s ease;
-      will-change: transform;
-    }
-    .home-music-visualizer:not(.is-active) .home-music-bar { animation: none; }
-    .home-music-visualizer.is-active .home-music-bar { opacity: 1; }
-    .home-music-visualizer.is-disabled { display: none; opacity: 0; }
-    .home-music-visualizer.is-disabled .home-music-bar {
-      animation: none;
-      opacity: .45;
-      transform: scaleY(.22);
-    }
-    /* Keep the music controls above the native banner overlay without
-       changing the WebView's physical height on Android. */
-    body.game-active #homeMusicControls {
-      bottom: max(2px, calc(var(--native-banner-h) + env(safe-area-inset-bottom, 0px)));
-    }
-    /* The home screen is a single, non-scrollable canvas. JS scales this canvas
-       down when the real device viewport is shorter than its natural content.
-       IMPORTANT: no max-height here - JS measures the TRUE unclamped content
-       height via scrollHeight to compute the scale. A CSS max-height on an
-       overflow:visible element makes scrollHeight report the clamped box size
-       instead of the real content size, which broke the scale math and let
-       the bottom rows get sliced off by .app's overflow:hidden. */
-    body.home-active .home-screen {
-      display: flex;
-      overflow: visible;
-      /* Keep taps compatible with Android WebView's synthetic click event.
-         The page is already locked with overflow:hidden, so disabling all
-         touch actions here only makes button activation less reliable. */
-      touch-action: manipulation;
-    }
-    body.home-active .home-screen.active { animation: homeScreenIn .3s ease both; }
-    @keyframes homeScreenIn { from { opacity: 0; } to { opacity: 1; } }
-
-    .ambient-leaf { position: absolute; z-index: -1; width: 74px; height: 74px; opacity: .3; pointer-events: none; will-change: transform; }
-    .ambient-leaf.one { top: -26px; left: -18px; color: var(--moss); animation: driftLeaf 15s ease-in-out infinite alternate; }
-    .ambient-leaf.two { bottom: -18px; right: -14px; width: 96px; height: 96px; color: var(--dahlia); animation: driftLeaf 17s ease-in-out infinite alternate; animation-delay: -6s; }
-    @keyframes driftLeaf { from { transform: translate(0, 0) rotate(-6deg); } to { transform: translate(14px, 10px) rotate(5deg); } }
-
-    .vine-decoration {
-      position: absolute;
-      z-index: 0;
-      width: 132px;
-      height: 300px;
-      opacity: .3;
-      pointer-events: none;
-      color: var(--moss-deep);
-      filter: drop-shadow(0 3px 4px rgba(43, 59, 40, .08));
-      will-change: transform;
-    }
-    .vine-decoration::before {
-      content: "";
-      position: absolute;
-      inset: 4px 42px 4px 42px;
-      border-left: 3px solid currentColor;
-      border-bottom: 3px solid currentColor;
-      border-radius: 0 0 0 72%;
-      transform: rotate(-13deg);
-    }
-    .vine-decoration::after {
-      content: "";
-      position: absolute;
-      top: 66px;
-      left: 41px;
-      width: 54px;
-      height: 140px;
-      border-left: 2px solid currentColor;
-      border-radius: 50%;
-      transform: rotate(28deg);
-    }
-    .vine-decoration .vine-leaf {
-      position: absolute;
-      width: 30px;
-      height: 30px;
-    }
-    .vine-left { top: 8%; left: -48px; transform: rotate(-12deg); animation: vineLeftSway 7.5s ease-in-out infinite; transform-origin: 50% 90%; }
-    .vine-left .vine-leaf.one { top: 30px; left: 56px; transform: rotate(-32deg); }
-    .vine-left .vine-leaf.two { top: 132px; left: 18px; transform: rotate(34deg); }
-    .vine-left .vine-leaf.three { top: 232px; left: 58px; transform: rotate(-18deg); }
-    .vine-left .vine-leaf.four { top: 190px; left: 92px; transform: rotate(-48deg); }
-    .vine-right { right: -48px; bottom: 5%; transform: scaleX(-1) rotate(-12deg); animation: vineRightSway 8.2s ease-in-out infinite -2.4s; transform-origin: 50% 90%; }
-    .vine-right .vine-leaf.one { top: 38px; left: 54px; transform: rotate(-28deg); }
-    .vine-right .vine-leaf.two { top: 142px; left: 16px; transform: rotate(30deg); }
-    .vine-right .vine-leaf.three { top: 244px; left: 58px; transform: rotate(-20deg); }
-    .vine-right .vine-leaf.four { top: 196px; left: 92px; transform: rotate(-46deg); }
-    @keyframes vineLeftSway {
-      0%, 100% { transform: rotate(-12deg) translate3d(0, 0, 0); }
-      50% { transform: rotate(-7deg) translate3d(4px, 3px, 0); }
-    }
-    @keyframes vineRightSway {
-      0%, 100% { transform: scaleX(-1) rotate(-12deg) translate3d(0, 0, 0); }
-      50% { transform: scaleX(-1) rotate(-7deg) translate3d(4px, 2px, 0); }
-    }
-
-    .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1.12fr) minmax(290px, .88fr);
-      align-items: stretch;
-      gap: 0;
-    }
-
-    .hero-copy-shell {
-      position: relative;
-      padding: clamp(20px, 4vw, 34px);
-      border: 1px solid var(--line);
-      border-radius: 30px 0 0 30px;
-      border-right: 0;
-      background:
-        radial-gradient(circle at 92% 8%, rgba(224, 164, 56, .22), transparent 30%),
-        linear-gradient(145deg, #FFF8E9 0%, var(--card) 62%, #F1E2C1 100%);
-      box-shadow: 0 20px 42px rgba(63, 46, 20, .18), inset 0 1px 0 rgba(255, 255, 255, .72);
-      overflow: hidden;
-    }
-    .hero-copy-shell::before {
-      content: "";
-      position: absolute;
-      inset: auto -60px -80px auto;
-      width: 230px; height: 230px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(95, 129, 82, .14), transparent 70%);
-      pointer-events: none;
-    }
-    .hero-copy-shell > * { position: relative; z-index: 1; }
-
-    .hero h1, .level-heading h1 { margin: 0; letter-spacing: -.02em; line-height: 1.04; font-family: var(--font-display); font-weight: 600; }
-    .hero h1 { max-width: 620px; font-size: clamp(2.25rem, 5.6vw, 4.3rem); color: var(--ink); }
-    .hero h1 .accent { position: relative; color: var(--dahlia-deep); font-style: italic; }
-    .hero h1 .accent::after {
-      content: ""; position: absolute; left: -3%; right: -5%; bottom: .06em; height: .3em;
-      background: var(--marigold); opacity: .38; z-index: -1; border-radius: 2px 9px 2px 9px; transform: rotate(-1.2deg);
-    }
-
-    .hero-copy { max-width: 530px; margin: 18px 0 26px; color: var(--ink-soft); font-size: clamp(.98rem, 1.6vw, 1.08rem); line-height: 1.72; }
-
-    .home-daily-banner {
-      --home-daily-bg: linear-gradient(105deg, rgba(246, 237, 218, .96), rgba(228, 213, 180, .88));
-      --home-daily-border: rgba(43, 59, 40, .14);
-      --home-daily-ink: var(--ink);
-      --home-daily-muted: var(--ink-soft);
-      --home-daily-shadow: 0 10px 24px rgba(63, 46, 20, .12), inset 0 1px 0 rgba(255, 255, 255, .6);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0;
-      max-width: 1120px;
-      margin: 0 auto 14px;
-      padding: 13px 18px;
-      border: 1px solid var(--home-daily-border);
-      border-radius: 20px;
-      background: var(--home-daily-bg);
-      box-shadow: var(--home-daily-shadow);
-      text-align: left;
-    }
-    .home-daily-banner .journal-subtitle,
-    .home-daily-banner .daily-quote-text { width: 100%; }
-    .home-daily-banner .journal-subtitle { margin: 0 0 3px; color: var(--home-daily-muted); }
-    .home-daily-banner .daily-quote-text { font-size: .9rem; line-height: 1.35; }
-    .home-player-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      max-width: 1120px;
-      margin: -4px auto 10px;
-    }
-    .home-player-row .player-pill {
-      margin: 0;
-      padding: 4px 10px 4px 5px;
-      border-color: rgba(43, 59, 40, .14);
-      background: rgba(255, 248, 233, .72);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .55);
-    }
-
-    .action-row { display: flex; flex-wrap: wrap; gap: 11px; }
-    .home-cta-row { display: flex; flex-direction: column; margin-top: 12px; gap: 8px; }
-
-    .primary-button {
-      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-      min-height: 54px; padding: 13px 22px; border-radius: 16px;
-      background: linear-gradient(120deg, var(--marigold), var(--dahlia) 130%);
-      box-shadow: 0 12px 24px rgba(190, 102, 68, .28);
-      color: #3A2410; font-weight: 800;
-    }
-    .primary-button .arrow { font-size: 1.1em; }
-    .secondary-button { min-height: 54px; padding: 13px 18px; border-radius: 16px; font-size: .94rem; }
-
-    .hero-journal-card {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 16px;
-      width: 100%;
-      height: 100%;
-      padding: 22px;
-      border: 1px solid var(--line);
-      border-radius: 0 28px 28px 0;
-      background:
-        radial-gradient(circle at 92% 8%, rgba(224, 164, 56, .22), transparent 30%),
-        linear-gradient(145deg, #FFF8E9 0%, var(--card) 62%, #F1E2C1 100%);
-      box-shadow: 0 20px 42px rgba(63, 46, 20, .18), inset 0 1px 0 rgba(255, 255, 255, .72);
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-tag {
-      padding: 4px 11px; border: 1px dashed var(--line); border-radius: 99px;
-      color: var(--ink-soft); font-size: .64rem; font-weight: 750; letter-spacing: .08em; text-transform: uppercase;
-    }
-    .journal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .journal-daily-box {
-      padding: 13px 15px;
-      border-radius: 16px;
-      border: 1px solid rgba(43, 59, 40, .12);
-      background: linear-gradient(135deg, rgba(228, 213, 180, .78), rgba(246, 237, 218, .9));
-      text-align: center;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .48);
-    }
-    .journal-subtitle {
-      display: block;
-      color: var(--ink-soft);
-      font-size: .65rem;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-    .daily-word-tiles {
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-    .daily-tile {
-      display: grid;
-      place-items: center;
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: var(--card);
-      color: var(--ink);
-      font-family: var(--font-display);
-      font-size: 1.1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
-      box-shadow: var(--shadow-card);
-      user-select: none;
-    }
-    .daily-tile:hover {
-      transform: scale(1.08) translateY(-2px);
-      border-color: var(--marigold-deep);
-    }
-    .daily-tile.solved {
-      background: linear-gradient(140deg, var(--marigold), #F6D98A);
-      color: #3A2410;
-      border-color: var(--marigold-deep);
-      animation: comboBounce .4s ease;
-    }
-    .daily-word-hint {
-      margin: 4px 0 0;
-      color: var(--ink-soft);
-      font-size: .72rem;
-    }
-    .daily-quote-text {
-      margin: 0;
-      color: var(--home-daily-ink);
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: .95rem;
-      line-height: 1.5;
-    }
-    body.home-active[data-game-theme="moonlit"] .home-daily-banner {
-      --home-daily-bg: linear-gradient(105deg, rgba(26, 46, 91, .88), rgba(54, 79, 130, .78));
-      --home-daily-border: rgba(222, 234, 255, .3);
-      --home-daily-ink: #FFF9EC;
-      --home-daily-muted: rgba(235, 243, 255, .78);
-      --home-daily-shadow: 0 10px 25px rgba(9, 19, 49, .3), inset 0 1px 0 rgba(255, 255, 255, .18);
-    }
-    body.home-active[data-game-theme="autumn"] .home-daily-banner {
-      --home-daily-bg: linear-gradient(105deg, rgba(116, 58, 42, .88), rgba(166, 91, 59, .78));
-      --home-daily-border: rgba(255, 235, 201, .32);
-      --home-daily-ink: #FFF3DE;
-      --home-daily-muted: rgba(255, 235, 201, .8);
-      --home-daily-shadow: 0 10px 25px rgba(82, 39, 28, .28), inset 0 1px 0 rgba(255, 255, 255, .18);
-    }
-    body.home-active[data-game-theme="seaside"] .home-daily-banner {
-      --home-daily-bg: linear-gradient(105deg, rgba(28, 104, 116, .86), rgba(53, 143, 154, .76));
-      --home-daily-border: rgba(224, 255, 249, .34);
-      --home-daily-ink: #F2FFFB;
-      --home-daily-muted: rgba(225, 255, 249, .8);
-      --home-daily-shadow: 0 10px 25px rgba(24, 82, 95, .28), inset 0 1px 0 rgba(255, 255, 255, .2);
-    }
-    body.home-active[data-game-theme="rose"] .home-daily-banner {
-      --home-daily-bg: linear-gradient(105deg, rgba(125, 65, 86, .86), rgba(181, 100, 116, .76));
-      --home-daily-border: rgba(255, 232, 237, .34);
-      --home-daily-ink: #FFF4F5;
-      --home-daily-muted: rgba(255, 232, 237, .82);
-      --home-daily-shadow: 0 10px 25px rgba(104, 48, 66, .28), inset 0 1px 0 rgba(255, 255, 255, .2);
-    }
-    body.home-active[data-game-theme="forest"] .home-daily-banner {
-      --home-daily-bg: linear-gradient(105deg, rgba(35, 76, 59, .88), rgba(65, 112, 76, .76));
-      --home-daily-border: rgba(224, 250, 224, .3);
-      --home-daily-ink: #F1FFF0;
-      --home-daily-muted: rgba(224, 250, 224, .8);
-      --home-daily-shadow: 0 10px 25px rgba(22, 56, 38, .3), inset 0 1px 0 rgba(255, 255, 255, .18);
-    }
-    body.home-active[data-game-theme="lavender"] .home-daily-banner {
-      --home-daily-bg: linear-gradient(105deg, rgba(84, 58, 103, .88), rgba(125, 85, 139, .76));
-      --home-daily-border: rgba(245, 232, 255, .32);
-      --home-daily-ink: #FCF5FF;
-      --home-daily-muted: rgba(245, 232, 255, .8);
-      --home-daily-shadow: 0 10px 25px rgba(67, 43, 83, .3), inset 0 1px 0 rgba(255, 255, 255, .18);
-    }
-    body.home-active[data-game-theme="winter"] .home-daily-banner {
-      --home-daily-bg: linear-gradient(105deg, rgba(55, 88, 119, .86), rgba(91, 129, 163, .76));
-      --home-daily-border: rgba(231, 246, 255, .34);
-      --home-daily-ink: #F4FBFF;
-      --home-daily-muted: rgba(231, 246, 255, .82);
-      --home-daily-shadow: 0 10px 25px rgba(40, 70, 99, .3), inset 0 1px 0 rgba(255, 255, 255, .2);
-    }
-    /* Keep the daily quote card in its original opaque, readable style even
-       when the page background uses a special theme. */
-    body.home-active[data-game-theme] .home-daily-banner {
-      --home-daily-bg: linear-gradient(105deg, rgba(246, 237, 218, .96), rgba(228, 213, 180, .88));
-      --home-daily-border: rgba(43, 59, 40, .14);
-      --home-daily-ink: var(--ink);
-      --home-daily-muted: var(--ink-soft);
-      --home-daily-shadow: 0 10px 24px rgba(63, 46, 20, .12), inset 0 1px 0 rgba(255, 255, 255, .6);
-    }
-    .home-cta-row > .primary-button { flex: 1; }
-    .home-secondary-actions { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
-    .home-themes-button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
-    .home-themes-button .icon { width: 16px; height: 16px; color: var(--moss-deep); }
-
-    .journal-lower-panel {
-      display: grid;
-      grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr);
-      gap: 10px;
-      padding: 10px;
-      border: 1px solid rgba(43, 59, 40, .12);
-      border-radius: 18px;
-      background: rgba(255, 255, 255, .24);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45);
-    }
-    .journal-stat-strip {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 7px;
-      padding: 0;
-    }
-    .journal-stat {
-      display: grid;
-      grid-template-columns: 18px minmax(0, 1fr);
-      grid-template-rows: auto auto;
-      align-items: center;
-      column-gap: 7px;
-      row-gap: 1px;
-      min-width: 0;
-      padding: 9px 10px;
-      border: 1px solid rgba(43, 59, 40, .09);
-      border-radius: 12px;
-      background: rgba(251, 244, 228, .72);
-    }
-    .journal-stat .tile-icon { grid-row: 1 / span 2; width: 18px; height: 18px; color: var(--moss-deep); }
-    .journal-stat .tile-value {
-      min-width: 0;
-      white-space: nowrap;
-      font-family: var(--font-display);
-      font-size: .88rem;
-      font-weight: 700;
-      color: var(--ink);
-      line-height: 1.1;
-    }
-    .journal-stat .tile-label {
-      display: block;
-      min-width: 0;
-      color: var(--ink-soft);
-      font-size: .6rem;
-      font-weight: 700;
-      letter-spacing: .01em;
-    }
-
-    .journal-action-strip {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      align-items: stretch;
-      gap: 6px;
-      padding: 0 0 0 10px;
-      border-top: 0;
-      border-left: 1px dashed var(--line);
-    }
-    .journal-icon-btn {
-      position: relative;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      min-height: 52px;
-      padding: 7px 4px;
-      border-radius: 14px;
-      border: 1px solid rgba(43, 59, 40, .09);
-      background: rgba(251, 244, 228, .72);
-      color: var(--ink);
-      cursor: pointer;
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
-    }
-    .journal-icon-btn .icon { width: 19px; height: 19px; color: var(--marigold-deep); }
-    .journal-icon-btn .icon-btn-emoji { display: block; height: 19px; font-size: 1.05rem; line-height: 19px; }
-    .journal-icon-btn .icon-btn-label {
-      color: var(--ink-soft);
-      font-size: .58rem;
-      font-weight: 700;
-      letter-spacing: .01em;
-      text-align: center;
-    }
-    .journal-icon-btn:hover { border-color: var(--marigold-deep); background: var(--moss-pale); }
-    .journal-icon-btn .icon-btn-badge {
-      position: absolute;
-      top: 2px;
-      right: 2px;
-      padding: 2px 6px;
-      border-radius: 99px;
-      background: var(--moss-pale);
-      color: var(--moss-deep);
-      font-size: .54rem;
-      font-weight: 800;
-      font-variant-numeric: tabular-nums;
-    }
-    /* ---------- Premium market ---------- */
-    .journal-icon-btn.market-icon-btn { border-color: rgba(43, 59, 40, .09); }
-    .journal-icon-btn.market-icon-btn .icon { color: var(--terracotta-deep); }
-    .journal-icon-btn.market-icon-btn .icon-btn-badge { background: linear-gradient(135deg, var(--marigold), var(--terracotta)); color: #fff; }
-    .market-modal { width: min(620px, 100%); max-height: min(790px, calc(100dvh - 28px)); padding: 20px 27px 27px; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: auto; }
-    .market-modal .celebration { width: 58px; height: 58px; margin: 0 auto 12px; border-width: 3px; }
-    .market-star-icon { width: 31px; height: 31px; color: #3A2410; filter: drop-shadow(0 2px 2px rgba(255, 255, 255, .28)); }
-    .market-kicker { margin: -4px 0 8px; color: var(--terracotta-deep); font-size: .68rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
-    .market-subtitle { margin: 0 auto 18px; max-width: 480px; color: var(--ink-soft); font-size: .86rem; line-height: 1.5; }
-    .premium-feature-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; margin: 18px 0; }
-    .premium-feature { padding: 13px 10px; border: 1px solid rgba(91, 125, 77, .2); border-radius: 17px; background: linear-gradient(145deg, rgba(228, 239, 223, .9), rgba(255, 248, 233, .9)); text-align: center; }
-    .premium-feature-icon { display: grid; place-items: center; width: 36px; height: 36px; margin: 0 auto 7px; border-radius: 50%; background: linear-gradient(140deg, var(--moss), var(--moss-deep)); color: #fff; box-shadow: 0 5px 10px rgba(71, 105, 67, .22); }
-    .premium-feature-icon .icon { width: 19px; height: 19px; }
-    .premium-feature strong { display: block; color: var(--ink); font-size: .73rem; line-height: 1.25; }
-    .market-plan-list { display: grid; gap: 10px; margin: 18px 0 10px; text-align: left; }
-    .market-plan-card { position: relative; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 14px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); box-shadow: var(--shadow-card); transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease; }
-    .market-plan-card:hover { transform: translateY(-1px); border-color: var(--terracotta); box-shadow: var(--shadow-soft); }
-    .market-plan-card.featured { border-color: var(--marigold-deep); background: linear-gradient(110deg, rgba(255, 246, 214, .95), var(--card)); box-shadow: 0 0 0 2px rgba(224, 164, 56, .16), var(--shadow-card); }
-    .market-plan-card[hidden] { display: none; }
-    .market-plan-badge {
-      grid-column: 1 / -1;
-      justify-self: start;
-      max-width: 100%;
-      padding: 6px 11px;
-      border: 1px solid rgba(180, 123, 30, .2);
-      border-radius: 10px;
-      background: linear-gradient(135deg, #fff2cd, #f8dfa3);
-      color: #674514;
-      font-size: .68rem;
-      font-weight: 750;
-      line-height: 1.4;
-      text-align: center;
-      text-wrap: balance;
-      overflow-wrap: anywhere;
-    }
-    .market-plan-name { display: block; color: var(--ink); font-family: var(--font-display); font-size: 1.02rem; font-weight: 750; }
-    .market-plan-description { display: block; margin-top: 3px; color: var(--ink-soft); font-size: .7rem; }
-    .market-plan-price { display: block; margin-top: 7px; color: var(--terracotta-deep); font-size: .8rem; font-weight: 850; }
-    .market-subscription-terms { margin: 14px 0 0; color: var(--ink-soft); font-size: .68rem; line-height: 1.45; text-align: left; }
-    .market-plan-action {
-      min-width: 92px;
-      position: relative;
-      z-index: 1;
-      visibility: visible;
-    }
-    .market-plan-action:disabled {
-      opacity: 1;
-      filter: none;
-      color: #5b472f;
-      -webkit-text-fill-color: #5b472f;
-      background: linear-gradient(120deg, #ead9b7, #d9c29d 130%);
-      box-shadow: 0 6px 12px rgba(116, 84, 42, .14);
-    }
-    .hint-pack-section { margin: 18px 0 8px; padding-top: 16px; border-top: 1px solid var(--line-soft); }
-    .hint-pack-title { margin: 0; color: var(--ink); font-family: var(--font-display); font-size: 1rem; }
-    .hint-pack-subtitle { margin: 4px 0 11px; color: var(--ink-soft); font-size: .72rem; }
-    .hint-pack-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-    .hint-pack-card { display: grid; min-height: 128px; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(38px, auto) 1fr auto; align-items: start; gap: 10px; padding: 12px; text-align: center; }
-    .hint-pack-card > div { grid-row: 2; min-width: 0; }
-    .hint-pack-card .market-plan-name { font-size: .9rem; }
-    .hint-pack-card .market-plan-description { min-height: 17px; }
-    .hint-pack-card .market-plan-price { margin-top: 5px; }
-    .hint-pack-card .market-plan-action { grid-row: 3; width: 100%; min-width: 0; padding-inline: 8px; font-size: .7rem; }
-    .hint-pack-card .market-plan-badge { grid-row: 1; justify-self: center; align-self: center; padding: 5px 8px; font-size: .64rem; }
-    .market-status { min-height: 20px; margin: 8px 0 0; color: var(--ink-soft); font-size: .72rem; }
-    .market-status.error { color: var(--dahlia-deep); }
-    .market-management-actions { display: flex; width: 100%; max-width: 100%; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; margin: 12px auto 0; text-align: center; }
-    .market-modal .market-management-actions { flex-direction: column; }
-    .market-policy-actions { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-    .market-management-actions button { font-size: .72rem; }
-    .market-management-actions .ghost-button { text-decoration: none; transform: translateY(-1px); }
-    .market-modal .modal-actions, .hint-more-modal .modal-actions { margin-top: 16px; }
-    .market-premium-active { display: none; margin: 0 0 14px; padding: 12px 14px; border: 1px solid rgba(91, 125, 77, .28); border-radius: 15px; background: var(--moss-pale); color: var(--moss-deep); font-size: .78rem; font-weight: 750; }
-    .market-modal.is-premium .market-premium-active { display: block; }
-    .market-modal.is-premium .market-plan-list, .market-modal.is-premium .market-management-actions .market-paywall-button { display: none; }
-    @media (max-width: 520px) {
-      .premium-feature-grid { gap: 6px; }
-      .premium-feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .premium-feature { padding: 10px 6px; }
-      .premium-feature strong { font-size: .65rem; }
-      .market-plan-card { padding: 12px; }
-      .market-plan-action { min-width: 80px; padding-inline: 10px; }
-      .hint-pack-list { grid-template-columns: minmax(0, 1fr); gap: 10px; }
-      .hint-pack-card { min-height: 0; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto; align-items: center; text-align: left; padding: 12px; }
-      .hint-pack-card > div { grid-row: auto; }
-      .hint-pack-card .market-plan-badge { justify-self: start; padding: 6px 11px; font-size: .68rem; }
-      .hint-pack-card .market-plan-action { grid-row: auto; width: auto; min-width: 80px; padding-inline: 10px; font-size: .7rem; }
-    }
-    .hint-more-modal { width: min(570px, 100%); max-height: min(760px, calc(100dvh - 28px)); padding: 20px 27px 27px; overflow-y: auto; overscroll-behavior: contain; }
-    .hint-more-modal .celebration { width: 58px; height: 58px; margin: 0 auto 12px; border-width: 3px; }
-    .hint-more-title { margin-bottom: 6px !important; }
-    .hint-more-subtitle { margin: 0 auto 16px !important; max-width: 430px; }
-    .hint-video-button { min-height: 46px; margin: 0 auto 4px; padding-inline: 20px; }
-    .hint-video-button .icon { width: 17px; height: 17px; }
-    .hint-more-status { min-height: 20px; margin: 0 auto 14px !important; font-size: .72rem; text-align: center; }
-    .hint-more-status.error { color: var(--dahlia-deep); }
-    .hint-more-modal.is-premium .hint-video-button { display: none; }
-    .hint-premium-title { margin: 0 0 16px; color: var(--ink); font-family: var(--font-display); font-size: 1rem; }
-    .hint-more-plan-list { margin: 8px 0 18px; }
-    .hint-more-modal.is-premium .hint-more-plan-list { display: none; }
-    .hint-more-premium-active { display: none; }
-    .hint-more-modal.is-premium .hint-more-premium-active { display: block; }
-
-    /* ---------- Achievements: home entry badge ---------- */
-    .achievements-home-badge {
-      margin-left: 8px; padding: 2px 8px; border-radius: 99px; background: var(--moss-pale); color: var(--moss-deep);
-      font-size: .66rem; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: .01em;
-    }
-
-    /* ---------- Achievements modal ---------- */
-    .achievements-modal { width: min(480px, 100%); }
-    .achievements-modal-subtitle { margin: 8px 0 16px; color: var(--ink-soft); font-weight: 700; font-size: .82rem; }
-    .achievements-list {
-      display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none;
-      max-height: 400px; overflow-y: auto; text-align: left;
-    }
-    .achievement-card {
-      display: grid; grid-template-columns: 46px 1fr; align-items: center; gap: 12px;
-      padding: 10px 12px; border: 1px solid var(--line-soft); border-radius: 15px;
-      background: var(--card-soft); transition: transform .15s ease, box-shadow .15s ease;
-    }
-    .achievement-card.unlocked { border-color: rgba(224, 164, 56, .5); background: linear-gradient(135deg, rgba(224, 164, 56, .16), var(--card-soft)); box-shadow: 0 4px 12px rgba(190, 102, 68, .1); }
-    .achievement-card.locked { filter: grayscale(.75); opacity: .55; }
-    .achievement-card-icon {
-      display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%;
-      background: var(--paper-deep); font-size: 1.4rem; line-height: 1;
-    }
-    .achievement-card.unlocked .achievement-card-icon { background: linear-gradient(140deg, var(--marigold), var(--dahlia)); box-shadow: 0 6px 14px rgba(190, 102, 68, .28); }
-    .achievement-card-text { min-width: 0; }
-    .achievement-card-title { display: flex; align-items: center; gap: 6px; margin: 0; color: var(--ink); font-family: var(--font-display); font-size: .98rem; font-weight: 700; }
-    .achievement-card-title .check { color: var(--moss-deep); font-size: .8rem; }
-    .achievement-card-desc { display: block; margin-top: 2px; color: var(--ink-soft); font-size: .74rem; line-height: 1.4; }
-    .achievement-card-date { display: block; margin-top: 3px; color: var(--marigold-deep); font-size: .64rem; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; }
-
-    /* ---------- Achievement toast: pops in when a badge is earned ---------- */
-    .achievement-toast-layer {
-      position: fixed; z-index: 40; top: max(16px, env(safe-area-inset-top)); left: 0; right: 0;
-      display: flex; flex-direction: column; align-items: center; gap: 10px; pointer-events: none;
-    }
-    .achievement-toast {
-      display: grid; grid-template-columns: 44px 1fr; align-items: center; gap: 12px;
-      width: min(340px, calc(100vw - 32px)); padding: 10px 16px 10px 10px; border-radius: 18px;
-      border: 1px solid rgba(224, 164, 56, .55);
-      background: linear-gradient(135deg, var(--card), var(--card-soft));
-      box-shadow: 0 16px 34px rgba(63, 46, 20, .28);
-      transform: translateY(-140%) scale(.92); opacity: 0;
-      animation: achievementToastIn .55s cubic-bezier(.2, 1.4, .4, 1) forwards, achievementToastOut .5s ease-in 2.7s forwards;
-    }
-    .premium-welcome-toast { border-color: rgba(91, 125, 77, .55); background: linear-gradient(135deg, #f7efd9, #e4efdf); }
-    .premium-welcome-toast .achievement-toast-icon { background: linear-gradient(140deg, var(--moss), var(--moss-deep)); color: #fff; }
-    .achievement-toast-icon {
-      display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
-      background: linear-gradient(140deg, var(--marigold), var(--dahlia)); font-size: 1.35rem;
-      box-shadow: 0 8px 16px rgba(190, 102, 68, .32);
-      animation: achievementIconPop .6s ease .15s both;
-    }
-    .achievement-toast-text { min-width: 0; }
-    .achievement-toast-label { display: block; color: var(--marigold-deep); font-size: .62rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
-    .achievement-toast-title { display: block; margin-top: 1px; color: var(--ink); font-family: var(--font-display); font-size: 1rem; font-weight: 700; }
-    .achievement-toast-desc { display: block; margin-top: 1px; color: var(--ink-soft); font-size: .72rem; line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .hint-reward-toast {
-      display: grid; grid-template-columns: 44px 1fr; align-items: center; gap: 12px;
-      width: min(340px, calc(100vw - 32px)); padding: 10px 16px 10px 10px; border-radius: 18px;
-      border: 1px solid rgba(91, 125, 77, .5);
-      background: linear-gradient(135deg, #f7efd9, #e4efdf);
-      box-shadow: 0 16px 34px rgba(63, 46, 20, .28);
-      transform: translateY(-140%) scale(.92); opacity: 0;
-      animation: achievementToastIn .55s cubic-bezier(.2, 1.4, .4, 1) forwards, achievementToastOut .5s ease-in 2.7s forwards;
-    }
-    .hint-reward-toast-icon {
-      display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
-      background: linear-gradient(140deg, var(--moss), var(--moss-deep)); color: #fff; font-size: 1.3rem;
-      box-shadow: 0 8px 16px rgba(71, 105, 67, .3);
-      animation: achievementIconPop .6s ease .15s both;
-    }
-    .hint-reward-toast-text { min-width: 0; }
-    .hint-reward-toast-label { display: block; color: var(--moss-deep); font-size: .62rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
-    .hint-reward-toast-title { display: block; margin-top: 1px; color: var(--ink); font-family: var(--font-display); font-size: 1rem; font-weight: 700; }
-    .hint-reward-toast-desc { display: block; margin-top: 1px; color: var(--ink-soft); font-size: .72rem; line-height: 1.35; }
-    @keyframes achievementToastIn { from { transform: translateY(-140%) scale(.92); opacity: 0; } 60% { transform: translateY(6%) scale(1.02); opacity: 1; } to { transform: translateY(0) scale(1); opacity: 1; } }
-    @keyframes achievementToastOut { to { transform: translateY(-120%) scale(.94); opacity: 0; } }
-    @keyframes achievementIconPop { 0% { transform: scale(.3) rotate(-25deg); } 55% { transform: scale(1.22) rotate(6deg); } 100% { transform: scale(1) rotate(0deg); } }
-    /* Additional Premium themes. Keep the same readable overlay surfaces as
-       the original gallery while giving each new scene its own palette. */
-    .game-theme-art.dawn-garden, .game-theme-art.rainy-greenhouse,
-    .game-theme-art.meadowlight, .game-theme-art.orchard-walk,
-    .game-theme-art.tropical-grove, .game-theme-art.sunset-terrace,
-    .game-theme-art.desert-bloom, .game-theme-art.misty-lake {
-      background-size: cover;
-      background-position: center 24%;
-    }
-    .game-theme-art.dawn-garden { background-image: url("images/themes/dawn-garden.png"); }
-    .game-theme-art.rainy-greenhouse { background-image: url("images/themes/rainy-greenhouse.png"); }
-    .game-theme-art.meadowlight { background-image: url("images/themes/meadowlight.png"); }
-    .game-theme-art.orchard-walk { background-image: url("images/themes/orchard-walk.png"); }
-    .game-theme-art.tropical-grove { background-image: url("images/themes/tropical-grove.png"); }
-    .game-theme-art.sunset-terrace { background-image: url("images/themes/sunset-terrace.png"); }
-    .game-theme-art.desert-bloom { background-image: url("images/themes/desert-bloom.png"); }
-    .game-theme-art.misty-lake { background-image: url("images/themes/misty-lake.png"); }
-    .theme-choice-grid .game-theme-art.dawn-garden, .theme-choice-grid .game-theme-art.rainy-greenhouse,
-    .theme-choice-grid .game-theme-art.meadowlight, .theme-choice-grid .game-theme-art.orchard-walk,
-    .theme-choice-grid .game-theme-art.tropical-grove, .theme-choice-grid .game-theme-art.sunset-terrace,
-    .theme-choice-grid .game-theme-art.desert-bloom, .theme-choice-grid .game-theme-art.misty-lake {
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-color: rgba(238, 242, 220, .72);
-    }
-    .game-theme-art.dawn-garden::before, .game-theme-art.dawn-garden::after,
-    .game-theme-art.rainy-greenhouse::before, .game-theme-art.rainy-greenhouse::after,
-    .game-theme-art.meadowlight::before, .game-theme-art.meadowlight::after,
-    .game-theme-art.orchard-walk::before, .game-theme-art.orchard-walk::after,
-    .game-theme-art.tropical-grove::before, .game-theme-art.tropical-grove::after,
-    .game-theme-art.sunset-terrace::before, .game-theme-art.sunset-terrace::after,
-    .game-theme-art.desert-bloom::before, .game-theme-art.desert-bloom::after,
-    .game-theme-art.misty-lake::before, .game-theme-art.misty-lake::after { display: none; }
-
-    body.game-active[data-game-theme="dawn-garden"] {
-      --game-page-bg: url("images/themes/dawn-garden.png");
-      --game-shell-bg: linear-gradient(145deg, rgba(255, 249, 232, .54), rgba(246, 203, 165, .3));
-      --game-top-bg: rgba(255, 251, 240, .9);
-      --game-border: rgba(151, 84, 62, .2);
-      --game-speckle: rgba(151, 84, 62, .14);
-      background-color: #F2C28E;
-      background-image: linear-gradient(rgba(255, 220, 175, .16), rgba(159, 111, 78, .3)), url("images/themes/dawn-garden.png");
-    }
-    body.game-active[data-game-theme="rainy-greenhouse"] {
-      --game-page-bg: url("images/themes/rainy-greenhouse.png");
-      --game-shell-bg: linear-gradient(145deg, rgba(235, 248, 243, .52), rgba(141, 177, 172, .3));
-      --game-top-bg: rgba(242, 251, 247, .9);
-      --game-border: rgba(53, 96, 93, .22);
-      --game-speckle: rgba(53, 96, 93, .14);
-      background-color: #9FB8B4;
-      background-image: linear-gradient(rgba(218, 241, 238, .16), rgba(54, 94, 95, .32)), url("images/themes/rainy-greenhouse.png");
-    }
-    body.game-active[data-game-theme="meadowlight"] {
-      --game-page-bg: url("images/themes/meadowlight.png");
-      --game-shell-bg: linear-gradient(145deg, rgba(250, 252, 227, .54), rgba(196, 216, 155, .3));
-      --game-top-bg: rgba(251, 253, 239, .9);
-      --game-border: rgba(86, 117, 68, .2);
-      --game-speckle: rgba(86, 117, 68, .14);
-      background-color: #D4DFB4;
-      background-image: linear-gradient(rgba(240, 248, 206, .18), rgba(113, 148, 101, .3)), url("images/themes/meadowlight.png");
-    }
-    body.game-active[data-game-theme="orchard-walk"] {
-      --game-page-bg: url("images/themes/orchard-walk.png");
-      --game-shell-bg: linear-gradient(145deg, rgba(255, 249, 226, .54), rgba(224, 193, 125, .3));
-      --game-top-bg: rgba(255, 251, 237, .9);
-      --game-border: rgba(126, 89, 48, .2);
-      --game-speckle: rgba(126, 89, 48, .14);
-      background-color: #D5B36B;
-      background-image: linear-gradient(rgba(247, 225, 167, .18), rgba(126, 86, 48, .3)), url("images/themes/orchard-walk.png");
-    }
-    body.game-active[data-game-theme="tropical-grove"] {
-      --game-page-bg: url("images/themes/tropical-grove.png");
-      --game-shell-bg: linear-gradient(145deg, rgba(239, 252, 224, .52), rgba(133, 207, 176, .3));
-      --game-top-bg: rgba(243, 253, 235, .9);
-      --game-border: rgba(42, 111, 95, .2);
-      --game-speckle: rgba(42, 111, 95, .14);
-      background-color: #A9D5A4;
-      background-image: linear-gradient(rgba(224, 247, 202, .16), rgba(44, 126, 110, .3)), url("images/themes/tropical-grove.png");
-    }
-    body.game-active[data-game-theme="sunset-terrace"] {
-      --game-page-bg: url("images/themes/sunset-terrace.png");
-      --game-shell-bg: linear-gradient(145deg, rgba(255, 246, 226, .54), rgba(231, 172, 140, .3));
-      --game-top-bg: rgba(255, 249, 237, .9);
-      --game-border: rgba(139, 77, 65, .2);
-      --game-speckle: rgba(139, 77, 65, .14);
-      background-color: #D89B77;
-      background-image: linear-gradient(rgba(255, 222, 173, .16), rgba(133, 75, 67, .32)), url("images/themes/sunset-terrace.png");
-    }
-    body.game-active[data-game-theme="desert-bloom"] {
-      --game-page-bg: url("images/themes/desert-bloom.png");
-      --game-shell-bg: linear-gradient(145deg, rgba(255, 246, 224, .54), rgba(225, 179, 133, .3));
-      --game-top-bg: rgba(255, 250, 236, .9);
-      --game-border: rgba(126, 79, 57, .2);
-      --game-speckle: rgba(126, 79, 57, .14);
-      background-color: #D3AA86;
-      background-image: linear-gradient(rgba(255, 224, 181, .16), rgba(133, 82, 63, .3)), url("images/themes/desert-bloom.png");
-    }
-    body.game-active[data-game-theme="misty-lake"] {
-      --game-page-bg: url("images/themes/misty-lake.png");
-      --game-shell-bg: linear-gradient(145deg, rgba(243, 247, 255, .54), rgba(183, 204, 224, .32));
-      --game-top-bg: rgba(247, 251, 255, .9);
-      --game-border: rgba(73, 101, 126, .2);
-      --game-speckle: rgba(73, 101, 126, .14);
-      background-color: #B4C8D4;
-      background-image: linear-gradient(rgba(225, 235, 250, .16), rgba(81, 111, 139, .3)), url("images/themes/misty-lake.png");
-    }
-
-    body.home-active[data-game-theme="dawn-garden"], body.level-active[data-game-theme="dawn-garden"] { background-color: #F2C28E; background-image: linear-gradient(rgba(255, 220, 175, .16), rgba(159, 111, 78, .3)), url("images/themes/dawn-garden.png"); }
-    body.home-active[data-game-theme="rainy-greenhouse"], body.level-active[data-game-theme="rainy-greenhouse"] { background-color: #9FB8B4; background-image: linear-gradient(rgba(218, 241, 238, .16), rgba(54, 94, 95, .32)), url("images/themes/rainy-greenhouse.png"); }
-    body.home-active[data-game-theme="meadowlight"], body.level-active[data-game-theme="meadowlight"] { background-color: #D4DFB4; background-image: linear-gradient(rgba(240, 248, 206, .18), rgba(113, 148, 101, .3)), url("images/themes/meadowlight.png"); }
-    body.home-active[data-game-theme="orchard-walk"], body.level-active[data-game-theme="orchard-walk"] { background-color: #D5B36B; background-image: linear-gradient(rgba(247, 225, 167, .18), rgba(126, 86, 48, .3)), url("images/themes/orchard-walk.png"); }
-    body.home-active[data-game-theme="tropical-grove"], body.level-active[data-game-theme="tropical-grove"] { background-color: #A9D5A4; background-image: linear-gradient(rgba(224, 247, 202, .16), rgba(44, 126, 110, .3)), url("images/themes/tropical-grove.png"); }
-    body.home-active[data-game-theme="sunset-terrace"], body.level-active[data-game-theme="sunset-terrace"] { background-color: #D89B77; background-image: linear-gradient(rgba(255, 222, 173, .16), rgba(133, 75, 67, .32)), url("images/themes/sunset-terrace.png"); }
-    body.home-active[data-game-theme="desert-bloom"], body.level-active[data-game-theme="desert-bloom"] { background-color: #D3AA86; background-image: linear-gradient(rgba(255, 224, 181, .16), rgba(133, 82, 63, .3)), url("images/themes/desert-bloom.png"); }
-    body.home-active[data-game-theme="misty-lake"], body.level-active[data-game-theme="misty-lake"] { background-color: #B4C8D4; background-image: linear-gradient(rgba(225, 235, 250, .16), rgba(81, 111, 139, .3)), url("images/themes/misty-lake.png"); }
-
-    body.level-active[data-game-theme="dawn-garden"] .level-screen,
-    body.level-active[data-game-theme="meadowlight"] .level-screen,
-    body.level-active[data-game-theme="orchard-walk"] .level-screen,
-    body.level-active[data-game-theme="tropical-grove"] .level-screen,
-    body.level-active[data-game-theme="sunset-terrace"] .level-screen,
-    body.level-active[data-game-theme="desert-bloom"] .level-screen {
-      --level-title-color: #4B3C2B;
-      --level-copy-color: #6D5840;
-      --level-line-color: rgba(75, 60, 43, .3);
-    }
-    body.level-active[data-game-theme="rainy-greenhouse"] .level-screen {
-      --level-title-color: #274B4B;
-      --level-copy-color: #416968;
-      --level-line-color: rgba(39, 75, 75, .3);
-    }
-    body.level-active[data-game-theme="misty-lake"] .level-screen {
-      --level-title-color: #30475B;
-      --level-copy-color: #526B7D;
-      --level-line-color: rgba(48, 71, 91, .3);
-    }
-
-    body.game-active[data-game-theme="dawn-garden"] .board-frame { background: linear-gradient(145deg, #E7A36B, #C87355 55%, #995348); }
-    body.game-active[data-game-theme="rainy-greenhouse"] .board-frame { background: linear-gradient(145deg, #79A9A6, #4C7B79 55%, #345B5F); }
-    body.game-active[data-game-theme="meadowlight"] .board-frame { background: linear-gradient(145deg, #A9C66F, #719C6B 55%, #4E765D); }
-    body.game-active[data-game-theme="orchard-walk"] .board-frame { background: linear-gradient(145deg, #D6A94F, #A86E3E 55%, #754A31); }
-    body.game-active[data-game-theme="tropical-grove"] .board-frame { background: linear-gradient(145deg, #8BCB8B, #4CA886 55%, #2A6F6A); }
-    body.game-active[data-game-theme="sunset-terrace"] .board-frame { background: linear-gradient(145deg, #E1A07D, #C26E5A 55%, #8C4D4A); }
-    body.game-active[data-game-theme="desert-bloom"] .board-frame { background: linear-gradient(145deg, #D9A06B, #B56F55 55%, #7B4C41); }
-    body.game-active[data-game-theme="misty-lake"] .board-frame { background: linear-gradient(145deg, #A2C1D5, #7399AE 55%, #516E88); }
-
-    @media (prefers-reduced-motion: reduce) {
-      .achievement-toast, .hint-reward-toast { animation: achievementToastReduced .3s ease forwards, achievementToastOutReduced .3s ease 2.7s forwards; }
-      .achievement-toast-icon, .hint-reward-toast-icon { animation: none; }
-    }
-    @keyframes achievementToastReduced { from { opacity: 0; } to { opacity: 1; transform: translateY(0) scale(1); } }
-    @keyframes achievementToastOutReduced { to { opacity: 0; } }
-
-    /* ---------- level select ---------- */
-    .level-screen {
-      max-width: 1020px;
-      margin: 0 auto;
-      --level-title-color: var(--ink);
-      --level-copy-color: var(--ink-soft);
-      --level-line-color: var(--line);
-    }
-    .level-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 24px; }
-    .level-title-row { display: flex; align-items: center; gap: 12px; }
-    .level-title-row .soft-button { flex: none; }
-    .level-heading h1 { color: var(--level-title-color); font-size: clamp(2rem, 5vw, 3.2rem); }
-    .level-heading p { margin: 8px 0 0; color: var(--level-copy-color); line-height: 1.5; }
-
-    .progress-card {
-      min-width: 160px; padding: 12px 15px; border: 1px solid var(--line); border-radius: 16px;
-      background: var(--card); text-align: right; box-shadow: var(--shadow-card);
-    }
-    .progress-card span { display: block; color: var(--ink-soft); font-size: .7rem; font-weight: 700; }
-    .progress-card strong { display: block; margin-top: 3px; color: var(--moss-deep); font-size: 1.05rem; }
-
-    .continue-card {
-      display: flex; align-items: center; justify-content: space-between; gap: 16px;
-      margin-bottom: 26px; padding: clamp(16px, 3vw, 22px); border: 1px solid var(--line); border-radius: 22px;
-      background: linear-gradient(110deg, var(--card), var(--card-soft)); box-shadow: var(--shadow-soft);
-    }
-    .continue-copy { min-width: 0; }
-    .continue-card small { display: block; color: var(--ink-soft); font-size: .74rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
-    .continue-card strong { display: block; margin-top: 5px; font-family: var(--font-display); font-size: clamp(1.1rem, 3vw, 1.4rem); color: var(--ink); }
-    .continue-card em { display: block; margin-top: 4px; color: var(--ink-soft); font-size: .85rem; font-style: normal; }
-    .continue-arrow {
-      display: grid; flex: 0 0 auto; place-items: center; width: 46px; height: 46px; padding: 0;
-      border: 1px solid rgba(91, 125, 77, .28); border-radius: 50%; background: var(--moss-pale);
-      color: var(--moss-deep); font-size: 1.55rem; line-height: 1;
-      transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
-    }
-    .continue-arrow:hover { transform: translateX(2px); background: var(--card-soft); box-shadow: 0 6px 14px rgba(91, 125, 77, .18); }
-    .continue-arrow:focus-visible { outline: 3px solid rgba(190, 102, 68, .3); outline-offset: 2px; }
-
-    .section-label { display: flex; align-items: center; gap: 9px; margin: 0 0 14px; color: var(--level-copy-color); font-size: .86rem; font-weight: 750; }
-    .section-label::after { height: 1px; flex: 1; background: var(--level-line-color); content: ""; }
-
-    body.level-active[data-game-theme="moonlit"] .level-screen {
-      --level-title-color: #FFF9EC;
-      --level-copy-color: rgba(255, 249, 236, .86);
-      --level-line-color: rgba(255, 249, 236, .42);
-    }
-    body.level-active[data-game-theme="autumn"] .level-screen {
-      --level-title-color: #5A361D;
-      --level-copy-color: #7A4B29;
-      --level-line-color: rgba(90, 54, 29, .3);
-    }
-    body.level-active[data-game-theme="seaside"] .level-screen {
-      --level-title-color: #174B52;
-      --level-copy-color: #2B6168;
-      --level-line-color: rgba(23, 75, 82, .3);
-    }
-    body.level-active[data-game-theme="rose"] .level-screen {
-      --level-title-color: #633A44;
-      --level-copy-color: #7A5860;
-      --level-line-color: rgba(99, 58, 68, .3);
-    }
-    body.level-active[data-game-theme="forest"] .level-screen {
-      --level-title-color: #29462B;
-      --level-copy-color: #456347;
-      --level-line-color: rgba(41, 70, 43, .32);
-    }
-    body.level-active[data-game-theme="lavender"] .level-screen {
-      --level-title-color: #5B3D66;
-      --level-copy-color: #765477;
-      --level-line-color: rgba(91, 61, 102, .3);
-    }
-    body.level-active[data-game-theme="winter"] .level-screen {
-      --level-title-color: #24465F;
-      --level-copy-color: #41637C;
-      --level-line-color: rgba(36, 70, 95, .3);
-    }
-
-    .level-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
-
-    .level-card {
-      position: relative; height: 122px; min-height: 122px; padding: 14px; overflow: hidden;
-      border: 1px solid var(--line); border-radius: 18px; background: var(--card);
-      color: var(--ink); text-align: left; box-shadow: var(--shadow-card);
-      cursor: pointer; transition: transform .18s ease, filter .18s ease, background .18s ease, box-shadow .18s ease;
-      content-visibility: auto;
-      contain-intrinsic-size: 122px;
-    }
-    .level-card:hover { filter: brightness(1.04); transform: translateY(-2px); }
-    .level-card:active { transform: translateY(1px); }
-    .level-card:focus-visible { outline: 3px solid var(--terracotta-deep); outline-offset: 3px; }
-    .level-card::after {
-      position: absolute; width: 62px; height: 62px; right: -26px; bottom: -28px; border-radius: 50%;
-      background: var(--card-glow, var(--moss)); content: ""; opacity: .14;
-    }
-    .level-card .stage-icon { position: absolute; top: 12px; right: 12px; width: 19px; height: 19px; color: var(--ink-faint); }
-    .level-card.is-current .stage-icon { color: var(--marigold-deep); }
-    .level-card.is-completed .stage-icon { color: var(--dahlia-deep); }
-    .level-card-heading { display: flex; align-items: center; gap: 6px; min-width: 0; height: 25px; }
-    .level-card .number { display: block; height: 25px; font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.05; }
-    .level-card .level-card-stars { min-height: 0; margin: 0; justify-content: flex-start; gap: 2px; color: var(--marigold-deep); font-size: .78rem; line-height: 1; }
-    .level-card .level-card-stars .dim { color: var(--ink-faint); opacity: .5; }
-    .level-card .level-detail { display: block; height: 14px; max-width: 100%; margin-top: 5px; overflow: hidden; color: var(--ink-soft); font-size: .71rem; font-weight: 700; line-height: 14px; text-overflow: ellipsis; white-space: nowrap; }
-    .level-card .level-best { display: block; height: 14px; min-height: 14px; max-width: 100%; margin-top: 3px; overflow: hidden; color: var(--marigold-deep); font-size: .65rem; font-weight: 800; line-height: 14px; text-overflow: ellipsis; white-space: nowrap; }
-    .difficulty-tag { display: inline-block; width: 68px; height: 19px; max-width: calc(100% - 4px); margin-top: 8px; overflow: hidden; box-sizing: border-box; padding: 3px 8px; border-radius: 99px; background: var(--paper-deep); color: var(--ink-soft); font-size: .64rem; font-weight: 800; letter-spacing: .04em; line-height: 13px; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
-    .difficulty-tag.easy { background: rgba(224, 164, 56, .22); color: #9A4E33; }
-    .difficulty-tag.medium { background: rgba(206, 100, 120, .2); color: #A8455B; }
-    .difficulty-tag.hard { background: rgba(125, 111, 160, .2); color: #5D5080; }
-    .difficulty-tag.extreme { background: rgba(95, 129, 82, .22); color: #3E5636; }
-    .level-card.is-current { border-color: var(--marigold-deep); box-shadow: 0 0 0 2px rgba(224, 164, 56, .22), var(--shadow-card); }
-    .level-card.is-completed .stage-icon { display: none; }
-    .level-card.locked {
-      cursor: not-allowed;
-      border-color: rgba(82, 91, 111, .24);
-      background: linear-gradient(rgba(82, 91, 111, .13), rgba(82, 91, 111, .13)), var(--card);
-      color: #687184;
-      box-shadow: none;
-      filter: saturate(.62) brightness(.9);
-    }
-    .level-card.locked:hover, .level-card.locked:active {
-      transform: none;
-      filter: saturate(.62) brightness(.9);
-    }
-    .level-card.locked .number,
-    .level-card.locked .level-detail,
-    .level-card.locked .level-best,
-    .level-card.locked .stage-icon { color: #687184; }
-    .level-card.locked .difficulty-tag { background: rgba(82, 91, 111, .16); color: #687184; }
-    .level-card.locked::after { background: #69748A; opacity: .08; }
-    .level-lb-btn {
-      position: absolute; bottom: 8px; right: 8px; z-index: 1; width: 22px; height: 22px; padding: 0;
-      display: grid; place-items: center; border: 1px solid var(--line-soft); border-radius: 50%;
-      background: var(--card-soft); color: var(--marigold-deep); box-shadow: var(--shadow-card); opacity: .88;
-    }
-    .level-lb-btn svg { width: 12px; height: 12px; }
-    .level-lb-btn:hover { opacity: 1; background: var(--moss-pale); transform: translateY(-1px) scale(1.06); }
-
-    /* ---------- game screen ---------- */
-    .game-screen {
-      position: relative;
-      max-width: 1090px;
-      margin: 0 auto;
-      padding: clamp(8px, 1.2vw, 16px);
-      min-height: 100%;
-      flex: 1 1 auto;
-      flex-direction: column;
-      justify-content: center;
-      transform-origin: top center;
-      transform-box: border-box;
-      /* Banner yüksekliği artık .app'in kendi padding-bottom'unda karşılanıyor
-         (bkz. .app kuralı), burada tekrar eklemiyoruz - yoksa boşluk 2 kat olur. */
-    }
-    .screen.active.game-screen { display: flex; }
-    body.game-active .app {
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-    }
-    body.game-active .game-screen.active {
-      width: 100%;
-      min-height: 0;
-      flex: 0 0 auto;
-      margin-right: 0;
-      margin-left: 0;
-    }
-    .game-top {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      grid-template-areas:
-        "title tools"
-        "hint tools";
-      align-items: center;
-      column-gap: 12px;
-      row-gap: 9px;
-      margin-bottom: 22px;
-      padding: 10px 12px;
-      border: 1px solid rgba(43, 59, 40, .12);
-      border-radius: 22px;
-      background: rgba(255, 248, 233, .72);
-      box-shadow: 0 10px 24px rgba(63, 46, 20, .09), inset 0 1px 0 rgba(255, 255, 255, .72);
-    }
-    .game-title { grid-area: title; display: flex; align-items: center; gap: 11px; min-width: 0; }
-    .game-title > div { display: flex; align-items: center; gap: 7px; min-width: 0; }
-    .game-title h1 { margin: 0; font-family: var(--font-display); font-size: clamp(1.15rem, 3vw, 1.5rem); font-weight: 650; letter-spacing: -.01em; }
-    .difficulty-badge {
-      padding: 6px 11px; border-radius: 99px; font-size: .68rem; font-weight: 800;
-      background: color-mix(in srgb, var(--tone-color, var(--moss)) 20%, var(--card));
-      color: var(--tone-color, var(--moss-deep));
-      border: 1px solid color-mix(in srgb, var(--tone-color, var(--moss)) 45%, transparent);
-    }
-    .game-tools { grid-area: tools; display: flex; align-items: center; gap: 10px; margin-left: auto; align-self: center; }
-    .timer-wrap { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.15; }
-    .timer-label { color: var(--ink-soft); font-size: .6rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
-    .timer { min-width: 90px; color: var(--ink); font-size: clamp(1rem, 3vw, 1.2rem); font-variant-numeric: tabular-nums; font-weight: 800; letter-spacing: .02em; text-align: right; }
-    .hint-control-row { grid-area: hint; display: flex; align-items: center; gap: 8px; min-width: 0; }
-    #hintButton { justify-self: start; min-height: 40px; padding: 9px 13px; display: flex; align-items: center; gap: 6px; flex: 0 0 auto; }
-    #hintButton {
-      border-color: rgba(190, 102, 68, .24);
-      background: linear-gradient(135deg, rgba(255, 251, 239, .98), rgba(247, 232, 198, .92));
-      box-shadow: 0 6px 14px rgba(190, 102, 68, .12), inset 0 1px 0 rgba(255, 255, 255, .72);
-    }
-    #hintButton svg { width: 15px; height: 15px; }
-    .hint-count-badge {
-      display: inline-grid;
-      place-items: center;
-      min-width: 18px;
-      height: 18px;
-      padding: 0 5px;
-      border-radius: 99px;
-      background: var(--marigold);
-      color: #3A2410;
-      font-size: .66rem;
-      font-weight: 800;
-    }
-    .hint-count-badge.hint-locked-count { background: #C7444F; color: #fff; font-size: .92rem; line-height: 1; }
-    #hintButton.hint-empty .hint-count-badge { background: var(--dahlia); color: #fff; }
-    #hintButton .hint-count-badge.hint-locked-count { background: #C7444F; color: #fff; }
-    .hint-lock-notice { display: flex; align-items: center; min-width: 0; color: #B33E49; font-size: .68rem; font-weight: 750; line-height: 1.25; }
-    .hint-lock-notice[hidden] { display: none; }
-    .game-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(230px, 260px); align-items: center; gap: clamp(18px, 4vw, 42px); }
-    @media (min-width: 761px) {
-      .game-layout .word-panel { align-self: center; }
-    }
-
-    .board-frame {
-      position: relative; width: min(100%, 760px); justify-self: center;
-      padding: clamp(10px, 1.6vw, 16px); border-radius: 24px;
-      background: linear-gradient(145deg, #C87551 0%, var(--terracotta) 54%, var(--terracotta-deep) 100%);
-      box-shadow: 0 18px 34px rgba(103, 57, 34, .22), inset 0 1px 0 rgba(255, 255, 255, .24);
-      touch-action: none; user-select: none; -webkit-user-select: none;
-    }
-    .board-loading {
-      position: absolute; inset: 8px; z-index: 6;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
-      border-radius: 17px; background: rgba(43, 42, 37, .58); color: #fff;
-      font-size: .86rem; font-weight: 800; text-align: center; pointer-events: none;
-    }
-    .board-loading[hidden] { display: none; }
-    .board-loading.is-error { background: rgba(43, 42, 37, .72); }
-    .board-loading-spinner {
-      width: 34px; height: 34px; border: 4px solid rgba(255, 255, 255, .3);
-      border-top-color: #fff; border-radius: 50%; animation: boardLoadingSpin .72s linear infinite;
-    }
-    .board-loading.is-error .board-loading-spinner { display: none; }
-    .board-loading .soft-button { pointer-events: auto; min-height: 36px; padding: 8px 14px; color: var(--ink); }
-    @keyframes boardLoadingSpin { to { transform: rotate(360deg); } }
-    @media (prefers-reduced-motion: reduce) { .board-loading-spinner { animation: none; } }
-    .board-frame::before {
-      content: ""; position: absolute; inset: 6px; border-radius: 18px;
-      border: 2px dashed rgba(255, 255, 255, .25); pointer-events: none;
-    }
-    .board {
-      position: relative; z-index: 1;
-      display: grid; grid-template-columns: repeat(var(--grid-size), minmax(0, 1fr));
-      gap: clamp(3px, .5vw, 6px); width: 100%; aspect-ratio: 1;
-      padding: 10px; border-radius: 17px; background: linear-gradient(145deg, #F1E4C9, #E6D4B1);
-      box-shadow: inset 0 1px 5px rgba(63, 46, 20, .16), inset 0 -1px 0 rgba(255, 255, 255, .5);
-    }
-    .cell {
-      position: relative; display: grid; min-width: 0; aspect-ratio: 1; place-items: center;
-      border: 1px solid rgba(63, 86, 54, .14); border-radius: 10px;
-      background: linear-gradient(160deg, #FFFDF3, #F4EBD7);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .85), 0 2px 4px rgba(63, 46, 20, .12);
-      color: var(--ink); font-family: var(--font-display); font-weight: 650;
-      font-size: clamp(.6rem, 2.3vw, 1.5rem); line-height: 1;
-      transition: background .12s ease, color .12s ease, transform .12s ease;
-      animation: cellEnter .4s cubic-bezier(.18, .9, .28, 1) both; animation-delay: var(--enter-delay, 0ms);
-      -webkit-touch-callout: none;
-      /* Belt-and-suspenders against iOS's native text-selection loupe: the
-         board already sets user-select:none, and user-select is inherited,
-         but WKWebView has a long-standing bug where the selection/magnifier
-         bubble can still flash on a slow press-then-drag even when the
-         computed style is none. Declaring it directly on the cell plus the
-         selectstart/contextmenu guards in JS below close that gap. */
-      user-select: none;
-      -webkit-user-select: none;
-      contain: paint;
-      will-change: transform;
-    }
-    /* Fraunces' large J loses clarity at small WebView sizes. Keep the
-       decorative display face for every other letter and use a crisp serif
-       fallback only for this glyph. */
-    .cell.letter-j {
-      font-family: Georgia, "Times New Roman", serif;
-      font-weight: 700;
-      letter-spacing: -.02em;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: geometricPrecision;
-    }
-    @keyframes cellEnter { from { opacity: 0; transform: scale(.65) translateY(5px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-
-    /* Performance pass: the board can contain 100+ DOM cells. Avoid creating
-       a compositor layer and a shadow stack for every cell; the game keeps
-       its satisfying selection/found feedback without continuously repainting
-       the entire grid. */
-    .game-active .cell {
-      animation: none;
-      will-change: auto;
-      box-shadow: none;
-      transition: background .08s ease, color .08s ease, border-color .08s ease;
-    }
-    .game-active .cell.selecting { box-shadow: none; }
-    .game-active .board {
-      contain: layout paint size;
-      transform: translateZ(0);
-    }
-    .game-active {
-      background-image: linear-gradient(rgba(239, 247, 225, .24), rgba(217, 232, 205, .42)), url("images/themes/garden.webp");
-      background-position: center top;
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: scroll;
-      touch-action: none;
-    }
-
-    /* A small theme gallery gives each puzzle a different garden mood. The
-       scenes are CSS-only so they stay light inside the embedded WebView. */
-    body.game-active {
-      --game-page-bg: url("images/themes/garden.webp");
-      --game-shell-bg: linear-gradient(145deg, rgba(246, 250, 235, .48), rgba(210, 229, 205, .24));
-      --game-top-bg: rgba(248, 252, 238, .82);
-      --game-border: rgba(62, 86, 54, .16);
-      --game-speckle: rgba(62, 86, 54, .15);
-      background-color: #C9DCC7;
-      background-image: linear-gradient(rgba(239, 247, 225, .24), rgba(217, 232, 205, .42)), url("images/themes/garden.webp");
-      background-position: center top;
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: scroll;
-    }
-    body.game-active[data-game-theme="moonlit"] {
-      --game-page-bg: url("images/themes/moonlit.webp");
-      --game-shell-bg: linear-gradient(145deg, rgba(242, 247, 255, .52), rgba(196, 213, 234, .3));
-      --game-top-bg: rgba(243, 248, 255, .86);
-      --game-border: rgba(65, 88, 126, .2);
-      --game-speckle: rgba(65, 88, 126, .15);
-      background-color: #A7BBD5;
-      background-image: linear-gradient(rgba(29, 51, 89, .2), rgba(82, 108, 143, .3)), url("images/themes/moonlit.webp");
-    }
-    body.game-active[data-game-theme="autumn"] {
-      --game-page-bg: url("images/themes/autumn.webp");
-      --game-shell-bg: linear-gradient(145deg, rgba(255, 247, 226, .54), rgba(239, 203, 162, .32));
-      --game-top-bg: rgba(255, 248, 231, .88);
-      --game-border: rgba(155, 78, 49, .2);
-      --game-speckle: rgba(155, 78, 49, .14);
-      background-color: #D89D78;
-      background-image: linear-gradient(rgba(246, 224, 193, .22), rgba(208, 143, 99, .34)), url("images/themes/autumn.webp");
-    }
-    body.game-active[data-game-theme="seaside"] {
-      --game-page-bg: url("images/themes/seaside.webp");
-      --game-shell-bg: linear-gradient(145deg, rgba(244, 254, 247, .54), rgba(188, 228, 223, .32));
-      --game-top-bg: rgba(244, 253, 247, .88);
-      --game-border: rgba(47, 117, 127, .2);
-      --game-speckle: rgba(47, 117, 127, .14);
-      background-color: #8FC8D0;
-      background-image: linear-gradient(rgba(218, 243, 235, .22), rgba(120, 192, 201, .34)), url("images/themes/seaside.webp");
-    }
-    body.game-active[data-game-theme="rose"] {
-      --game-page-bg: url("images/themes/rose-cottage.webp");
-      --game-shell-bg: linear-gradient(145deg, rgba(255, 248, 244, .54), rgba(246, 211, 207, .3));
-      --game-top-bg: rgba(255, 250, 245, .9);
-      --game-border: rgba(151, 79, 91, .2);
-      --game-speckle: rgba(151, 79, 91, .14);
-      background-color: #E8C5C5;
-      background-image: linear-gradient(rgba(255, 237, 239, .2), rgba(214, 156, 167, .32)), url("images/themes/rose-cottage.webp");
-    }
-    body.game-active[data-game-theme="forest"] {
-      --game-page-bg: url("images/themes/forest-mist.webp");
-      --game-shell-bg: linear-gradient(145deg, rgba(238, 250, 233, .54), rgba(180, 214, 180, .3));
-      --game-top-bg: rgba(245, 252, 239, .9);
-      --game-border: rgba(53, 96, 67, .22);
-      --game-speckle: rgba(53, 96, 67, .14);
-      background-color: #B7D3B6;
-      background-image: linear-gradient(rgba(226, 247, 224, .2), rgba(92, 139, 102, .32)), url("images/themes/forest-mist.webp");
-    }
-    body.game-active[data-game-theme="lavender"] {
-      --game-page-bg: url("images/themes/lavender.webp");
-      --game-shell-bg: linear-gradient(145deg, rgba(255, 247, 234, .54), rgba(225, 201, 221, .3));
-      --game-top-bg: rgba(255, 250, 239, .9);
-      --game-border: rgba(111, 77, 123, .2);
-      --game-speckle: rgba(111, 77, 123, .14);
-      background-color: #DEC9DA;
-      background-image: linear-gradient(rgba(255, 235, 217, .2), rgba(146, 105, 154, .28)), url("images/themes/lavender.webp");
-    }
-    body.game-active[data-game-theme="winter"] {
-      --game-page-bg: url("images/themes/winter-hearth.webp");
-      --game-shell-bg: linear-gradient(145deg, rgba(241, 248, 255, .56), rgba(191, 213, 231, .32));
-      --game-top-bg: rgba(246, 251, 255, .9);
-      --game-border: rgba(63, 91, 120, .2);
-      --game-speckle: rgba(63, 91, 120, .14);
-      background-color: #B6CDE0;
-      background-image: linear-gradient(rgba(226, 241, 255, .2), rgba(91, 124, 158, .3)), url("images/themes/winter-hearth.webp");
-    }
-    body.home-active {
-      background-color: #C9DCC7;
-      background-image: linear-gradient(rgba(239, 247, 225, .24), rgba(217, 232, 205, .42)), url("images/themes/garden.webp");
-      background-position: center;
-      background-size: cover;
-      background-attachment: scroll;
-    }
-    body.level-active {
-      background-color: #C9DCC7;
-      background-image: linear-gradient(rgba(239, 247, 225, .24), rgba(217, 232, 205, .42)), url("images/themes/garden.webp");
-      background-position: center top;
-      background-size: 100% auto;
-      background-repeat: repeat-y;
-      background-attachment: scroll;
-    }
-    body.home-active[data-game-theme="moonlit"],
-    body.level-active[data-game-theme="moonlit"] {
-      background-color: #A7BBD5;
-      background-image: linear-gradient(rgba(29, 51, 89, .2), rgba(82, 108, 143, .3)), url("images/themes/moonlit.webp");
-    }
-    body.home-active[data-game-theme="autumn"],
-    body.level-active[data-game-theme="autumn"] {
-      background-color: #D89D78;
-      background-image: linear-gradient(rgba(246, 224, 193, .22), rgba(208, 143, 99, .34)), url("images/themes/autumn.webp");
-    }
-    body.home-active[data-game-theme="seaside"],
-    body.level-active[data-game-theme="seaside"] {
-      background-color: #8FC8D0;
-      background-image: linear-gradient(rgba(218, 243, 235, .22), rgba(120, 192, 201, .34)), url("images/themes/seaside.webp");
-    }
-    body.home-active[data-game-theme="rose"],
-    body.level-active[data-game-theme="rose"] {
-      background-color: #E8C5C5;
-      background-image: linear-gradient(rgba(255, 237, 239, .2), rgba(214, 156, 167, .32)), url("images/themes/rose-cottage.webp");
-    }
-    body.home-active[data-game-theme="forest"],
-    body.level-active[data-game-theme="forest"] {
-      background-color: #B7D3B6;
-      background-image: linear-gradient(rgba(226, 247, 224, .2), rgba(92, 139, 102, .32)), url("images/themes/forest-mist.webp");
-    }
-    body.home-active[data-game-theme="lavender"],
-    body.level-active[data-game-theme="lavender"] {
-      background-color: #DEC9DA;
-      background-image: linear-gradient(rgba(255, 235, 217, .2), rgba(146, 105, 154, .28)), url("images/themes/lavender.webp");
-    }
-    body.home-active[data-game-theme="winter"],
-    body.level-active[data-game-theme="winter"] {
-      background-color: #B6CDE0;
-      background-image: linear-gradient(rgba(226, 241, 255, .2), rgba(91, 124, 158, .3)), url("images/themes/winter-hearth.webp");
-    }
-    body.game-active .app { background: transparent; }
-    .game-screen {
-      isolation: isolate;
-      overflow: hidden;
-      border-radius: 30px;
-      /* The themed body is the single background surface. Keeping a second,
-         independently-sized image here created a visible color seam below
-         the word list on short phones. */
-      background: transparent;
-      box-shadow: none;
-    }
-    .game-screen::before,
-    .game-screen::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-    }
-    .game-screen::before {
-      background:
-        radial-gradient(ellipse at 0% 0%, rgba(255, 255, 255, .2) 0 13%, transparent 38%),
-        radial-gradient(ellipse at 100% 100%, rgba(62, 86, 54, .16) 0 9%, transparent 34%),
-        linear-gradient(120deg, transparent 0 45%, rgba(255, 255, 255, .12) 46% 47%, transparent 48% 100%);
-    }
-    .game-screen::after {
-      inset: 12px;
-      border: 1px solid rgba(62, 86, 54, .14);
-      border-radius: 23px;
-      background-image:
-        radial-gradient(ellipse at 9px 9px, var(--game-speckle) 0 2px, transparent 2.5px),
-        radial-gradient(ellipse at 27px 27px, rgba(224, 164, 56, .14) 0 1.5px, transparent 2px);
-      background-size: 44px 44px, 44px 44px;
-      opacity: .22;
-    }
-    .game-screen::before,
-    .game-screen::after { display: none; }
-    .game-screen > * { position: relative; z-index: 1; }
-    .game-top {
-      border-color: var(--game-border);
-      background: #F8FCEF;
-    }
-
-    .game-theme-card { position: relative; flex: 0 0 132px; display: flex; flex-direction: column; gap: 5px; padding: 0 0 7px; overflow: hidden; border: 1px solid rgba(62, 86, 54, .14); border-radius: 13px; background: rgba(255, 253, 244, .84); color: var(--ink); box-shadow: 0 3px 9px rgba(62, 86, 54, .08); text-align: left; transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
-    .game-theme-card:hover { transform: translateY(-2px); }
-    .game-theme-card[aria-pressed="true"] { border-color: var(--moss-deep); box-shadow: 0 0 0 2px rgba(95, 129, 82, .2), 0 6px 12px rgba(62, 86, 54, .14); }
-    .game-theme-card:focus-visible { outline: 3px solid var(--terracotta-deep); outline-offset: 2px; }
-    .game-theme-card.is-locked .game-theme-art { filter: saturate(.82); }
-    .theme-premium-badge { position: absolute; top: 6px; right: 6px; z-index: 2; padding: 3px 6px; border: 1px solid rgba(255, 255, 255, .68); border-radius: 99px; background: linear-gradient(135deg, #6E5A9F, #4E3E7D); color: #fff; font-size: .52rem; font-weight: 850; letter-spacing: .03em; line-height: 1; text-transform: uppercase; box-shadow: 0 2px 6px rgba(43, 30, 15, .24); }
-    .theme-premium-badge.is-hidden { display: none; }
-    .game-theme-art { position: relative; display: block; width: 100%; aspect-ratio: 1.18 / 1; overflow: hidden; }
-    .game-theme-art::before, .game-theme-art::after { content: ""; position: absolute; pointer-events: none; }
-    .game-theme-art.garden { background: radial-gradient(circle at 78% 20%, #FFE9A2 0 13%, transparent 14%), linear-gradient(155deg, #9ED5D0 0%, #E8E5B8 51%, #8DB776 52%, #53764E 100%); }
-    .game-theme-art.garden::before { left: 27%; bottom: -12px; width: 46%; height: 54px; border: 4px solid rgba(255, 246, 211, .78); border-bottom: 0; border-radius: 50px 50px 0 0; }
-    .game-theme-art.garden::after { left: 7px; bottom: 5px; width: 10px; height: 10px; border-radius: 50%; background: #E08A72; box-shadow: 15px 5px 0 #F0C34B, 68px -2px 0 #D96C82, 78px 8px 0 #F1A84F; }
-    .game-theme-art.moonlit { background: radial-gradient(circle at 77% 22%, #FFF0B5 0 12%, transparent 13%), radial-gradient(circle at 18% 22%, rgba(255,255,255,.8) 0 1px, transparent 2px), linear-gradient(155deg, #3D527A 0%, #7187AC 53%, #344F4B 54%, #243A37 100%); }
-    .game-theme-art.moonlit::before { left: 12px; bottom: 6px; width: 70px; height: 10px; border-radius: 50%; background: rgba(26, 55, 50, .7); }
-    .game-theme-art.moonlit::after { right: 13px; top: 9px; width: 3px; height: 3px; border-radius: 50%; background: #FFF8D3; box-shadow: -30px 10px 0 #FFF8D3, -51px -2px 0 #FFF8D3, -15px 16px 0 rgba(255,248,211,.8); }
-    .game-theme-art.autumn { background: radial-gradient(circle at 20% 18%, #FFD17D 0 12%, transparent 13%), linear-gradient(155deg, #D9A66F 0%, #F2C28B 49%, #A95E43 50%, #744538 100%); }
-    .game-theme-art.autumn::before { left: 15px; bottom: 7px; width: 67px; height: 9px; border-radius: 50%; background: #8B4936; transform: rotate(-5deg); }
-    .game-theme-art.autumn::after { left: 18px; top: 8px; width: 8px; height: 12px; border-radius: 8px 2px 8px 2px; background: #C85B3F; transform: rotate(-28deg); box-shadow: 30px 12px 0 #E2A13D, 52px -3px 0 #A64C3B, 67px 15px 0 #D77A3E; }
-    .game-theme-art.seaside { background: radial-gradient(circle at 78% 20%, #FFE7A2 0 13%, transparent 14%), linear-gradient(180deg, #9BD7DE 0 49%, #5BAEB8 50% 72%, #367E91 73% 100%); }
-    .game-theme-art.seaside::before { left: 8px; right: 8px; bottom: 10px; height: 3px; border-radius: 50%; background: rgba(235, 255, 247, .72); box-shadow: 12px 9px 0 rgba(235,255,247,.5), 42px -5px 0 rgba(235,255,247,.6); }
-    .game-theme-art.seaside::after { left: 18px; bottom: 13px; width: 22px; height: 17px; border-left: 3px solid #3D7655; border-radius: 50%; transform: rotate(-28deg); }
-    .game-theme-art.garden, .game-theme-art.moonlit, .game-theme-art.autumn, .game-theme-art.seaside, .game-theme-art.rose, .game-theme-art.forest, .game-theme-art.lavender, .game-theme-art.winter { background-size: cover; background-position: center 24%; }
-    .game-theme-art.garden { background-image: url("images/themes/garden.webp"); }
-    .game-theme-art.moonlit { background-image: url("images/themes/moonlit.webp"); }
-    .game-theme-art.autumn { background-image: url("images/themes/autumn.webp"); }
-    .game-theme-art.seaside { background-image: url("images/themes/seaside.webp"); }
-    .game-theme-art.rose { background-image: url("images/themes/rose-cottage.webp"); }
-    .game-theme-art.forest { background-image: url("images/themes/forest-mist.webp"); }
-    .game-theme-art.lavender { background-image: url("images/themes/lavender.webp"); }
-    .game-theme-art.winter { background-image: url("images/themes/winter-hearth.webp"); }
-    .game-theme-art.garden::before, .game-theme-art.garden::after,
-    .game-theme-art.moonlit::before, .game-theme-art.moonlit::after,
-    .game-theme-art.autumn::before, .game-theme-art.autumn::after,
-    .game-theme-art.seaside::before, .game-theme-art.seaside::after,
-    .game-theme-art.rose::before, .game-theme-art.rose::after,
-    .game-theme-art.forest::before, .game-theme-art.forest::after,
-    .game-theme-art.lavender::before, .game-theme-art.lavender::after,
-    .game-theme-art.winter::before, .game-theme-art.winter::after { display: none; }
-    .game-theme-name { display: block; overflow: hidden; padding: 0 7px; font-size: .62rem; font-weight: 800; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
-    body.game-active[data-game-theme="moonlit"] .board-frame { background: linear-gradient(145deg, #647BA3, #465B7A 55%, #354A61); }
-    body.game-active[data-game-theme="autumn"] .board-frame { background: linear-gradient(145deg, #D88D54, #B65F43 55%, #874536); }
-    body.game-active[data-game-theme="seaside"] .board-frame { background: linear-gradient(145deg, #62B8BD, #3B8C9B 55%, #2D6D7D); }
-    body.game-active[data-game-theme="rose"] .board-frame { background: linear-gradient(145deg, #E49BAA, #C66F7E 55%, #98505F); }
-    body.game-active[data-game-theme="forest"] .board-frame { background: linear-gradient(145deg, #7AAE78, #4F8058 55%, #315B45); }
-    body.game-active[data-game-theme="lavender"] .board-frame { background: linear-gradient(145deg, #C89CCF, #9871A9 55%, #69517F); }
-    body.game-active[data-game-theme="winter"] .board-frame { background: linear-gradient(145deg, #A8C8E2, #759BBD 55%, #536F91); }
-    .board-frame::before { display: none; }
-    @media (hover: hover) { .cell:hover { z-index: 2; border-color: var(--moss); transform: scale(1.07); box-shadow: 0 4px 10px rgba(63, 46, 20, .16); } }
-    @media (hover: hover) {
-      /* Hover scaling is useful on a desktop mouse, but it creates needless
-         layer churn and visible letter resizing in emulators. */
-      .game-active .cell:hover { z-index: auto; border-color: inherit; transform: none; box-shadow: none; }
-    }
-    .cell.selecting {
-      border-color: var(--marigold-deep); color: #3A2410;
-      background: linear-gradient(120deg, var(--marigold) 0%, #F6D98A 55%, var(--marigold) 100%);
-      box-shadow: 0 0 0 2px rgba(224, 164, 56, .35), 0 4px 12px rgba(190, 102, 68, .24);
-    }
-    .cell.found {
-      border-color: var(--moss-deep);
-      color: var(--moss-deep);
-      background: linear-gradient(160deg, var(--moss-pale), #C9DCBB);
-    }
-    .game-active .cell.found {
-      animation: foundPop .24s cubic-bezier(.2, 1.5, .4, 1) both;
-    }
-    @keyframes foundPop {
-      0% { transform: scale(.92); }
-      55% { transform: scale(1.08); }
-      100% { transform: scale(1); }
-    }
-    .cell.found::after { content: "✓"; position: absolute; top: 1px; right: 3px; font-size: .4em; font-weight: 900; color: var(--moss-deep); opacity: .85; }
-    .cell.hinting-start {
-      z-index: 4;
-      animation: hintSequentialPulse 0.9s cubic-bezier(.22, 1, .36, 1) 2;
-    }
-    .cell.hinting-start::before {
-      content: "";
-      position: absolute;
-      inset: 2px;
-      border-radius: 7px;
-      border: 2px solid var(--terracotta-deep);
-      box-shadow: inset 0 0 0 1px #FFF, 0 0 0 3px rgba(224, 164, 56, .45);
-      pointer-events: none;
-    }
-    .cell.hinting-start::after {
-      content: "🌱";
-      position: absolute;
-      top: -5px;
-      left: -5px;
-      font-size: .65em;
-      line-height: 1;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 50%;
-      padding: 1px 2px;
-      box-shadow: var(--shadow-pop);
-      pointer-events: none;
-    }
-
-    .cell.hinting {
-      z-index: 3;
-      animation: hintSequentialPulse 0.9s cubic-bezier(.22, 1, .36, 1) 2;
-      animation-delay: var(--hint-delay, 0ms);
-    }
-    .cell.hinting::before {
-      content: "";
-      position: absolute;
-      inset: 3px;
-      border-radius: 6px;
-      border: 2px solid rgba(190, 102, 68, .85);
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .4), 0 0 0 2px rgba(224, 164, 56, .25);
-      pointer-events: none;
-    }
-
-    @keyframes hintSequentialPulse {
-      0%, 100% {
-        transform: scale(1);
-      }
-      40% {
-        background: linear-gradient(120deg, var(--marigold) 0%, #F6D98A 55%, var(--marigold) 100%);
-        box-shadow: 0 0 0 3px rgba(224, 164, 56, .7), 0 6px 16px rgba(190, 102, 68, .35);
-        color: #3A2410;
-        transform: scale(1.12);
-      }
-    }
-
-    .word-panel { width: 100%; overflow: hidden; border: 1px solid rgba(43, 59, 40, .14); border-radius: 24px; background: linear-gradient(155deg, #FFF9EC, #F0E3C8); box-shadow: 0 16px 30px rgba(63, 46, 20, .14), inset 0 1px 0 rgba(255, 255, 255, .7); }
-    .word-panel h2 { margin: 0; padding: 17px 18px 13px; border-bottom: 1px dashed rgba(43, 59, 40, .18); background: rgba(255, 255, 255, .2); color: var(--moss-deep); font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-align: center; text-transform: uppercase; }
-    .progress-wrap { padding: 15px 19px 6px; }
-    .progress-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; color: var(--ink-soft); font-size: .68rem; font-weight: 700; letter-spacing: .03em; }
-    .progress-meta strong { color: var(--moss-deep); font-size: .74rem; }
-    .progress-track { height: 9px; overflow: hidden; border: 1px solid rgba(63, 86, 54, .16); border-radius: 99px; background: #E1D1AC; box-shadow: inset 0 1px 3px rgba(63, 46, 20, .18), 0 1px 0 rgba(255, 255, 255, .55); }
-    .progress-fill { position: relative; width: 0%; height: 100%; overflow: hidden; border-radius: inherit; background: linear-gradient(90deg, var(--moss), var(--moss-deep)); transition: width .65s cubic-bezier(.2, .9, .2, 1); }
-    #wordList { display: grid; gap: 7px 20px; margin: 0; padding: 11px 19px 19px; list-style: none; }
-    .word-item { display: flex; align-items: center; min-height: 31px; color: var(--ink); font-size: clamp(.8rem, 1.8vw, .98rem); font-weight: 600; }
-    .game-active .word-item { animation: none; }
-    @keyframes wordItemIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-    .word-item.found { color: var(--moss-deep); }
-    .word-item.found .word-label { text-decoration: line-through; text-decoration-color: var(--moss); text-decoration-thickness: 1.5px; }
-    .check {
-      display: inline-block; margin-left: auto; color: var(--moss-deep);
-      font-size: 1.05em; font-weight: 900; line-height: 1; opacity: 0; transform: scale(.4) rotate(-40deg);
-      transition: opacity .28s ease, transform .36s cubic-bezier(.15, 1.4, .3, 1);
-    }
-    .word-item.found .check { opacity: 1; transform: scale(1) rotate(0); }
-
-    .feedback-layer { position: absolute; z-index: 5; inset: 0; overflow: visible; pointer-events: none; }
-    .board-frame.word-impact {
-      animation: boardImpact .56s cubic-bezier(.18, .9, .28, 1);
-    }
-    .board-frame.word-impact::after {
-      content: ""; position: absolute; z-index: 3; inset: -2px; border: 2px solid rgba(255, 255, 255, .72);
-      border-radius: inherit; pointer-events: none;
-      background:
-        radial-gradient(circle at var(--impact-x, 50%) var(--impact-y, 50%), rgba(255, 255, 255, .94) 0 1.8%, rgba(255, 235, 160, .58) 5%, transparent 23%),
-        linear-gradient(115deg, rgba(255, 255, 255, .18), transparent 34%, rgba(255, 217, 117, .22) 64%, transparent 80%);
-      box-shadow: 0 0 0 0 rgba(255, 225, 134, .58), 0 0 34px rgba(255, 244, 194, .64);
-      animation: impactFlash .62s ease-out forwards;
-    }
-    @keyframes boardImpact {
-      0% { transform: translateZ(0) scale(1) rotate(0); }
-      18% { transform: translateZ(0) scale(1.012) rotate(-.45deg); }
-      34% { transform: translateZ(0) scale(.997) rotate(.32deg); }
-      52% { transform: translateZ(0) scale(1.006) rotate(-.16deg); }
-      100% { transform: translateZ(0) scale(1) rotate(0); }
-    }
-    .game-screen.word-shake .game-top,
-    .game-screen.word-shake .game-layout {
-      animation: wordScreenShake .44s cubic-bezier(.18, .86, .3, 1);
-      transform-origin: center;
-      will-change: transform;
-    }
-    .game-screen.word-shake.word-shake-hard .game-top,
-    .game-screen.word-shake.word-shake-hard .game-layout {
-      animation-name: wordScreenShakeHard;
-      animation-duration: .56s;
-    }
-    @keyframes wordScreenShake {
-      0%, 100% { transform: translate3d(0, 0, 0) rotate(0); }
-      16% { transform: translate3d(-3px, 1px, 0) rotate(-.12deg); }
-      34% { transform: translate3d(4px, -1px, 0) rotate(.16deg); }
-      52% { transform: translate3d(-3px, 0, 0) rotate(-.1deg); }
-      70% { transform: translate3d(2px, 1px, 0) rotate(.07deg); }
-      86% { transform: translate3d(-1px, 0, 0) rotate(-.03deg); }
-    }
-    @keyframes wordScreenShakeHard {
-      0%, 100% { transform: translate3d(0, 0, 0) rotate(0); }
-      12% { transform: translate3d(-6px, 2px, 0) rotate(-.22deg); }
-      27% { transform: translate3d(7px, -2px, 0) rotate(.28deg); }
-      43% { transform: translate3d(-6px, 1px, 0) rotate(-.2deg); }
-      59% { transform: translate3d(5px, 0, 0) rotate(.15deg); }
-      76% { transform: translate3d(-2px, 1px, 0) rotate(-.06deg); }
-    }
-    .board-frame.word-impact.impact-shake { animation: boardImpactShake .56s cubic-bezier(.14, .9, .25, 1); }
-    .board-frame.word-impact.impact-shockwave { animation: boardImpactShockwave .68s cubic-bezier(.16, .92, .25, 1); }
-    .board-frame.word-impact.impact-confetti { animation: boardImpactConfetti .48s cubic-bezier(.16, .92, .25, 1); }
-    .board-frame.word-impact.impact-shockwave::after {
-      background:
-        radial-gradient(circle at var(--impact-x, 50%) var(--impact-y, 50%), rgba(255, 255, 255, .98) 0 2.4%, rgba(255, 218, 110, .68) 7%, transparent 30%),
-        linear-gradient(115deg, rgba(255, 255, 255, .26), transparent 32%, rgba(255, 195, 77, .3) 62%, transparent 82%);
-      box-shadow: 0 0 0 0 rgba(255, 218, 110, .78), 0 0 48px rgba(255, 244, 194, .86);
-      animation-name: impactFlashShockwave;
-    }
-    .board-frame.word-impact.impact-confetti::after {
-      background: radial-gradient(circle at var(--impact-x, 50%) var(--impact-y, 50%), rgba(255, 255, 255, .9) 0 2%, rgba(255, 222, 132, .42) 8%, transparent 25%);
-      box-shadow: none;
-      animation-name: impactFlashConfetti;
-    }
-    @keyframes boardImpactShockwave {
-      0% { transform: translateZ(0) scale(1); }
-      18% { transform: translateZ(0) scale(1.022); }
-      38% { transform: translateZ(0) scale(.995); }
-      62% { transform: translateZ(0) scale(1.01); }
-      100% { transform: translateZ(0) scale(1); }
-    }
-    @keyframes boardImpactShake {
-      0% { transform: translateZ(0) scale(1); }
-      18% { transform: translateZ(0) scale(1.014); }
-      36% { transform: translateZ(0) scale(.998); }
-      100% { transform: translateZ(0) scale(1); }
-    }
-    @keyframes boardImpactConfetti {
-      0% { transform: translateZ(0) scale(1); }
-      24% { transform: translateZ(0) scale(1.014); }
-      100% { transform: translateZ(0) scale(1); }
-    }
-    @keyframes impactFlash {
-      0% { opacity: 0; transform: scale(.96); }
-      16% { opacity: 1; transform: scale(1); }
-      100% { opacity: 0; transform: scale(1.035); }
-    }
-    @keyframes impactFlashShockwave {
-      0% { opacity: 0; transform: scale(.92); }
-      12% { opacity: 1; transform: scale(1); }
-      100% { opacity: 0; transform: scale(1.08); }
-    }
-    @keyframes impactFlashConfetti {
-      0% { opacity: 0; transform: scale(.97); }
-      18% { opacity: .9; transform: scale(1); }
-      100% { opacity: 0; transform: scale(1.04); }
-    }
-    .impact-ring, .impact-core, .impact-spark, .impact-shard { position: absolute; pointer-events: none; }
-    .impact-ring {
-      z-index: 2; width: 22px; height: 22px; border: 3px solid rgba(255, 246, 196, .96); border-radius: 50%;
-      box-shadow: 0 0 0 1px rgba(224, 164, 56, .42), 0 0 18px rgba(255, 226, 115, .82);
-      transform: translate(-50%, -50%) scale(.2); animation: impactRing .72s cubic-bezier(.14, .78, .24, 1) forwards;
-    }
-    .impact-ring.secondary { border-color: rgba(206, 100, 120, .86); animation-delay: .08s; animation-duration: .8s; }
-    @keyframes impactRing {
-      0% { opacity: 0; transform: translate(-50%, -50%) scale(.2); }
-      16% { opacity: 1; }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(5.6); }
-    }
-    .impact-ring.shockwave-ring {
-      width: 30px; height: 30px; border-width: 4px;
-      border-color: rgba(255, 249, 211, .98);
-      box-shadow: 0 0 0 1px rgba(224, 164, 56, .52), 0 0 26px rgba(255, 226, 115, .92);
-      animation: impactShockwaveRing .9s cubic-bezier(.08, .78, .2, 1) forwards;
-      animation-delay: var(--ring-delay, 0s);
-    }
-    .impact-ring.shockwave-ring.secondary { border-color: rgba(245, 151, 74, .88); }
-    .impact-ring.shockwave-ring.tertiary { border-color: rgba(206, 100, 120, .82); }
-    @keyframes impactShockwaveRing {
-      0% { opacity: 0; transform: translate(-50%, -50%) scale(.12); }
-      11% { opacity: 1; }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(8.5); }
-    }
-    .impact-core {
-      z-index: 3; width: 14px; height: 14px; border-radius: 50%;
-      background: radial-gradient(circle, #FFFDF1 0 22%, #FFE28A 42%, #E0A438 76%, transparent 77%);
-      filter: drop-shadow(0 0 8px rgba(255, 230, 128, .9));
-      transform: translate(-50%, -50%) scale(.2); animation: impactCore .5s cubic-bezier(.16, 1.35, .3, 1) forwards;
-    }
-    @keyframes impactCore {
-      0% { opacity: 0; transform: translate(-50%, -50%) scale(.2); }
-      28% { opacity: 1; transform: translate(-50%, -50%) scale(1.7); }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(.75); }
-    }
-    .impact-core.shockwave-core {
-      width: 23px; height: 23px;
-      background: radial-gradient(circle, #FFFFFF 0 19%, #FFF0A8 37%, #F59E0B 67%, transparent 70%);
-      filter: drop-shadow(0 0 14px rgba(255, 230, 128, 1));
-      animation: impactShockwaveCore .62s cubic-bezier(.12, 1.3, .28, 1) forwards;
-    }
-    .impact-core.confetti-core {
-      background: radial-gradient(circle, #FFFFFF 0 18%, #FFE28A 40%, #E0A438 70%, transparent 73%);
-    }
-    @keyframes impactShockwaveCore {
-      0% { opacity: 0; transform: translate(-50%, -50%) scale(.1); }
-      24% { opacity: 1; transform: translate(-50%, -50%) scale(2.1); }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(.8); }
-    }
-    .impact-spark {
-      z-index: 4; width: 4px; height: 22px; border-radius: 99px;
-      background: linear-gradient(to bottom, rgba(255, 255, 255, .98), var(--spark-color, #E0A438));
-      box-shadow: 0 0 7px rgba(255, 236, 160, .72);
-      transform-origin: 50% 100%;
-      animation: impactSpark .7s cubic-bezier(.15, .84, .25, 1) forwards;
-    }
-    @keyframes impactSpark {
-      0% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--spark-angle)) translateY(-8px) scaleY(.2); }
-      25% { opacity: 1; transform: translate(-50%, -50%) rotate(var(--spark-angle)) translateY(-14px) scaleY(1); }
-      100% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--spark-angle)) translateY(calc(var(--spark-distance) * -1)) scaleY(.7); }
-    }
-    .impact-shard {
-      z-index: 4; width: 7px; height: 13px; border-radius: 3px 5px 2px 4px;
-      background: linear-gradient(145deg, rgba(255, 255, 255, .98), var(--shard-color, #E0A438));
-      box-shadow: 0 0 8px rgba(255, 236, 160, .76);
-      animation: impactShard .9s cubic-bezier(.12, .86, .22, 1) forwards;
-    }
-    @keyframes impactShard {
-      0% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--shard-angle)) scale(.25); }
-      14% { opacity: 1; transform: translate(-50%, -50%) rotate(var(--shard-angle)) scale(1); }
-      100% { opacity: 0; transform: translate(calc(-50% + var(--shard-x)), calc(-50% + var(--shard-y))) rotate(calc(var(--shard-angle) + var(--shard-spin))) scale(.72); }
-    }
-    .bloom-popup {
-      position: absolute; z-index: 2; min-width: max-content; padding: 6px 13px;
-      border: 1px solid var(--line); border-radius: 9px; background: var(--card); box-shadow: var(--shadow-pop);
-      color: var(--dahlia-deep); font-family: var(--font-display); font-style: italic;
-      font-size: clamp(.8rem, 2vw, 1rem); font-weight: 700; letter-spacing: .02em;
-      transform: translate(-50%, -50%) rotate(-2deg); animation: popRise 1.3s cubic-bezier(.12, .84, .3, 1) forwards;
-    }
-    .bloom-popup.shockwave { border-color: #E0A438; box-shadow: 0 0 0 3px rgba(224, 164, 56, .16), var(--shadow-pop); }
-    .bloom-popup.confetti { border-color: #CE6478; transform: translate(-50%, -50%) rotate(3deg); }
-    @keyframes popRise {
-      0% { opacity: 0; transform: translate(-50%, -10%) rotate(-2deg) scale(.6); }
-      20% { opacity: 1; transform: translate(-50%, -60%) rotate(-2deg) scale(1.05); }
-      76% { opacity: 1; transform: translate(-50%, -88%) rotate(-2deg) scale(1); }
-      100% { opacity: 0; transform: translate(-50%, -120%) rotate(-2deg) scale(.9); }
-    }
-    .petal {
-      position: absolute; width: 8px; height: 12px; border-radius: 100% 0 100% 0;
-      background: var(--petal-color, var(--marigold)); box-shadow: 0 0 6px rgba(63, 46, 20, .12);
-      transform: translate(-50%, -50%); animation: petalBurst .95s cubic-bezier(.16, .85, .32, 1) forwards;
-    }
-    .petal.confetti-petal { width: 7px; height: 14px; border-radius: 3px; animation-duration: 1.05s; }
-    @keyframes petalBurst {
-      from { opacity: 1; transform: translate(-50%, -50%) rotate(0); }
-      to { opacity: 0; transform: translate(calc(-50% + var(--burst-x)), calc(-50% + var(--burst-y))) rotate(var(--spin)); }
-    }
-    .combo-badge {
-      display: inline-flex; align-items: center; gap: 6px; align-self: center;
-      padding: 6px 12px; border: 1px solid var(--line); border-radius: 99px; background: var(--card); box-shadow: var(--shadow-card);
-      color: var(--dahlia-deep); font-size: .75rem; font-weight: 800;
-      opacity: 0; transform: translateY(6px) scale(.88); transition: opacity .22s ease, transform .22s ease;
-    }
-    .combo-badge svg { width: 14px; height: 14px; }
-    .combo-badge.active { opacity: 1; transform: translateY(0) scale(1); animation: comboBounce .48s cubic-bezier(.22, 1.5, .34, 1); }
-    @keyframes comboBounce { 50% { transform: translateY(-4px) scale(1.08); } }
-
-    /* ---------- modal ---------- */
-    .modal-backdrop {
-      position: fixed; z-index: 25; inset: 0; display: grid; place-items: center; padding: 20px;
-      height: var(--visual-viewport-height, 100dvh);
-      box-sizing: border-box;
-      background: rgba(43, 30, 15, .42); backdrop-filter: blur(6px);
-      opacity: 0; pointer-events: none; transition: opacity .22s ease;
-    }
-    .modal-backdrop.open { opacity: 1; pointer-events: auto; }
-    .modal {
-      width: min(430px, 100%); padding: 34px 27px 27px; border: 1px solid var(--line); border-radius: 26px;
-      background: linear-gradient(160deg, var(--card), var(--card-soft)); box-shadow: 0 26px 60px rgba(43, 30, 15, .35);
-      text-align: center; transform: translateY(12px) scale(.96); transition: transform .22s ease;
-      box-sizing: border-box;
-      /* NOTE: no overflow/max-height here on purpose. The .celebration badge
-         below intentionally pokes above this box via a negative margin -
-         clipping this element would cut that badge off (it did, briefly).
-         Tall-content overflow safety is instead applied per-modal to the
-         actual scrollable list/body elements further down, which don't
-         contain the badge. */
-    }
-    .modal-backdrop.open .modal { transform: translateY(0) scale(1); }
-    .celebration {
-      display: grid; width: 62px; height: 62px; margin: -58px auto 14px; place-items: center;
-      border: 4px solid var(--paper); border-radius: 50%;
-      background: linear-gradient(140deg, var(--marigold), var(--dahlia));
-      box-shadow: 0 10px 20px rgba(190, 102, 68, .3); color: #3A2410;
-    }
-    .celebration svg { width: 28px; height: 28px; }
-    .modal h2 { margin: 0; color: var(--ink); font-family: var(--font-display); font-size: 1.8rem; font-weight: 650; letter-spacing: -.02em; }
-    .bloom-rating { display: flex; justify-content: center; gap: 6px; min-height: 26px; margin: 12px 0 0; color: var(--marigold-deep); font-size: 1.3rem; }
-    .bloom-rating .dim { color: var(--ink-faint); opacity: .5; }
-    .new-record {
-      display: inline-block; margin-top: 6px; padding: 4px 9px; border: 1px solid var(--line); border-radius: 99px;
-      background: var(--moss-pale); color: var(--moss-deep); font-size: .68rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
-    }
-    .modal p { margin: 12px 0 24px; color: var(--ink-soft); line-height: 1.55; }
-    .modal p strong { color: var(--dahlia-deep); }
-    .modal-actions { display: flex; justify-content: center; gap: 9px; flex-wrap: wrap; }
-    .modal-actions .ghost-button svg.icon { width: 15px; height: 15px; margin-right: 4px; vertical-align: -3px; }
-    .themes-modal {
-      width: min(560px, 100%);
-      max-height: calc(var(--visual-viewport-height, 100dvh) - 40px);
-      padding-bottom: 24px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    /* The theme list scrolls below the fixed heading and close action. Keep
-       the decorative badge inside this clipped modal so its top stays intact. */
-    .themes-modal .celebration { margin-top: 0; }
-    .themes-modal .theme-modal-subtitle { margin-bottom: 18px; }
-    .theme-choice-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 11px;
-      min-height: 0;
-      flex: 0 0 352px;
-      height: 352px;
-      max-height: 352px;
-      overflow-y: auto;
-      overscroll-behavior: contain;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-gutter: stable;
-      text-align: left;
-    }
-    .theme-choice-grid .game-theme-card { width: 100%; height: 132px; min-height: 132px; flex: none; padding: 6px 6px 8px; gap: 6px; }
-    .theme-choice-grid .game-theme-art { flex: 1 1 auto; min-height: 88px; aspect-ratio: 1.55 / 1; background-size: contain; background-position: center; background-repeat: no-repeat; background-color: rgba(238, 242, 220, .72); border-radius: 9px; }
-    .theme-choice-grid .game-theme-name { flex: 0 0 auto; min-height: 1.2em; padding: 0 5px; font-size: .82rem; line-height: 1.2; text-align: center; }
-    @media (min-width: 480px) { .theme-choice-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-    .themes-modal .modal-actions { margin-top: 18px; }
-
-    /* ---------- Player identity pill (home hero) - locked after onboarding ---------- */
-    .player-pill {
-      display: inline-flex; align-items: center; gap: 8px; margin: 10px 0 2px; padding: 6px 12px 6px 6px;
-      border: 1px solid var(--line); border-radius: 99px; background: var(--card-soft); color: var(--ink);
-      font: inherit; font-size: .78rem; font-weight: 700;
-    }
-    .player-pill-avatar {
-      display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%;
-      background: linear-gradient(140deg, var(--moss-pale), var(--card)); font-size: 1rem; line-height: 1;
-    }
-    .player-pill span#playerPillName { max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .player-pill-edit {
-      display: grid; place-items: center; flex: none; width: 24px; height: 24px; padding: 0;
-      border: 1px solid var(--line-soft); border-radius: 50%; background: var(--card);
-      color: var(--moss-deep); font-size: .78rem; line-height: 1;
-    }
-    .player-pill-edit:hover { background: var(--moss-pale); }
-    .player-pill-edit[hidden] { display: none; }
-
-    /* ---------- Onboarding modal: nickname + avatar (asked once, locked forever after) ---------- */
-    .nickname-field { text-align: left; letter-spacing: normal; text-transform: none; }
-    .avatar-picker-label { margin: 14px 0 8px; color: var(--ink-soft); font-size: .72rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; text-align: left; }
-    .avatar-picker-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
-    .avatar-option {
-      display: grid; place-items: center; aspect-ratio: 1; border-radius: 14px; border: 2px solid var(--line-soft);
-      background: var(--card-soft); font-size: 1.35rem; cursor: pointer; transition: transform .12s ease, border-color .12s ease, background .12s ease;
-    }
-    .avatar-option:hover { transform: translateY(-1px); }
-    .avatar-option.selected { border-color: var(--marigold-deep); background: linear-gradient(135deg, rgba(224, 164, 56, .22), var(--card-soft)); box-shadow: 0 4px 10px rgba(190, 102, 68, .18); }
-    .onboarding-lock-note { margin-top: 10px; color: var(--ink-faint); font-size: .68rem; line-height: 1.4; text-align: left; }
-
-    /* ---------- Leaderboard modal ---------- */
-    .leaderboard-modal { width: min(440px, 100%); }
-    .leaderboard-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 2px; }
-    .leaderboard-nav-title { flex: 1; min-width: 0; }
-    .leaderboard-nav-title h2 { font-size: 1.35rem; }
-    .leaderboard-nav-title .difficulty-tag { margin-top: 4px; }
-    .leaderboard-jump { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; }
-    .leaderboard-jump label { color: var(--ink-soft); font-size: .74rem; font-weight: 700; }
-    .leaderboard-jump input {
-      width: 68px; min-height: 36px; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px;
-      background: var(--card); color: var(--ink); font: inherit; font-weight: 700; text-align: center;
-      appearance: textfield;
-      -moz-appearance: textfield;
-    }
-    .leaderboard-jump input::-webkit-outer-spin-button, .leaderboard-jump input::-webkit-inner-spin-button { appearance: none; -webkit-appearance: none; margin: 0; }
-    .leaderboard-jump input:focus { outline: 3px solid rgba(190, 102, 68, .26); outline-offset: 1px; }
-    .leaderboard-jump .soft-button { min-height: 36px; padding: 8px 14px; }
-    .leaderboard-list {
-      display: flex; flex-direction: column; gap: 6px; margin: 6px 0 0; padding: 0; list-style: none;
-      max-height: 300px; overflow-y: auto; text-align: left;
-    }
-    .leaderboard-modal #leaderboardHint { margin: 8px 0 5px; }
-    .leaderboard-modal #leaderboardStatus { margin: 0; min-height: 18px; }
-    .leaderboard-modal .modal-actions { margin-top: 16px; }
-    .leaderboard-item { margin: 0; }
-    .leaderboard-row {
-      display: grid; width: 100%; grid-template-columns: 26px 24px minmax(0, 1fr) auto; align-items: center; gap: 8px;
-      padding: 10px 12px; border: 1px solid var(--line-soft); border-radius: 13px; background: var(--card-soft);
-      color: var(--ink); font: inherit; text-align: left; cursor: default;
-    }
-    .leaderboard-row .entry-time { color: var(--moss-deep); font-size: .78rem; font-variant-numeric: tabular-nums; font-weight: 800; white-space: nowrap; }
-    .leaderboard-row .rank { font-family: var(--font-display); font-weight: 700; color: var(--ink-soft); font-size: .95rem; }
-    .leaderboard-row.top-1 .rank { color: var(--marigold-deep); }
-    .leaderboard-row.top-2 .rank { color: var(--thistle-deep); }
-    .leaderboard-row.top-3 .rank { color: var(--terracotta-deep); }
-    .leaderboard-row-avatar { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--moss-pale); font-size: .95rem; line-height: 1; }
-    .leaderboard-row .name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; color: var(--ink); }
-    .leaderboard-row .entry-chevron { color: var(--ink-faint); font-size: 1.1rem; line-height: 1; }
-    .leaderboard-item.is-you .leaderboard-row { border-color: var(--marigold-deep); background: rgba(224, 164, 56, .16); }
-    .leaderboard-item.is-you .name::after { content: attr(data-you-label); font-weight: 600; color: var(--ink-faint); }
-
-    .leaderboard-detail-modal { width: min(390px, 100%); }
-    .leaderboard-detail-player { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 10px 0 18px; }
-    .leaderboard-detail-avatar { font-size: 2rem; line-height: 1; }
-    .leaderboard-detail-name { color: var(--ink); font-size: 1.1rem; font-weight: 800; }
-    .leaderboard-detail-list { display: grid; gap: 8px; margin: 0; text-align: left; }
-    .leaderboard-detail-list > div { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 12px; border: 1px solid var(--line-soft); border-radius: 11px; background: var(--card-soft); }
-    .leaderboard-detail-list dt { color: var(--ink-soft); font-size: .76rem; font-weight: 700; }
-    .leaderboard-detail-list dd { max-width: 62%; margin: 0; overflow: hidden; color: var(--ink); font-size: .82rem; font-weight: 800; text-align: right; text-overflow: ellipsis; white-space: nowrap; }
-    .leaderboard-detail-list dd.time-value { color: var(--moss-deep); font-variant-numeric: tabular-nums; }
-    /* The Close button sat right up against the last detail row with no
-       breathing room ("kapanış butonu fazla yukarıda"). Give it space. */
-    .leaderboard-detail-modal .modal-actions,
-    .users-detail-modal .modal-actions { margin-top: 20px; }
-
-    .users-modal { width: min(440px, 100%); }
-    .users-list { display: flex; flex-direction: column; gap: 6px; max-height: 340px; margin: 8px 0 0; padding: 0; overflow-y: auto; list-style: none; text-align: left; }
-    .user-row { display: grid; width: 100%; grid-template-columns: 32px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--line-soft); border-radius: 13px; background: var(--card-soft); color: var(--ink); font: inherit; text-align: left; cursor: pointer; transition: transform .12s ease, border-color .12s ease, background .12s ease; }
-    .user-row:hover { transform: translateY(-1px); border-color: var(--marigold-deep); }
-    .user-row:focus-visible { outline: 3px solid rgba(190, 102, 68, .26); outline-offset: 2px; }
-    .user-row-avatar { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--moss-pale); font-size: 1.05rem; }
-    .user-row-name { min-width: 0; overflow: hidden; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
-    .user-row-chevron { color: var(--ink-faint); font-size: 1.1rem; line-height: 1; }
-    .users-detail-modal { width: min(470px, 100%); }
-    .users-detail-profile { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 10px 0 18px; }
-    .users-detail-avatar { font-size: 2rem; line-height: 1; }
-    .users-detail-name { color: var(--ink); font-size: 1.1rem; font-weight: 800; }
-    .users-detail-list { display: grid; gap: 8px; max-height: 300px; margin: 0; overflow-y: auto; text-align: left; }
-    .users-detail-list > div { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 9px 12px; border: 1px solid var(--line-soft); border-radius: 11px; background: var(--card-soft); }
-    .users-detail-list dt { color: var(--ink-soft); font-size: .74rem; font-weight: 700; }
-    .users-detail-list dd { max-width: 62%; margin: 0; overflow: hidden; color: var(--ink); font-size: .78rem; font-weight: 800; text-align: right; text-overflow: ellipsis; white-space: nowrap; }
-    .users-edit-panel { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--line); text-align: left; }
-    .users-edit-panel[hidden] { display: none; }
-    .users-edit-label { display: block; margin-bottom: 6px; color: var(--ink-soft); font-size: .74rem; font-weight: 800; }
-    .users-edit-panel .pin-field { margin-top: 0; }
-    .users-edit-panel .pin-status { text-align: center; }
-
-    /* ---------- Settings modal ---------- */
-    .settings-modal { width: min(430px, 100%); }
-    .help-modal { width: min(430px, 100%); }
-    .help-description { margin: 12px 0 20px; }
-    .help-actions { display: grid; gap: 9px; }
-    .help-actions .ghost-button { width: 100%; text-decoration: none; }
-    .help-modal .modal-actions { margin-top: 16px; }
-    .settings-intro { margin: 12px 0 18px; }
-    .settings-list { display: flex; flex-direction: column; gap: 10px; text-align: left; }
-    .settings-modal .modal-actions { margin-top: 16px; }
-    .achievements-modal .modal-actions { margin-top: 16px; }
-    .settings-row {
-      display: flex; align-items: center; justify-content: space-between; gap: 14px;
-      padding: 12px 14px; border: 1px solid var(--line-soft); border-radius: 14px; background: var(--card-soft);
-      cursor: pointer;
-    }
-    .settings-row-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-    .settings-row-text strong { color: var(--ink); font-size: .86rem; font-weight: 700; }
-    .settings-row-text span { color: var(--ink-soft); font-size: .72rem; line-height: 1.4; }
-    .settings-select {
-      flex: none; min-height: 38px; max-width: 132px; padding: 0 9px; border: 1px solid var(--line);
-      border-radius: 10px; background: var(--card); color: var(--ink); font: inherit; font-size: .78rem;
-    }
-    .switch { position: relative; flex: none; width: 44px; height: 26px; }
-    .switch input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; z-index: 1; }
-    .switch-track {
-      position: absolute; inset: 0; border-radius: 99px; background: var(--paper-deep);
-      border: 1px solid var(--line); transition: background .18s ease, border-color .18s ease;
-    }
-    .switch-thumb {
-      position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%;
-      background: var(--card); box-shadow: 0 2px 4px rgba(43, 30, 15, .28); transition: transform .18s ease;
-    }
-    .switch input:checked ~ .switch-track { background: var(--moss); border-color: var(--moss-deep); }
-    .switch input:checked ~ .switch-track .switch-thumb { transform: translateX(18px); }
-    .switch input:focus-visible ~ .switch-track { outline: 3px solid var(--terracotta-deep); outline-offset: 2px; }
-
-    /* ---------- AdMob Banner Container ----------
-       Native Flutter banner, WebView'in altına sabit olarak eklendi.
-       Bu HTML içi slot artık gösterilmiyor - is-hidden sınıfı her zaman aktif.
-       DOM'da tutulmasının nedeni JS kodunun referanslarını bozmamak içindir. */
-    .admob-banner-slot {
-      display: none !important;
-    }
-    .admob-banner-slot.is-hidden { display: none; }
-
-    .pin-actions {
-      display: flex;
-      justify-content: center;
-      gap: 9px;
-      margin-top: 16px;
-      flex-wrap: wrap;
-    }
-    .pin-field {
-      width: 100%;
-      min-height: 52px;
-      margin-top: 14px;
-      padding: 0 14px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: var(--card);
-      color: var(--ink);
-      font: inherit;
-      font-size: 1.05rem;
-      font-weight: 700;
-      text-align: center;
-      letter-spacing: .28em;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6);
-    }
-    .pin-field:focus {
-      outline: 3px solid rgba(190, 102, 68, .26);
-      outline-offset: 2px;
-    }
-    .pin-status {
-      min-height: 18px;
-      margin: 10px 0 0;
-      color: var(--ink-soft);
-      font-size: .8rem;
-    }
-    .pin-status.error { color: var(--dahlia-deep); }
-    .admob-banner-slot.is-hidden { display: none; }
-
-    body.keyboard-open #nicknameModalBackdrop.open {
-      align-items: start;
-      padding: max(10px, env(safe-area-inset-top, 0px)) 12px 8px;
-    }
-    body.keyboard-open #nicknameModalBackdrop.open .modal {
-      max-height: calc(var(--visual-viewport-height, 100dvh) - 18px);
-      overflow-y: auto;
-      overscroll-behavior: contain;
-      margin-top: 4px;
-      transform: none;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    @media (max-height: 760px) and (min-width: 761px) {
-      body.home-active .app { padding-top: 6px; padding-bottom: max(6px, calc(var(--native-banner-h) + env(safe-area-inset-bottom, 0px))); }
-      .hero { gap: 0; }
-      .hero-copy-shell { padding: 20px; border-radius: 24px 0 0 24px; }
-      .hero h1 { font-size: clamp(2rem, 5vw, 3.25rem); }
-      .hero-copy { margin: 12px 0 16px; line-height: 1.45; }
-      .hero-journal-card { padding: 16px; gap: 9px; border-radius: 0 22px 22px 0; }
-      .journal-daily-box { padding: 11px; }
-      .journal-stat-strip { gap: 16px; }
-      .journal-icon-btn { min-height: 48px; padding: 6px 4px; }
-    }
-
-    @media (max-height: 680px) {
-      body.home-active .app { padding-top: 4px; padding-bottom: max(4px, calc(var(--native-banner-h) + env(safe-area-inset-bottom, 0px))); }
-      .hero-copy-shell { padding: 16px; }
-      .hero h1 { font-size: clamp(1.75rem, 4.8vw, 2.8rem); }
-      .hero-copy { font-size: .88rem; margin: 9px 0 12px; }
-      .hero-journal-card { padding: 12px; gap: 6px; }
-      .journal-daily-box { padding: 8px; }
-      .journal-subtitle { margin-bottom: 5px; }
-      .daily-quote-text { font-size: .8rem; }
-      .journal-icon-btn { min-height: 44px; padding: 5px 3px; }
-      .journal-icon-btn .icon-btn-label { font-size: .54rem; }
-    }
-
-    /* ≤760px: hero dikey sırala, level-grid 4 sütun */
-    @media (max-width: 760px) {
-      .screen { animation: screenIn .4s cubic-bezier(.16, 1, .3, 1) both; }
-      .hero { grid-template-columns: 1fr; }
-      .hero-copy-shell { border-right: 1px solid var(--line); border-bottom: 0; border-radius: 30px 30px 0 0; }
-      .hero-journal-card { border-radius: 0 0 28px 28px; }
-      .hero-copy-shell { padding: 18px; }
-      .home-daily-banner { gap: 6px; padding: 16px 18px; border-radius: 18px; }
-      .home-player-row { margin: 0; }
-      .home-screen > .home-player-row,
-      .home-screen > .hero,
-      .home-screen > .home-daily-banner { width: 100%; margin-top: 8px; }
-      /* Ana ekran fitHomeScreen ile tek viewport'a küçültülür; iç içe scroll yok. */
-      .hero-journal-card { overflow: hidden; max-height: none; }
-      .journal-lower-panel { grid-template-columns: 1fr; gap: 8px; padding: 8px; }
-      .journal-action-strip { padding: 8px 0 0; border-left: 0; border-top: 1px dashed var(--line); }
-      .level-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-      .game-layout { grid-template-columns: 1fr; gap: clamp(20px, 3.5vh, 30px); align-items: center; }
-      .word-panel { width: min(94%, 640px); justify-self: center; align-self: center; }
-      #wordList { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 18px; }
-    }
-
-    /* ≤510px: küçük telefon, 3 sütun level-grid, daha az padding */
-    @media (max-width: 510px) {
-      .app {
-        padding-top: max(10px, calc(env(safe-area-inset-top, 0px) + 8px)); padding-left: 8px; padding-right: 8px;
-        padding-bottom: max(30px, calc(var(--native-banner-h) + env(safe-area-inset-bottom, 0px) + 10px));
-      }
-      .hero h1 { font-size: clamp(2.1rem, 11vw, 3.2rem); }
-      .hero-copy { margin-top: 14px; font-size: .96rem; }
-      .action-row { flex-direction: column; }
-      .action-row .primary-button, .action-row .secondary-button { width: 100%; }
-      .home-cta-row { display: flex; flex-direction: column; gap: 10px; }
-      .home-cta-row .primary-button, .home-cta-row .secondary-button { min-height: 48px; padding: 10px 12px; font-size: .8rem; }
-      body.home-active .hero-copy-shell { padding: 20px; border-radius: 26px 26px 0 0; }
-      body.home-active .hero h1 { font-size: clamp(1.85rem, 8.5vw, 2.65rem); }
-      body.home-active .hero-copy { margin: 14px 0 16px; font-size: .88rem; line-height: 1.48; }
-      body.home-active .home-daily-banner { gap: 6px; padding: 16px 18px; }
-      body.home-active .home-daily-banner .daily-quote-text { font-size: .8rem; }
-      .game-theme-card { flex-basis: 112px; }
-      .game-theme-art { height: auto; }
-      body.home-active .home-cta-row .primary-button,
-      body.home-active .home-cta-row .secondary-button { min-height: 42px; padding: 8px 10px; font-size: .78rem; }
-      .level-heading { align-items: start; flex-direction: column; }
-      .progress-card { min-width: 0; text-align: left; }
-      .continue-card { align-items: center; flex-direction: row; }
-      .hero-journal-card { overflow: hidden; max-height: none; gap: 11px; padding: 16px; }
-      .journal-lower-panel { gap: 8px; padding: 9px; }
-      .journal-stat-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
-      .journal-stat { padding: 9px 10px; }
-      .level-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
-      .level-card { height: 100px; min-height: 100px; padding: 10px; border-radius: 14px; }
-      .level-card .number { height: 23px; font-size: 1.35rem; }
-      .level-card .level-detail { height: 12px; margin-top: 4px; font-size: .66rem; line-height: 12px; }
-      .level-card .level-best { height: 12px; min-height: 12px; margin-top: 2px; font-size: .6rem; line-height: 12px; }
-      .level-card .difficulty-tag { width: 62px; height: 18px; margin-top: 6px; padding: 3px 6px; font-size: .59rem; line-height: 12px; }
-      /* Give the game controls a clear hierarchy instead of squeezing every
-         action into one narrow row. The timer gets its own visual anchor. */
-      .game-top {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        grid-template-areas:
-          "title tools"
-          "hint tools";
-        align-items: center;
-        column-gap: 12px;
-        row-gap: 10px;
-        margin-bottom: 20px;
-      }
-      .game-title { grid-area: title; width: auto; gap: 9px; min-width: 0; }
-      .game-title > .soft-button { width: 42px; min-width: 42px; height: 42px; padding: 0; }
-      .game-title > div { gap: 7px; min-width: 0; }
-      .game-title h1 { min-width: 0; overflow: hidden; font-size: clamp(1.05rem, 4.8vw, 1.25rem); white-space: nowrap; text-overflow: ellipsis; }
-      .difficulty-badge { padding: 5px 8px; font-size: .6rem; white-space: nowrap; }
-      .hint-control-row {
-        justify-self: start;
-        align-items: center;
-        gap: 7px;
-      }
-      #hintButton {
-        min-width: 128px;
-        min-height: 38px;
-        padding: 8px 11px;
-        justify-content: center;
-      }
-      .hint-lock-notice { font-size: .61rem; }
-      .game-tools {
-        grid-area: tools;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        align-self: center;
-        width: auto;
-        min-width: 0;
-        margin-left: 0;
-        gap: 5px;
-        padding: 9px 10px;
-        border: 1px solid var(--line-soft);
-        border-radius: 14px;
-        background: rgba(255, 252, 241, .64);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6);
-      }
-      #hintButtonLabel { display: inline; font-size: .72rem; }
-      #hintButton svg { width: 17px; height: 17px; }
-      .timer-wrap { min-width: 66px; }
-      .timer-label { font-size: .52rem; }
-      .timer { min-width: 0; font-size: clamp(.78rem, 3.6vw, .96rem); letter-spacing: 0; }
-      .combo-badge { width: 0; padding: 0; gap: 0; overflow: hidden; border-width: 0; }
-      .combo-badge.active { width: auto; padding: 5px 7px; gap: 4px; border-width: 1px; }
-      #wordList { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 14px; }
-      .game-layout { gap: clamp(20px, 3.5vh, 30px); }
-      .board-frame { width: min(100%, 760px); padding: 9px; border-radius: 21px; }
-      .board-frame::before { inset: 5px; border-radius: 16px; }
-      .board { padding: 8px; gap: clamp(3px, 1.2vw, 5px); border-radius: 14px; }
-      .cell { font-size: clamp(.68rem, 4.6vw, 1.05rem); border-radius: 8px; }
-      .word-panel h2 { padding-top: 16px; padding-bottom: 13px; }
-      .progress-wrap { padding-right: 19px; padding-left: 19px; }
-      .word-item { min-height: 32px; }
-    }
-
-    /* ≤400px: çok küçük ekranlar */
-    @media (max-width: 400px) {
-      .app {
-        padding-top: max(8px, calc(env(safe-area-inset-top, 0px) + 6px)); padding-left: 6px; padding-right: 6px;
-        padding-bottom: max(22px, calc(var(--native-banner-h) + env(safe-area-inset-bottom, 0px) + 8px));
-      }
-      .hero-journal-card { max-height: none; gap: 6px; overflow: hidden; }
-      .home-daily-banner { margin-bottom: 0; padding: 16px 18px; }
-      .level-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
-      .level-card { height: 88px; min-height: 88px; padding: 8px; border-radius: 12px; font-size: .85rem; }
-      .level-card .number { height: 20px; font-size: 1.2rem; }
-      .level-card .level-detail { height: 10px; margin-top: 3px; font-size: .58rem; line-height: 10px; }
-      .level-card .level-best { height: 10px; min-height: 10px; margin-top: 1px; font-size: .54rem; line-height: 10px; }
-      .level-card .difficulty-tag { width: 54px; height: 16px; margin-top: 4px; padding: 3px 5px; font-size: .54rem; line-height: 10px; }
-      .board-frame { padding: 7px; }
-      .board { padding: 6px; gap: clamp(2px, 1vw, 4px); }
-      .cell { font-size: clamp(.64rem, 5vw, 1rem); border-radius: 5px; }
-      .journal-action-strip { gap: 2px; }
-      .journal-icon-btn { padding: 5px 2px; }
-    }
-
-    /* Short portrait phones such as iPhone 13 need a little extra breathing
-       room. Keep the full layout, but make the home controls and modal chrome
-       slightly smaller before the JS fit pass applies its final scale. */
-    @media (max-width: 510px) and (max-height: 860px) and (orientation: portrait) {
-      .home-screen { gap: 8px; }
-      .home-screen > .home-player-row,
-      .home-screen > .hero,
-      .home-screen > .home-daily-banner { margin-top: 4px; }
-      .home-brand-main { width: min(76vw, 330px); }
-      .home-brand-logo { max-height: 125px; }
-      body.home-active .hero-copy-shell { padding: 16px; }
-      body.home-active .hero h1 { font-size: clamp(1.7rem, 8vw, 2.4rem); }
-      body.home-active .hero-copy { margin: 10px 0 12px; font-size: .84rem; line-height: 1.4; }
-      body.home-active .home-cta-row { gap: 7px; }
-      body.home-active .home-cta-row .primary-button,
-      body.home-active .home-cta-row .secondary-button { min-height: 38px; padding: 7px 9px; font-size: .74rem; }
-      body.home-active .hero-journal-card { gap: 8px; padding: 13px; }
-      body.home-active .home-daily-banner { padding: 12px 14px; }
-      body.home-active .journal-stat { padding: 7px 8px; }
-      body.home-active .journal-icon-btn { min-height: 46px; padding: 5px 3px; }
-      body.home-active .journal-icon-btn .icon-btn-label { font-size: .54rem; }
-
-      .modal-backdrop { padding: 12px; }
-      .modal {
-        max-height: calc(100dvh - 24px);
-        overflow-y: auto;
-        overscroll-behavior: contain;
-        padding: 20px 16px 18px;
-        border-radius: 22px;
-        -webkit-overflow-scrolling: touch;
-      }
-      .themes-modal {
-        max-height: calc(var(--visual-viewport-height, 100dvh) - 24px);
-        overflow: hidden;
-      }
-      .modal .celebration { width: 52px; height: 52px; margin: 0 auto 10px; border-width: 3px; }
-      .modal h2 { font-size: 1.5rem; }
-      .modal p { margin: 10px 0 16px; font-size: .9rem; }
-      .modal-actions { gap: 7px; }
-      .modal-actions > button { min-height: 44px; padding: 10px 13px; font-size: .82rem; }
-      .settings-row { gap: 10px; padding: 10px 11px; }
-      .settings-row-text strong { font-size: .8rem; }
-      .settings-row-text span { font-size: .7rem; line-height: 1.35; }
-    }
-
-    /* The puzzle itself is an edge-to-edge mobile surface. Keep only the
-       system safe areas and any real native ad height outside the game. */
-    body.game-active .app {
-      width: 100%;
-      max-width: none;
-      padding-top: max(0px, env(safe-area-inset-top, 0px));
-      padding-right: 0;
-      padding-left: 0;
-      padding-bottom: max(0px, calc(var(--native-banner-h) + env(safe-area-inset-bottom, 0px)));
-    }
-    body.game-active .game-screen.active {
-      width: 100%;
-      max-width: none;
-      margin-right: 0;
-      margin-left: 0;
-      border-radius: 0;
-    }
-    /* Give the letter grid a little more breathing room on regular phones.
-       Short-phone mode below already uses 4px, so it remains unchanged. */
-    @media (max-width: 510px) {
-      body.game-active .game-screen.active {
-        padding-right: 4px;
-        padding-left: 4px;
-      }
-    }
-    /* Reserve the standard 320x50 banner space before AdMob finishes
-       loading. This prevents the whole puzzle, including its buttons, from
-       being rescaled a few seconds later when the native banner appears. */
-    body.game-active.native-banner-reserved .app {
-      padding-bottom: max(50px, calc(var(--native-banner-h) + env(safe-area-inset-bottom, 0px)));
-    }
-    body.game-active #homeMusicControls { display: flex; }
-
-    /* Short phones: keep the full board width, but reclaim the vertical
-       space previously consumed by the header and the word panel. */
-    @media (max-width: 510px) and (max-height: 720px) {
-      body.game-active .game-screen.active {
-        justify-content: center;
-        padding: 4px;
-      }
-      body.game-active .game-top {
-        gap: 6px;
-        margin-bottom: 8px;
-        padding: 6px 8px;
-        border-radius: 18px;
-      }
-      body.game-active .game-title > .soft-button {
-        width: 36px;
-        min-width: 36px;
-        height: 36px;
-      }
-      body.game-active .game-title h1 { font-size: 1rem; }
-      body.game-active .difficulty-badge { padding: 4px 7px; font-size: .56rem; }
-      body.game-active #hintButton { min-height: 32px; padding: 6px 8px; }
-      body.game-active .game-tools { gap: 4px; padding: 5px 7px; border-radius: 11px; }
-      body.game-active .timer-label { font-size: .46rem; }
-      body.game-active .timer { font-size: .76rem; }
-      body.game-active .game-layout { gap: 8px; }
-      body.game-active .board-frame { padding: 6px; border-radius: 17px; }
-      body.game-active .board-frame::before { inset: 4px; border-radius: 13px; }
-      body.game-active .board { padding: 6px; gap: 2px; border-radius: 12px; }
-      body.game-active .cell { border-radius: 5px; font-size: clamp(.62rem, 4.4vw, .92rem); }
-      body.game-active .word-panel { border-radius: 18px; }
-      body.game-active .word-panel h2 { padding: 9px 12px 8px; font-size: .64rem; }
-      body.game-active .progress-wrap { padding: 7px 12px 3px; }
-      body.game-active .progress-meta { margin-bottom: 4px; font-size: .6rem; }
-      body.game-active .progress-track { height: 7px; }
-      body.game-active #wordList { gap: 3px 12px; padding: 6px 12px 9px; }
-      body.game-active .word-item { min-height: 25px; font-size: .72rem; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
-    }
-
-    /* Give the playable frame a little more room at its lower edge without
-       changing the square letter grid or the positions of the game controls. */
-    body.game-active .board-frame {
-      padding-bottom: calc(clamp(6px, 1.6vw, 16px) + 6px);
-    }
-  </style>
-  <link rel="stylesheet" href="redesign.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,800;9..144,900&family=Fredoka:wght@500;600;700&family=Figtree:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="garden.css" />
 </head>
 <body>
   <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
@@ -2808,172 +302,220 @@ transform-origin: center center; transform-box: border-box;
   <main class="app">
 
     <section id="homeScreen" class="screen home-screen active" aria-labelledby="homeTitle">
-      <svg class="ambient-leaf one" aria-hidden="true"><use href="#icon-leaf"></use></svg>
-      <svg class="ambient-leaf two" aria-hidden="true"><use href="#icon-leaf"></use></svg>
-      <div class="vine-decoration vine-left" aria-hidden="true">
-        <svg class="icon vine-leaf one"><use href="#icon-leaf"></use></svg>
-        <svg class="icon vine-leaf two"><use href="#icon-leaf"></use></svg>
-        <svg class="icon vine-leaf three"><use href="#icon-leaf"></use></svg>
-        <svg class="icon vine-leaf four"><use href="#icon-leaf"></use></svg>
-      </div>
-      <div class="vine-decoration vine-right" aria-hidden="true">
-        <svg class="icon vine-leaf one"><use href="#icon-leaf"></use></svg>
-        <svg class="icon vine-leaf two"><use href="#icon-leaf"></use></svg>
-        <svg class="icon vine-leaf three"><use href="#icon-leaf"></use></svg>
-        <svg class="icon vine-leaf four"><use href="#icon-leaf"></use></svg>
-      </div>
-      <div class="home-brand" aria-label="Garden of Words">
-        <div class="home-brand-main">
-          <img id="homeBrandLogo" class="home-brand-logo" src="images/garden-of-words-logo.png" alt="Garden of Words" />
+      <div class="drift-leaves" aria-hidden="true"><i>🍃</i><i>🍂</i><i>🌸</i><i>🍃</i><i>🌼</i></div>
+      <header class="hud">
+        <div id="playerPill" class="player-pill glass" aria-label="Your garden identity">
+          <span id="playerPillAvatar" class="player-pill-avatar" aria-hidden="true">🌱</span>
+          <span class="player-pill-text">
+            <small id="hudGreeting" class="hud-greeting">Welcome,</small>
+            <span class="player-pill-name-row"><span id="playerPillName">Guest</span><button id="editProfileButton" class="player-pill-edit" type="button" hidden aria-label="Edit profile" title="Edit profile">✎</button></span>
+            <span class="level-bar-row"><b id="levelLabel" class="level-line">Level 1</b><i class="level-bar"><i id="levelFill"></i></i><span id="levelXpText" class="level-xp">0 / 60 XP</span></span>
+          </span>
         </div>
-      </div>
-      <div class="journal-daily-box home-daily-banner">
-            <small id="dailyQuoteLabel" class="journal-subtitle">🌤️ Today in the Garden</small>
-            <p id="dailyQuoteText" class="daily-quote-text">"Every word you find is a seed for tomorrow's bloom."</p>
-          </div>
-          <div class="home-player-row">
-            <div id="playerPill" class="player-pill" aria-label="Your garden identity">
-              <span id="playerPillAvatar" class="player-pill-avatar" aria-hidden="true">🌱</span>
-              <span id="playerPillName">Guest</span>
-              <button id="editProfileButton" class="player-pill-edit" type="button" hidden aria-label="Edit profile" title="Edit profile">✎</button>
-            </div>
-          </div>
-      <div class="hero">
-        <div class="hero-copy-shell">
-          <h1 id="homeTitle">Find the hidden <span id="homeTitleAccent" class="accent">words among the vines.</span></h1>
-          <p id="homeHeroCopy" class="hero-copy">Uncover hidden words tucked beneath the leaves and guide your garden from sprout to canopy. A serene word journey through lush botanical trails.</p>
-          <div class="action-row home-cta-row">
-            <button id="mainPlayButton" class="primary-button" type="button"><span id="mainPlayText">Play</span><span class="arrow">→</span></button>
-            <div class="home-secondary-actions">
-              <button id="homeLevelsButton" class="secondary-button ghost-button" type="button">See the garden</button>
-            </div>
-          </div>
+        <div class="hud-wallet">
+          <button id="hudPetals" class="hud-chip glass petals" type="button"><span class="hud-chip-icon" aria-hidden="true">🌸</span><b id="hudPetalsValue">0</b></button>
+          <button id="hudHints" class="hud-chip glass hints" type="button"><span class="hud-chip-icon" aria-hidden="true">💡</span><b id="hudHintsValue">0</b></button>
+          <button id="heroSettingsButton" class="hud-icon glass" type="button" aria-label="Settings"><svg class="icon"><use href="#icon-settings"></use></svg><span id="heroSettingsLabel" class="sr-only">Settings</span></button>
         </div>
-        <aside id="heroJournalCard" class="hero-journal-card" aria-label="Garden Collection Journal">
-          <div class="journal-lower-panel">
-            <div class="journal-stat-strip">
-              <div class="journal-stat">
-                <svg class="icon tile-icon"><use href="#icon-flower"></use></svg>
-                <span id="heroStatCompleted" class="tile-value">0 / 120</span>
-                <small id="heroStatCompletedLabel" class="tile-label">Beds Bloomed</small>
-              </div>
-              <div class="journal-stat">
-                <svg class="icon tile-icon"><use href="#icon-sprout"></use></svg>
-                <span id="heroStatMastery" class="tile-value">0%</span>
-                <small id="heroStatMasteryLabel" class="tile-label">Garden Growth</small>
-              </div>
-            </div>
-            <div class="journal-action-strip">
-              <button id="heroAchievementsButton" class="journal-icon-btn" type="button" aria-label="Achievements">
-                <svg class="icon"><use href="#icon-flower"></use></svg>
-                <span id="heroAchievementsLabel" class="icon-btn-label">Achievements</span>
-                <span id="achievementsHomeBadge" class="icon-btn-badge">0/0</span>
-              </button>
-              <button id="heroLeaderboardButton" class="journal-icon-btn" type="button" aria-label="Leaderboards">
-                <svg class="icon"><use href="#icon-trophy"></use></svg>
-                <span id="heroLeaderboardLabel" class="icon-btn-label">Leaderboards</span>
-              </button>
-              <button id="homeThemesButton" class="journal-icon-btn theme-icon-btn" type="button" aria-label="Themes">
-                <svg class="icon"><use href="#icon-leaf"></use></svg>
-                <span id="homeThemesButtonLabel" class="icon-btn-label">Themes</span>
-              </button>
-              <button id="heroMarketButton" class="journal-icon-btn market-icon-btn" type="button" aria-label="Market">
-                <svg class="icon"><use href="#icon-market"></use></svg>
-                <span id="heroMarketLabel" class="icon-btn-label">Market</span>
-              </button>
-              <button id="heroSettingsButton" class="journal-icon-btn" type="button" aria-label="Settings">
-                <svg class="icon"><use href="#icon-settings"></use></svg>
-                <span id="heroSettingsLabel" class="icon-btn-label">Settings</span>
-              </button>
-              <button id="heroHelpButton" class="journal-icon-btn" type="button" aria-label="Help">
-                <span class="icon-btn-emoji" aria-hidden="true">?</span>
-                <span id="heroHelpLabel" class="icon-btn-label">Help</span>
-              </button>
-            </div>
+      </header>
+
+      <div class="sign-scene" aria-label="Garden of Words">
+        <svg class="sign-svg" viewBox="0 0 360 236" role="img" aria-labelledby="signTitle">
+          <title id="signTitle">Garden of Words</title>
+          <defs>
+            <linearGradient id="woodFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#9A6238"/><stop offset=".55" stop-color="#7A4824"/><stop offset="1" stop-color="#5A3216"/>
+            </linearGradient>
+            <linearGradient id="ribbonFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#B98352"/><stop offset="1" stop-color="#8A5A30"/>
+            </linearGradient>
+            <linearGradient id="branchFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#6B4425"/><stop offset="1" stop-color="#3E2512"/>
+            </linearGradient>
+            <radialGradient id="lanternGlow"><stop offset="0" stop-color="#FFD98A" stop-opacity=".95"/><stop offset=".45" stop-color="#FFB547" stop-opacity=".35"/><stop offset="1" stop-color="#FFB547" stop-opacity="0"/></radialGradient>
+            <path id="leafShape" d="M0 0C5-7 15-8 22-3 15 3 6 5 0 0Z"/>
+            <g id="leafPair"><use href="#leafShape" fill="#5E9E3A"/><use href="#leafShape" fill="#7DBE4C" transform="rotate(-38) scale(.85)"/></g>
+            <g id="blossom"><g fill="#FFF8EC"><circle cx="0" cy="-4" r="3.6"/><circle cx="3.8" cy="-1.2" r="3.6"/><circle cx="2.4" cy="3.3" r="3.6"/><circle cx="-2.4" cy="3.3" r="3.6"/><circle cx="-3.8" cy="-1.2" r="3.6"/></g><circle r="2" fill="#F2B632"/></g>
+          </defs>
+          <!-- branch across the top -->
+          <path d="M-240 40C-150 22-60 36-10 30C40 18 90 30 150 24S260 8 370 20C440 12 520 28 600 16L600 32C520 42 440 28 370 34C280 26 220 40 150 40S50 36-10 46C-80 54-160 40-240 56Z" fill="url(#branchFill)"/>
+          <g class="branch-leaves"><use href="#leafPair" transform="translate(-40 40) rotate(30)"/><use href="#leafPair" transform="translate(-110 38) rotate(-40)"/><use href="#leafPair" transform="translate(400 24) rotate(50)"/><use href="#leafPair" transform="translate(470 22) rotate(-30)"/><use href="#blossom" transform="translate(-70 44)"/><use href="#blossom" transform="translate(440 26) scale(.9)"/></g>
+          <g class="branch-leaves">
+            <use href="#leafPair" transform="translate(18 34) rotate(20)"/><use href="#leafPair" transform="translate(44 26) rotate(-30)"/>
+            <use href="#leafPair" transform="translate(70 40) rotate(60)"/><use href="#leafPair" transform="translate(116 22) rotate(-50)"/>
+            <use href="#leafPair" transform="translate(196 30) rotate(40)"/><use href="#leafPair" transform="translate(240 16) rotate(-20)"/>
+            <use href="#leafPair" transform="translate(286 30) rotate(70)"/><use href="#leafPair" transform="translate(330 18) rotate(-40)"/>
+            <use href="#blossom" transform="translate(96 30)"/><use href="#blossom" transform="translate(262 24) scale(.9)"/>
+          </g>
+          <!-- lantern -->
+          <g class="lantern" transform="translate(318 30)">
+            <line x1="0" y1="0" x2="0" y2="38" stroke="#2E1B0C" stroke-width="2"/>
+            <circle class="lantern-glow" cx="0" cy="62" r="34" fill="url(#lanternGlow)"/>
+            <path d="M-9 38h18l3 6h-24z" fill="#2E2A26"/>
+            <rect x="-10" y="44" width="20" height="28" rx="3" fill="#FFC867" stroke="#2E2A26" stroke-width="3"/>
+            <path d="M0 44v28M-10 58h20" stroke="#2E2A26" stroke-width="2"/>
+            <path d="M-12 72h24l-4 6h-16z" fill="#2E2A26"/>
+          </g>
+          <!-- hanging sign -->
+          <g class="sign-swing">
+            <line x1="112" y1="36" x2="120" y2="74" stroke="#3B2410" stroke-width="3"/>
+            <line x1="236" y1="32" x2="232" y2="74" stroke="#3B2410" stroke-width="3"/>
+            <path d="M56 92C60 70 110 64 176 64S292 68 300 90L306 170C300 194 246 200 176 200S54 196 48 172Z" fill="url(#woodFill)" stroke="#3B2410" stroke-width="4"/>
+            <path d="M66 96C70 80 116 76 176 76S282 80 288 96" fill="none" stroke="#B07A4C" stroke-width="2" opacity=".55"/>
+            <g stroke="#4A2A12" stroke-width="1.2" opacity=".35" fill="none">
+              <path d="M70 118c40 4 80-4 120 2s70 0 100-4"/><path d="M64 150c50-6 90 6 130 0s60-4 98 2"/>
+            </g>
+            <text class="sign-word" x="178" y="122" text-anchor="middle">Garden</text>
+            <text class="sign-word sign-word-2" x="178" y="166" text-anchor="middle">of Words</text>
+            <path d="M84 184C120 176 236 176 272 184L268 208C232 202 124 202 88 208Z" fill="url(#ribbonFill)" stroke="#3B2410" stroke-width="3"/>
+            <text id="signTagline" class="sign-tagline" x="178" y="200" text-anchor="middle">A cozy word garden</text>
+            <!-- garland -->
+            <use href="#leafPair" transform="translate(52 100) rotate(110)"/><use href="#leafPair" transform="translate(46 132) rotate(150)"/>
+            <use href="#leafPair" transform="translate(304 104) rotate(-20)"/><use href="#leafPair" transform="translate(306 140) rotate(30)"/>
+            <use href="#leafPair" transform="translate(128 68) rotate(-10)"/><use href="#leafPair" transform="translate(220 66) rotate(-160)"/>
+            <use href="#blossom" transform="translate(58 116) scale(1.1)"/><use href="#blossom" transform="translate(300 122)"/>
+            <use href="#blossom" transform="translate(150 70) scale(.9)"/>
+          </g>
+        </svg>
+      </div>
+      <h1 id="homeTitle" class="sr-only">Find the hidden <span id="homeTitleAccent" class="accent">words among the vines.</span></h1>
+      <p id="homeHeroCopy" class="sr-only"></p>
+
+      <article id="heroJournalCard" class="chapter-card glass" aria-label="Garden Collection Journal">
+        <span class="chapter-thumb" aria-hidden="true"><span id="chapterThumbEmoji">🌱</span></span>
+        <span class="chapter-card-body">
+          <span id="journeyChapterKicker" class="chapter-pill">Chapter 1</span>
+          <strong id="journeyChapterName" class="chapter-card-title">Seed Bed</strong>
+          <small id="journeyBedLabel" class="chapter-card-sub">Bed 1</small>
+          <span class="chapter-card-progress"><i class="chapter-track"><i id="journeyChapterFill"></i></i><span id="journeyChapterProgress">0 / 50</span></span>
+        </span>
+        <button id="mainPlayButton" class="play-round" type="button"><svg class="icon" aria-hidden="true"><use href="#icon-play"></use></svg><span id="mainPlayText" class="sr-only">Play</span></button>
+        <span class="sr-only"><span id="heroStatCompleted">0</span> <span id="heroStatCompletedLabel"></span> <span id="heroStatMastery">0%</span> <span id="heroStatMasteryLabel"></span> <span id="heroStatBlooms">0</span> <span id="heroStatBloomsLabel"></span></span>
+      </article>
+
+      <nav class="menu-grid" aria-label="Menu">
+        <button id="homeLevelsButton" class="menu-card glass" type="button" style="--d:0">
+          <span class="menu-icon" aria-hidden="true">🗺️</span><b id="homeLevelsLabel" class="menu-title">The Garden</b><small id="cardMapSub" class="menu-sub"></small>
+        </button>
+        <button id="tileQuests" class="menu-card glass" type="button" style="--d:1">
+          <span class="menu-icon" aria-hidden="true">🎯</span><b id="tileQuestsLabel" class="menu-title">Quests</b><small id="tileQuestsValue" class="menu-sub">0/3</small>
+          <em id="tileQuestsBadge" class="tile-badge" hidden>!</em>
+        </button>
+        <button id="tileGreenhouse" class="menu-card glass" type="button" style="--d:2">
+          <span class="menu-icon" aria-hidden="true">🌻</span><b id="tileGreenhouseLabel" class="menu-title">Greenhouse</b><small id="tileGreenhouseValue" class="menu-sub">—</small>
+          <em id="tileGreenhouseBadge" class="tile-badge" hidden>!</em>
+        </button>
+        <button id="tileStreak" class="menu-card glass" type="button" style="--d:3">
+          <span class="menu-icon" aria-hidden="true">🔥</span><b id="tileStreakLabel" class="menu-title">Streak</b><small id="tileStreakValue" class="menu-sub">0</small>
+          <em id="tileStreakBadge" class="tile-badge" hidden>🎁</em>
+        </button>
+        <button id="heroAchievementsButton" class="menu-card glass" type="button" style="--d:4" aria-label="Achievements">
+          <span class="menu-icon" aria-hidden="true">🏆</span><b id="heroAchievementsLabel" class="menu-title">Achievements</b><small id="achievementsHomeBadge" class="menu-sub">0/0</small>
+        </button>
+        <button id="heroLeaderboardButton" class="menu-card glass" type="button" style="--d:5" aria-label="Leaderboards">
+          <span class="menu-icon" aria-hidden="true">🥇</span><b id="heroLeaderboardLabel" class="menu-title">Leaderboards</b><small id="cardLeaderboardSub" class="menu-sub"></small>
+        </button>
+        <button id="heroMarketButton" class="menu-card glass menu-market" type="button" style="--d:6" aria-label="Market">
+          <span class="menu-icon" aria-hidden="true">🧺</span><b id="heroMarketLabel" class="menu-title">Market</b><small id="cardMarketSub" class="menu-sub"></small>
+        </button>
+        <button id="homeThemesButton" class="menu-card glass" type="button" style="--d:7" aria-label="Themes">
+          <span class="menu-icon" aria-hidden="true">🎨</span><b id="homeThemesButtonLabel" class="menu-title">Themes</b><small id="cardThemesSub" class="menu-sub"></small>
+        </button>
+        <button id="heroHelpButton" class="menu-card glass" type="button" style="--d:8" aria-label="Help">
+          <span class="menu-icon" aria-hidden="true">📖</span><b id="heroHelpLabel" class="menu-title">Help</b><small id="cardHelpSub" class="menu-sub"></small>
+        </button>
+      </nav>
+
+      <div class="journal-daily-box home-daily-banner sr-only">
+        <small id="dailyQuoteLabel" class="journal-subtitle">Today in the Garden</small>
+        <p id="dailyQuoteText" class="daily-quote-text"></p>
+      </div>
+
+      <div id="homeMusicControls" class="music-bar glass" aria-label="Music controls">
+        <span class="music-disc" aria-hidden="true"><i></i></span>
+        <span class="music-text"><b>Garden of Words</b><small id="musicSubtitle">Lo-fi garden radio</small></span>
+        <button id="musicPreviousButton" class="home-music-control-button" type="button" aria-label="Previous song" title="Previous song">
+          <svg class="icon" aria-hidden="true"><use href="#icon-skip-previous"></use></svg>
+        </button>
+        <button id="musicToggleButton" class="home-music-main-button" type="button" aria-label="Play music" title="Play music" aria-pressed="false">
+          <div id="homeMusicVisualizer" class="home-music-visualizer" aria-hidden="true">
+            <span class="home-music-bar"></span><span class="home-music-bar"></span><span class="home-music-bar"></span>
+            <span class="home-music-bar"></span><span class="home-music-bar"></span><span class="home-music-bar"></span>
+            <span class="home-music-bar"></span><span class="home-music-bar"></span><span class="home-music-bar"></span>
           </div>
-        </aside>
+          <svg id="musicToggleIcon" class="icon music-toggle-icon" aria-hidden="true"><use href="#icon-play"></use></svg>
+        </button>
+        <button id="musicNextButton" class="home-music-control-button" type="button" aria-label="Next song" title="Next song">
+          <svg class="icon" aria-hidden="true"><use href="#icon-skip-next"></use></svg>
+        </button>
       </div>
     </section>
 
-    <div id="homeMusicControls" class="home-music-controls" aria-label="Music controls">
-      <button id="musicPreviousButton" class="home-music-control-button" type="button" aria-label="Previous song" title="Previous song">
-        <svg class="icon" aria-hidden="true"><use href="#icon-skip-previous"></use></svg>
-      </button>
-      <button id="musicToggleButton" class="home-music-main-button" type="button" aria-label="Play music" title="Play music" aria-pressed="false">
-        <div id="homeMusicVisualizer" class="home-music-visualizer" aria-hidden="true">
-          <span class="home-music-bar"></span>
-          <span class="home-music-bar"></span>
-          <span class="home-music-bar"></span>
-          <span class="home-music-bar"></span>
-          <span class="home-music-bar"></span>
-          <span class="home-music-bar"></span>
-          <span class="home-music-bar"></span>
-          <span class="home-music-bar"></span>
-          <span class="home-music-bar"></span>
-        </div>
-        <svg id="musicToggleIcon" class="icon music-toggle-icon" aria-hidden="true"><use href="#icon-play"></use></svg>
-      </button>
-      <button id="musicNextButton" class="home-music-control-button" type="button" aria-label="Next song" title="Next song">
-        <svg class="icon" aria-hidden="true"><use href="#icon-skip-next"></use></svg>
-      </button>
-    </div>
-
     <section id="levelScreen" class="screen level-screen" aria-labelledby="levelsTitle">
-      <div class="level-heading">
-        <div class="level-heading-text">
-          <div class="level-title-row">
-            <button id="levelsBackHome" class="soft-button" type="button" aria-label="Back to home">←</button>
-            <h1 id="levelsTitle">The Garden</h1>
-          </div>
+      <header class="map-header">
+        <button id="levelsBackHome" class="icon-button" type="button" aria-label="Back to home"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M15 5 8 12l7 7"/></svg></button>
+        <div class="map-title">
+          <h1 id="levelsTitle">The Garden</h1>
           <p id="levelsDescription">Pick any bed you've unlocked, or carry on from where you left off.</p>
         </div>
         <div class="progress-card"><span id="levelsProgressLabel">Progress</span><strong id="progressText">1 / 950 open</strong></div>
-      </div>
+      </header>
+      <p id="levelSectionLabel" class="sr-only">Choose a bed</p>
+      <div id="levelGrid" class="level-grid" aria-label="Level list"></div>
       <div class="continue-card">
         <div class="continue-copy">
           <small id="continueLabel">Where you left off</small>
           <strong id="continueTitle">Bed 1</strong>
           <em id="continueDetail">Sprout · 0 words</em>
         </div>
-        <button id="continueButton" class="continue-arrow" type="button" aria-label="Continue">→</button>
+        <button id="continueButton" class="continue-arrow" type="button" aria-label="Continue"><svg class="icon"><use href="#icon-play"></use></svg></button>
       </div>
-      <p id="levelSectionLabel" class="section-label">Choose a bed</p>
-      <div id="levelGrid" class="level-grid" aria-label="Level list"></div>
     </section>
 
     <section id="gameScreen" class="screen game-screen" aria-labelledby="gameTitle">
       <header class="game-top">
-        <div class="game-title">
-          <button id="backToLevels" class="soft-button" type="button" aria-label="Back to the garden">←</button>
-          <div><h1 id="gameTitle">Bed 1</h1><span id="gameDifficulty" class="difficulty-badge">Sprout</span></div>
+        <button id="backToLevels" class="icon-button" type="button" aria-label="Back to the garden"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M15 5 8 12l7 7"/></svg></button>
+        <div class="game-title"><h1 id="gameTitle">Bed 1</h1><span id="gameDifficulty" class="difficulty-badge">Sprout</span></div>
+        <div class="timer-wrap"><span id="timerLabel" class="timer-label">Time</span><time id="timer" class="timer" datetime="PT0S">00:00:00</time></div>
+      </header>
+      <div class="game-progress">
+        <div class="progress-track" aria-label="Word-finding progress"><div id="progressFill" class="progress-fill"></div><span id="progressBud" class="progress-bud" aria-hidden="true">🌷</span></div>
+        <div class="progress-meta"><span id="wordFoundLabel">Found</span><strong id="progressTextGame">0 / 0</strong></div>
+      </div>
+      <div class="game-layout">
+        <div class="board-frame">
+          <div class="board-ivy" aria-hidden="true"></div>
+          <div id="planterBlooms" class="planter-blooms" aria-hidden="true"></div>
+          <div id="board" class="board" role="grid" aria-label="Letter grid"></div>
+          <div id="feedbackLayer" class="feedback-layer" aria-live="polite"></div>
+          <div id="boardLoading" class="board-loading" hidden><span class="board-loading-spinner" aria-hidden="true"></span><span id="boardLoadingText"></span><button id="boardLoadingRetry" class="ghost-button" type="button" hidden>Try again</button></div>
         </div>
+        <aside id="wordPanel" class="word-panel" aria-label="Words to find"><h2 id="wordPanelTitle" class="sr-only">To find</h2><ul id="wordList"></ul></aside>
+      </div>
+      <div class="game-actions">
+        <span id="comboBadge" class="combo-badge" aria-live="polite"><svg class="icon"><use href="#icon-flower"></use></svg><span id="comboBadgeText"></span></span>
         <div class="hint-control-row">
-          <button id="hintButton" class="soft-button" type="button"><svg class="icon"><use href="#icon-bulb"></use></svg><span id="hintButtonLabel">Hint</span><span id="hintCountBadge" class="hint-count-badge">1</span></button>
+          <button id="hintButton" class="hint-button" type="button"><svg class="icon"><use href="#icon-bulb"></use></svg><span id="hintButtonLabel">Hint</span><span id="hintCountBadge" class="hint-count-badge">1</span></button>
           <span id="hintLockNotice" class="hint-lock-notice" aria-live="polite" hidden><span id="hintLockNoticeText"></span></span>
         </div>
-        <div class="game-tools">
-          <span id="comboBadge" class="combo-badge" aria-live="polite"><svg class="icon"><use href="#icon-flower"></use></svg><span id="comboBadgeText"></span></span>
-          <div class="timer-wrap"><span id="timerLabel" class="timer-label">Time</span><time id="timer" class="timer" datetime="PT0S">00:00:00</time></div>
-        </div>
-      </header>
-      <div class="game-layout">
-        <div class="board-frame"><div id="board" class="board" role="grid" aria-label="Letter grid"></div><div id="feedbackLayer" class="feedback-layer" aria-live="polite"></div></div>
-        <aside id="wordPanel" class="word-panel" aria-label="Words to find"><h2 id="wordPanelTitle">To find</h2><div class="progress-wrap"><div class="progress-meta"><span id="wordFoundLabel">Found</span><strong id="progressTextGame">0 / 0</strong></div><div class="progress-track" aria-label="Word-finding progress"><div id="progressFill" class="progress-fill"></div></div></div><ul id="wordList"></ul></aside>
       </div>
       <div id="admobBannerSlot" class="admob-banner-slot" aria-hidden="true"></div>
     </section>
   </main>
 
   <div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal">
-      <div class="celebration"><svg class="icon"><use href="#icon-flower"></use></svg></div>
-      <h2 id="modalTitle">Well grown!</h2>
+    <div class="modal complete-modal">
+      <div class="complete-crest" aria-hidden="true"><span class="complete-rays"></span><svg class="icon"><use href="#icon-flower"></use></svg></div>
       <div id="starRating" class="bloom-rating" aria-label="3 blooms"></div>
+      <h2 id="modalTitle">Well grown!</h2>
       <p id="modalText">You've completed the bed.</p>
-      <div class="modal-actions">
-        <button id="modalLeaderboardButton" class="ghost-button" type="button"><svg class="icon"><use href="#icon-trophy"></use></svg> Leaderboard</button>
-        <button id="modalLevels" class="ghost-button" type="button">The Garden</button>
+      <div id="completeRewards" class="complete-rewards"></div>
+      <div class="modal-actions complete-actions">
         <button id="nextLevelButton" class="primary-button" type="button">Next bed →</button>
+        <div class="complete-actions-row">
+          <button id="modalLevels" class="ghost-button" type="button">The Garden</button>
+          <button id="modalLeaderboardButton" class="ghost-button" type="button"><svg class="icon"><use href="#icon-trophy"></use></svg> Leaderboard</button>
+        </div>
       </div>
     </div>
   </div>
@@ -4182,15 +1724,18 @@ transform-origin: center center; transform-box: border-box;
     const EXTRA_THEME_TRANSLATIONS = {
       en: {
         themeDawnGarden: "Dawn Garden", themeRainyGreenhouse: "Rainy Glasshouse", themeMeadowlight: "Meadow Light", themeOrchardWalk: "Orchard Walk",
-        themeTropicalGrove: "Tropical Grove", themeSunsetTerrace: "Sunset Terrace", themeDesertBloom: "Desert Bloom", themeMistyLake: "Misty Lake"
+        themeTropicalGrove: "Tropical Grove", themeSunsetTerrace: "Sunset Terrace", themeDesertBloom: "Desert Bloom", themeMistyLake: "Misty Lake",
+        chapterNumber: "Chapter {n}", chapterChest: "Chapter chest", bloomsLabel: "Blooms"
       },
       de: {
         themeDawnGarden: "Morgenbeet", themeRainyGreenhouse: "Regengewächshaus", themeMeadowlight: "Wiesenlicht", themeOrchardWalk: "Obstgartenweg",
-        themeTropicalGrove: "Tropischer Hain", themeSunsetTerrace: "Abendterrasse", themeDesertBloom: "Wüstenblüte", themeMistyLake: "Nebelsee"
+        themeTropicalGrove: "Tropischer Hain", themeSunsetTerrace: "Abendterrasse", themeDesertBloom: "Wüstenblüte", themeMistyLake: "Nebelsee",
+        chapterNumber: "Kapitel {n}", chapterChest: "Kapiteltruhe", bloomsLabel: "Blüten"
       },
       tr: {
         themeDawnGarden: "\u015eafak Bah\u00e7esi", themeRainyGreenhouse: "Ya\u011fmurlu Sera", themeMeadowlight: "\u00c7ay\u0131r I\u015f\u0131\u011f\u0131", themeOrchardWalk: "Meyve Bah\u00e7esi",
-        themeTropicalGrove: "Tropik Koru", themeSunsetTerrace: "G\u00fcn Bat\u0131m\u0131 Teras\u0131", themeDesertBloom: "\u00c7\u00f6l \u00c7i\u00e7e\u011fi", themeMistyLake: "Sisli G\u00f6l"
+        themeTropicalGrove: "Tropik Koru", themeSunsetTerrace: "G\u00fcn Bat\u0131m\u0131 Teras\u0131", themeDesertBloom: "\u00c7\u00f6l \u00c7i\u00e7e\u011fi", themeMistyLake: "Sisli G\u00f6l",
+        chapterNumber: "{n}. Bah\u00e7e", chapterChest: "Bah\u00e7e sand\u0131\u011f\u0131", bloomsLabel: "\u00c7i\u00e7ek"
       }
     };
 
@@ -4259,7 +1804,7 @@ transform-origin: center center; transform-box: border-box;
       setText("heroSettingsLabel", t("settings"));
       setText("heroHelpLabel", t("help"));
       setText("mainPlayText", t("play"));
-      setText("homeLevelsButton", t("seeGarden"));
+      setText("homeLevelsLabel", t("levelsTitle"));
       setText("homeThemesButtonLabel", t("themes"));
       setLabel("homeThemesButton", t("themes"));
       setLabel("heroJournalCard", t("gardenHerbarium"));
@@ -4269,7 +1814,9 @@ transform-origin: center center; transform-box: border-box;
       setLabel("heroMarketButton", t("market"));
       setLabel("heroSettingsButton", t("settings"));
       setLabel("heroHelpButton", t("help"));
+      setText("heroStatBloomsLabel", t("bloomsLabel"));
       updateMusicControlLabels();
+      window.Meta?.onLanguage?.();
 
       setText("levelsTitle", t("levelsTitle"));
       setText("levelsDescription", t("levelsDescription"));
@@ -7916,7 +5463,7 @@ transform-origin: center center; transform-box: border-box;
         check: () => Boolean(progress.stats.hasStreak5) },
       { id: "record_breaker", icon: "🏆", title: "Record Breaker", desc: "Beat your own best time on a bed you'd already finished before.",
         check: () => Boolean(progress.stats.hasRecordBreak) },
-      { id: "helping_hand", icon: "🪴", title: "Helping Hand", desc: "Use 10 hints in total.",
+      { id: "helping_hand", icon: "🌿", title: "Helping Hand", desc: "Use 10 hints in total.",
         check: () => (progress.stats.hintsUsedTotal || 0) >= 10 },
       { id: "hint_hoarder", icon: "🧺", title: "Hint Hoarder", desc: "Use 100 hints in total.",
         check: () => (progress.stats.hintsUsedTotal || 0) >= 100 },
@@ -10101,6 +7648,8 @@ transform-origin: center center; transform-box: border-box;
           path.push(cells[row][col]);
         }
         path.forEach(cell => { cell.classList.add("found"); cell.style.setProperty("--word-tint", wordTint(puzzle.words.indexOf(word))); });
+        addFoundCapsule(placement, wordTint(puzzle.words.indexOf(word)));
+        openPlanterBloom(word);
         const wordItem = wordItemByWord.get(word);
         if (wordItem) wordItem.classList.add("found");
       });
@@ -10422,7 +7971,9 @@ transform-origin: center center; transform-box: border-box;
       // Measure the unscaled canvas. scrollHeight catches content that is
       // larger than the visible box; getBoundingClientRect catches width.
       const naturalHeight = Math.max(homeScreenElement.scrollHeight, homeScreenElement.offsetHeight, 1);
-      const naturalWidth = Math.max(homeScreenElement.scrollWidth, homeScreenElement.offsetWidth, 1);
+      // Decorations (the full-bleed branch) may overflow sideways on purpose;
+      // only the box width decides whether the menu needs to shrink.
+      const naturalWidth = Math.max(homeScreenElement.offsetWidth, 1);
 
       const rawScale = Math.min(1, availableHeight / naturalHeight, availableWidth / naturalWidth);
       // Always honor the real available viewport height. A minimum scale
@@ -10433,7 +7984,8 @@ transform-origin: center center; transform-box: border-box;
       // The daily banner adds visual weight below the main card. Lift the
       // complete home composition slightly so it reads as optically centered
       // on short and medium-height phones without changing its measured fit.
-      const opticalLift = availableHeight <= 900 ? Math.min(18, availableHeight * .022) : 0;
+      // The garden home fills the full height, so no optical lift is needed.
+      const opticalLift = 0;
       const nextTransform = `translateY(-${opticalLift}px) scale(${scale})`;
       if (homeScreenElement.style.transform !== nextTransform) {
         homeScreenElement.style.transform = nextTransform;
@@ -10470,6 +8022,7 @@ transform-origin: center center; transform-box: border-box;
       // Any existing cell rects were measured before this scale was applied.
       // Force the next pointer event to rebuild them in viewport coordinates.
       boardMetrics = null;
+      layoutCapsules();
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
     }
@@ -10598,15 +8151,61 @@ transform-origin: center center; transform-box: border-box;
       if (compEl) compEl.textContent = `${completed} / ${TOTAL_LEVELS}`;
       if (mastEl) mastEl.textContent = `${pct}%`;
       if (badgeEl) badgeEl.textContent = `${Object.keys(progress.achievements || {}).length}/${ACHIEVEMENTS.length}`;
+      let blooms = 0;
+      Object.keys(progress.completedBeds || {}).forEach(id => { blooms += bedStars(Number(id)); });
+      setText("heroStatBlooms", String(blooms));
+
+      // Journey card: the chapter of the bed the Play orb opens.
+      const current = levelById(progress.lastSelected) || LEVELS[0];
+      const chapter = chapterForBed(current.id);
+      let chapterDone = 0;
+      for (let id = chapter.start; id <= chapter.end; id += 1) if (isBedCompleted(id)) chapterDone += 1;
+      const chapterSize = chapter.end - chapter.start + 1;
+      setText("journeyChapterKicker", t("chapterNumber", { n: chapter.index + 1 }));
+      setText("journeyChapterName", chapter.name);
+      setText("journeyChapterProgress", `${chapterDone} / ${chapterSize}`);
+      const chapterFill = document.getElementById("journeyChapterFill");
+      if (chapterFill) chapterFill.style.width = `${(chapterDone / chapterSize) * 100}%`;
+      setText("chapterThumbEmoji", chapter.emoji);
+      renderPlotBed(chapter.index, chapterDone, chapterSize);
+    }
+
+    // The home garden bed: ten plants per chapter, one blooms every five beds.
+    const BLOOM_EMOJI = ["🌷", "🌼", "🌸", "🌻", "🌹", "🌺"];
+    function renderPlotBed(chapterIndex, done, size) {
+      const bed = document.getElementById("plotBed");
+      if (!bed) return;
+      const slots = 10;
+      const perSlot = size / slots;
+      const bloomed = Math.floor(done / perSlot);
+      const state = `${chapterIndex}|${done}`;
+      if (bed.dataset.state === state) return;
+      bed.dataset.state = state;
+      bed.innerHTML = Array.from({ length: slots }, (_, index) => {
+        if (index < bloomed) return `<span class="plant bloom" style="--i:${index}">${BLOOM_EMOJI[(index + chapterIndex) % BLOOM_EMOJI.length]}</span>`;
+        if (index === bloomed && done % perSlot > 0) return `<span class="plant sprout" style="--i:${index}">🌱</span>`;
+        return `<span class="plant seed" style="--i:${index}"></span>`;
+      }).join("");
+    }
+
+    // 19 chapters of 50 beds. Names come from meta.js when it is loaded.
+    const CHAPTER_SIZE = 50;
+    function chapterForBed(bedId) {
+      const index = Math.max(0, Math.floor((Number(bedId) - 1) / CHAPTER_SIZE));
+      const start = index * CHAPTER_SIZE + 1;
+      const end = Math.min(TOTAL_LEVELS, start + CHAPTER_SIZE - 1);
+      const meta = window.Meta?.chapterInfo?.(index);
+      return { index, start, end, name: meta?.name || t("chapterNumber", { n: index + 1 }), emoji: meta?.emoji || "🌱" };
     }
 
     function updateHome() {
       const current = levelById(progress.lastSelected) || LEVELS[0];
       if (!current) return;
       const directContinue = progress.unlocked > 1 && progress.lastSelected === progress.unlocked;
-      document.getElementById("mainPlayText").textContent = directContinue ? t("continueBed", { id: current.id }) : t("play");
+      document.getElementById("mainPlayText").textContent = directContinue || progress.currentGame ? t("continue") : t("play");
+      setText("journeyBedLabel", `${displayBed(current)} · ${displayLevelDetail(current)}`);
       updateHeroJournal();
-      window.Retention?.onHome?.();
+      window.Meta?.onHome?.();
     }
 
     /* ---------- Achievements: unlocking + toast queue + modal ---------- */
@@ -10775,6 +8374,11 @@ transform-origin: center center; transform-box: border-box;
       if (!grid || levelGridEventsBound) return;
       grid.addEventListener("click", event => {
         const target = event.target instanceof Element ? event.target : null;
+        const chest = target?.closest(".chapter-chest");
+        if (chest) {
+          window.Meta?.openChest?.(Number(chest.dataset.chapter));
+          return;
+        }
         const card = target?.closest(".level-card");
         if (!card) return;
         const levelId = Number(card.dataset.levelId);
@@ -10820,7 +8424,16 @@ transform-origin: center center; transform-box: border-box;
       if (continueTitle) continueTitle.textContent = displayBed(current);
       if (continueDetail) continueDetail.textContent = `${displayDifficulty(current)} \u00b7 ${displayLevelDetail(current)}`;
 
+      chapterBanners = [];
       LEVELS.forEach((level, index) => {
+        if (index % CHAPTER_SIZE === 0) {
+          const banner = document.createElement("div");
+          banner.className = "chapter-banner";
+          banner.dataset.chapter = String(index / CHAPTER_SIZE);
+          banner.innerHTML = `<span class="chapter-emblem" aria-hidden="true"></span><span class="chapter-text"><small></small><strong></strong><span class="chapter-meter"><i><b></b></i><span></span></span></span><button type="button" class="chapter-chest" data-chapter="${index / CHAPTER_SIZE}">🎁</button>`;
+          chapterBanners.push(banner);
+          fragment.appendChild(banner);
+        }
         const unlocked = level.id <= progress.unlocked;
         const bestTime = Number(progress.bestTimes[level.id]);
         const bestLabel = Number.isFinite(bestTime) && bestTime >= 0 ? `✦ ${t("best")} ${formatTime(bestTime, false)}` : "";
@@ -10831,6 +8444,7 @@ transform-origin: center center; transform-box: border-box;
         const card = document.createElement("div");
         card.className = `level-card ${unlocked ? "" : "locked"} ${level.id === progress.lastSelected ? "is-current" : ""} ${isBedCompleted(level.id) ? "is-completed" : ""}`;
         card.dataset.levelId = level.id;
+        applyPathGeometry(card, index);
         card.style.setProperty("--card-glow", COLOR_BY_TONE[level.tone]);
         card.setAttribute("role", "button");
         card.setAttribute("aria-disabled", unlocked ? "false" : "true");
@@ -10841,7 +8455,7 @@ transform-origin: center center; transform-box: border-box;
         const starsMarkup = stage === "bloom"
           ? `<div class="bloom-rating level-card-stars" aria-label="${earnedStars} / 3">${Array.from({ length: 3 }, (_, index) => `<span class="${index < earnedStars ? "" : "dim"}">✿</span>`).join("")}</div>`
           : "";
-        card.innerHTML = `<svg class="icon stage-icon"><use href="#${STAGE_ICON[stage]}"></use></svg><div class="level-card-heading"><span class="number">${level.id}</span>${starsMarkup}</div><span class="level-detail">${displayLevelDetail(level)}</span><span class="level-best">${bestLabel}</span><span class="difficulty-tag ${tagClass}">${displayDifficulty(level)}</span><button type="button" class="level-lb-btn" aria-label="${t("viewBedLeaderboard", { bed: displayBed(level) })}"><svg class="icon"><use href="#icon-trophy"></use></svg></button>`;
+        card.innerHTML = `<span class="node-disc"><svg class="icon stage-icon"><use href="#${STAGE_ICON[stage]}"></use></svg><span class="number">${level.id}</span></span><div class="level-card-heading">${starsMarkup}</div><span class="level-detail">${displayLevelDetail(level)}</span><span class="level-best">${bestLabel}</span><span class="difficulty-tag ${tagClass}">${displayDifficulty(level)}</span><button type="button" class="level-lb-btn" aria-label="${t("viewBedLeaderboard", { bed: displayBed(level) })}"><svg class="icon"><use href="#icon-trophy"></use></svg></button>`;
         levelCardParts[index] = {
           card,
           stageIcon: card.querySelector(".stage-icon use"),
@@ -10857,8 +8471,47 @@ transform-origin: center center; transform-box: border-box;
         fragment.appendChild(card);
       });
       grid.appendChild(fragment);
+      updateChapterBanners();
       levelCardsLanguage = currentLanguage;
       levelsViewDirty = false;
+    }
+
+    // Beds sit on a winding path: each node is shifted sideways on a sine
+    // curve and draws a dotted link (its ::before) towards the next node.
+    const PATH_SWING = 92;
+    const PATH_STEP = 96;
+    function pathOffset(index) { return Math.round(Math.sin(index * .8) * PATH_SWING); }
+    function applyPathGeometry(card, index) {
+      const x = pathOffset(index);
+      card.style.setProperty("--x", `${x}px`);
+      const isChapterEnd = (index + 1) % CHAPTER_SIZE === 0 || index === LEVELS.length - 1;
+      card.classList.toggle("chapter-end", isChapterEnd);
+      if (isChapterEnd) return;
+      const dx = pathOffset(index + 1) - x;
+      card.style.setProperty("--link-len", `${Math.round(Math.hypot(dx, PATH_STEP))}px`);
+      card.style.setProperty("--link-angle", `${(-Math.atan2(dx, PATH_STEP) * 180 / Math.PI).toFixed(1)}deg`);
+    }
+
+    let chapterBanners = [];
+    function updateChapterBanners() {
+      const current = levelById(progress.lastSelected) || LEVELS[0];
+      chapterBanners.forEach(banner => {
+        const chapter = chapterForBed(Number(banner.dataset.chapter) * CHAPTER_SIZE + 1);
+        let done = 0;
+        for (let id = chapter.start; id <= chapter.end; id += 1) if (isBedCompleted(id)) done += 1;
+        const size = chapter.end - chapter.start + 1;
+        banner.querySelector(".chapter-emblem").textContent = chapter.emoji;
+        banner.querySelector(".chapter-text small").textContent = `${t("chapterNumber", { n: chapter.index + 1 })} · ${t("bed")} ${chapter.start}–${chapter.end}`;
+        banner.querySelector(".chapter-text strong").textContent = chapter.name;
+        banner.querySelector(".chapter-meter b").style.width = `${(done / size) * 100}%`;
+        banner.querySelector(".chapter-meter > span").textContent = `${done}/${size}`;
+        banner.classList.toggle("is-current", current.id >= chapter.start && current.id <= chapter.end);
+        const chest = banner.querySelector(".chapter-chest");
+        const claimed = Boolean(window.Meta?.chestClaimed?.(chapter.index));
+        chest.classList.toggle("is-ready", done === size && !claimed);
+        chest.classList.toggle("is-claimed", claimed);
+        chest.setAttribute("aria-label", t("chapterChest"));
+      });
     }
 
     // Reuse the 950 existing cards when returning from a bed. Rebuilding the
@@ -10866,10 +8519,11 @@ transform-origin: center center; transform-box: border-box;
     // expensive in a mobile WebView.
     function refreshLevelCards() {
       const grid = document.getElementById("levelGrid");
-      if (!grid || grid.children.length !== LEVELS.length || levelCardParts.length !== LEVELS.length) {
+      if (!grid || levelCardParts.length !== LEVELS.length || !levelCardParts[0]?.card.isConnected) {
         renderLevels();
         return;
       }
+      updateChapterBanners();
 
       document.getElementById("progressText").textContent = `${progress.unlocked} / ${TOTAL_LEVELS} ${t("open")}`;
       const current = levelById(progress.lastSelected) || LEVELS[0];
@@ -10892,6 +8546,7 @@ transform-origin: center center; transform-box: border-box;
         }
         if (card.dataset.renderState !== renderState) {
           card.className = `level-card ${unlocked ? "" : "locked"} ${level.id === progress.lastSelected ? "is-current" : ""} ${isBedCompleted(level.id) ? "is-completed" : ""}`;
+          applyPathGeometry(card, index);
           card.style.setProperty("--card-glow", COLOR_BY_TONE[level.tone]);
           card.setAttribute("aria-disabled", unlocked ? "false" : "true");
           card.tabIndex = unlocked ? 0 : -1;
@@ -10951,8 +8606,21 @@ transform-origin: center center; transform-box: border-box;
         requestAnimationFrame(() => {
           refreshLevelCards();
           if (grid) grid.removeAttribute("aria-busy");
+          scrollMapToCurrent();
         });
+      } else {
+        updateChapterBanners();
+        scrollMapToCurrent();
       }
+    }
+
+    function scrollMapToCurrent() {
+      const card = document.querySelector("#levelGrid .level-card.is-current")
+        || levelCardParts[Math.max(0, progress.unlocked - 1)]?.card;
+      if (!card) return;
+      const rect = card.getBoundingClientRect();
+      const target = window.scrollY + rect.top - window.innerHeight * .45;
+      window.scrollTo(0, Math.max(0, target));
     }
 
     function renderBoard() {
@@ -10987,10 +8655,64 @@ transform-origin: center center; transform-box: border-box;
         fragment.appendChild(cell);
       }));
       board.appendChild(fragment);
+      capsuleLayer = document.createElement("div");
+      capsuleLayer.className = "capsule-layer";
+      capsuleLayer.setAttribute("aria-hidden", "true");
+      liveCapsule = document.createElement("i");
+      liveCapsule.className = "capsule live-capsule is-idle";
+      capsuleLayer.appendChild(liveCapsule);
+      board.appendChild(capsuleLayer);
+    }
+
+    // Found words are wrapped in a capsule drawn under the letters; the live
+    // capsule follows the finger while dragging. Geometry uses offset* values,
+    // which ignore the fit-to-screen scale transform on the game screen.
+    let capsuleLayer = null;
+    let liveCapsule = null;
+    function hexToRgba(hex, alpha) {
+      const value = parseInt(String(hex).replace("#", ""), 16);
+      return `rgba(${(value >> 16) & 255}, ${(value >> 8) & 255}, ${value & 255}, ${alpha})`;
+    }
+    function positionCapsule(element, from, to) {
+      const a = cells[from.row]?.[from.col];
+      const b = cells[to.row]?.[to.col];
+      if (!element || !a || !b) return;
+      const ax = a.offsetLeft + a.offsetWidth / 2;
+      const ay = a.offsetTop + a.offsetHeight / 2;
+      const bx = b.offsetLeft + b.offsetWidth / 2;
+      const by = b.offsetTop + b.offsetHeight / 2;
+      const thickness = a.offsetWidth * .84;
+      element.style.left = `${(ax + bx) / 2}px`;
+      element.style.top = `${(ay + by) / 2}px`;
+      element.style.width = `${Math.hypot(bx - ax, by - ay) + thickness}px`;
+      element.style.height = `${thickness}px`;
+      element.style.setProperty("--angle", `${Math.atan2(by - ay, bx - ax) * 180 / Math.PI}deg`);
+    }
+    function addFoundCapsule(placement, tint) {
+      if (!capsuleLayer) return;
+      const last = placement.word.length - 1;
+      const element = document.createElement("i");
+      element.className = "capsule found-capsule";
+      element.dataset.r1 = placement.row;
+      element.dataset.c1 = placement.col;
+      element.dataset.r2 = placement.row + placement.dr * last;
+      element.dataset.c2 = placement.col + placement.dc * last;
+      element.style.setProperty("--c", tint);
+      element.style.setProperty("--c-soft", hexToRgba(tint, .32));
+      capsuleLayer.insertBefore(element, liveCapsule);
+      layoutCapsule(element);
+    }
+    function layoutCapsule(element) {
+      positionCapsule(element,
+        { row: Number(element.dataset.r1), col: Number(element.dataset.c1) },
+        { row: Number(element.dataset.r2), col: Number(element.dataset.c2) });
+    }
+    function layoutCapsules() {
+      capsuleLayer?.querySelectorAll(".found-capsule").forEach(layoutCapsule);
     }
 
     // Each word gets its own highlight colour on the board and in the list.
-    const WORD_TINTS = ["#E2735F", "#F0A93B", "#7DB45A", "#3FA7A0", "#5B8FD6", "#9A74D1", "#D9649A", "#C58B3E", "#4FB27E", "#E2856E", "#6C9BC8", "#B57AC2"];
+    const WORD_TINTS = ["#FF8A73", "#FFC14D", "#9BDB6A", "#4FD1C5", "#6FA8FF", "#B48CFF", "#FF7EB6", "#E8A95C", "#5ED29A", "#FF9E80", "#7FC4FF", "#D49BFF"];
     function wordTint(index) { return WORD_TINTS[((index % WORD_TINTS.length) + WORD_TINTS.length) % WORD_TINTS.length]; }
 
     function renderWordList() {
@@ -11015,7 +8737,18 @@ transform-origin: center center; transform-box: border-box;
         fragment.appendChild(item);
       });
       wordListElement.appendChild(fragment);
+      // One flower per word waits on the planter rim and opens when it is found.
+      const blooms = document.getElementById("planterBlooms");
+      if (blooms) {
+        blooms.innerHTML = puzzle.words.map((word, index) =>
+          `<span class="planter-bloom" style="left:${((index + .5) / puzzle.words.length) * 100}%;--i:${index}">${BLOOM_EMOJI[index % BLOOM_EMOJI.length]}</span>`).join("");
+      }
       updateProgress();
+    }
+
+    function openPlanterBloom(word) {
+      const index = puzzle?.words.indexOf(word);
+      document.getElementById("planterBlooms")?.children[index]?.classList.add("is-open");
     }
 
     function updateProgress() {
@@ -11024,6 +8757,7 @@ transform-origin: center center; transform-box: border-box;
       const total = puzzle.words.length;
       document.getElementById("progressTextGame").textContent = `${completed} / ${total}`;
       document.getElementById("progressFill").style.width = `${(completed / total) * 100}%`;
+      document.getElementById("progressBud")?.classList.toggle("is-bloomed", completed === total);
     }
 
     function formatTime(totalSeconds, full = true) {
@@ -11321,6 +9055,7 @@ transform-origin: center center; transform-box: border-box;
       // terminal pointer event after the state array was reset, leaving an
       // amber class behind until the next touch starts.
       board.querySelectorAll(".cell.selecting").forEach(cell => cell.classList.remove("selecting"));
+      liveCapsule?.classList.add("is-idle");
       currentSelection = [];
     }
 
@@ -11485,6 +9220,10 @@ transform-origin: center center; transform-box: border-box;
         }
       }
       currentSelection = nextSelection;
+      if (liveCapsule && nextSelection.length) {
+        positionCapsule(liveCapsule, nextSelection[0], nextSelection[nextSelection.length - 1]);
+        liveCapsule.classList.remove("is-idle");
+      }
     }
 
     function placementMatchesSelection(placement) {
@@ -11692,11 +9431,14 @@ transform-origin: center center; transform-box: border-box;
       foundWords.add(placement.word);
       const tint = wordTint(puzzle.words.indexOf(placement.word));
       selection.forEach(({ row, col }) => { cells[row][col].classList.remove("selecting"); cells[row][col].classList.add("found"); cells[row][col].style.setProperty("--word-tint", tint); });
+      addFoundCapsule(placement, tint);
+      openPlanterBloom(placement.word);
       wordItemByWord.get(placement.word)?.classList.add("found");
       updateProgress();
       scheduleCurrentGameSave();
       SoundFX.wordFound(streak);
       showFoundFeedback(selection);
+      window.Meta?.onWordFound?.({ combo: streak });
       currentSelection = [];
       if (foundWords.size === puzzle.words.length) {
         clearInterval(timerId);
@@ -11805,7 +9547,7 @@ transform-origin: center center; transform-box: border-box;
       document.getElementById("nextLevelButton").disabled = isFinal;
       nextLevelTransitionBusy = false;
       SoundFX.levelComplete();
-      window.Retention?.onBedComplete?.({ wasNewCompletion, levelId: activeLevel.id });
+      window.Meta?.onBedComplete?.({ wasNewCompletion, levelId: activeLevel.id, stars, seconds: secondsElapsed, hintsUsed: sessionHintsUsed, tone: activeLevel.tone, words: puzzle.words.length, isNewRecord });
       modalBackdrop.classList.add("open");
       // Toasts float above everything (including this modal), so the badge
       // reveal reads as "you unlocked this, on top of finishing the bed."
@@ -11846,6 +9588,7 @@ transform-origin: center center; transform-box: border-box;
       const lockNotice = document.getElementById("hintLockNotice");
       const lockNoticeText = document.getElementById("hintLockNoticeText");
       const hints = progress.hints || 0;
+      setText("hudHintsValue", String(hints));
       const isBusy = hintButton?.dataset.hintBusy === "true";
       if (badge) {
         badge.textContent = hints;
@@ -11930,6 +9673,7 @@ transform-origin: center center; transform-box: border-box;
       if (hintButton) hintButton.dataset.hintBusy = "true";
       progress.hints = Math.max(0, (progress.hints || 0) - 1);
       sessionHintsUsed += 1;
+      window.Meta?.onHintUsed?.();
       progress.stats.hintsUsedTotal = (progress.stats.hintsUsedTotal || 0) + 1;
       saveProgress();
       syncHintBalance();
@@ -12032,7 +9776,7 @@ transform-origin: center center; transform-box: border-box;
 
     function updatePlayerPill() {
       const nickname = getNickname() || t("guest");
-      if (playerPillName) playerPillName.textContent = `${t("welcome")}, ${nickname}`;
+      if (playerPillName) playerPillName.textContent = nickname;
       if (playerPillAvatar) playerPillAvatar.textContent = getAvatar();
       if (editProfileButton) editProfileButton.hidden = !hasNickname();
     }
@@ -13950,6 +11694,6 @@ transform-origin: center center; transform-box: border-box;
     // the native channel because WKWebView can install it after this frame.
     window.__notifyFlutterGameReady?.();
   </script>
-  <script src="retention.js"></script>
+  <script src="meta.js"></script>
 </body>
 </html>

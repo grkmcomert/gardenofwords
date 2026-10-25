@@ -7,9 +7,9 @@ import 'package:in_app_review/in_app_review.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
-/// Native side of the game's retention loop (assets/game/retention.js).
+/// Native side of the game's garden systems (assets/game/meta.js).
 ///
-/// The page posts `{type: "state", streak, playedToday, lang, review?}` on the
+/// The page posts `{type: "state", streak, playedToday, lang, bloomAt, review?}` on the
 /// `FlutterRetention` channel. From that we schedule a gentle evening reminder
 /// for the next 14 days (skipping today once a bed is done) and, once, ask
 /// for an App Store review after the player has finished a few beds.
@@ -102,6 +102,7 @@ class RetentionService {
             ?.requestNotificationsPermission();
       }
       await _schedule(streak: streak, playedToday: playedToday, lang: lang);
+      await _scheduleBloom((m['bloomAt'] as num?)?.toInt() ?? 0, lang);
       if (m['review'] == true) {
         final review = InAppReview.instance;
         if (await review.isAvailable()) await review.requestReview();
@@ -109,6 +110,33 @@ class RetentionService {
     } catch (error) {
       debugPrint('Retention message failed: $error');
     }
+  }
+
+  static const _bloomId = 4200;
+  static const _bloomCopy = <String, (String, String)>{
+    'en': ('Your greenhouse bloomed 🌷', 'A flower is ready to harvest. Come pick your reward!'),
+    'de': ('Dein Gewächshaus blüht 🌷', 'Eine Blume ist erntebereit. Hol dir deine Belohnung!'),
+    'tr': ('Seranda çiçek açtı 🌷', 'Toplamaya hazır bir çiçeğin var. Gel ödülünü al!'),
+  };
+
+  /// One notification for the next greenhouse bloom (`bloomAt` is epoch ms, 0 = none).
+  Future<void> _scheduleBloom(int bloomAt, String lang) async {
+    await _plugin.cancel(id: _bloomId);
+    if (bloomAt <= 0) return;
+    final at = tz.TZDateTime.fromMillisecondsSinceEpoch(tz.local, bloomAt);
+    if (!at.isAfter(tz.TZDateTime.now(tz.local).add(const Duration(minutes: 1)))) return;
+    final (title, body) = _bloomCopy[lang] ?? _bloomCopy['en']!;
+    await _plugin.zonedSchedule(
+      id: _bloomId,
+      scheduledDate: at,
+      notificationDetails: const NotificationDetails(
+        android: AndroidNotificationDetails('greenhouse', 'Greenhouse', importance: Importance.defaultImportance),
+        iOS: DarwinNotificationDetails(),
+      ),
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      title: title,
+      body: body,
+    );
   }
 
   Future<void> _schedule({required int streak, required bool playedToday, required String lang}) async {

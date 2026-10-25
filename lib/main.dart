@@ -29,9 +29,9 @@ Future<void> main() async {
   ]);
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
-      statusBarColor: Color(0xFFEFE6D2),
-      statusBarIconBrightness: Brightness.dark,
-      statusBarBrightness: Brightness.light,
+      statusBarColor: Color(0xFF0E1A15),
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.dark,
       systemNavigationBarColor: Colors.black,
       systemNavigationBarIconBrightness: Brightness.light,
     ),
@@ -104,7 +104,8 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
   // The WebView starts on the moonlit default theme before its first JS theme
   // message reaches Flutter. Keep the native banner frame on that same surface
   // from the very first frame, otherwise the ad gets a garden-coloured surround.
-  Color _themeSurfaceColor = const Color(0xFFA7BBD5);
+  static const _darkSurface = Color(0xFF0E1A15);
+  Color _themeSurfaceColor = _darkSurface;
   String _themeBackgroundAsset = 'assets/game/images/themes/moonlit.webp';
   bool _bannerVisible = false;
   bool _bannerLoading = false;
@@ -181,7 +182,7 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
       // An opaque WebView avoids an extra transparent platform-view
       // composition pass on Android. Match the moonlit default before the
       // first theme message arrives from the page.
-      ..setBackgroundColor(const Color(0xFFA7BBD5))
+      ..setBackgroundColor(_darkSurface)
       ..addJavaScriptChannel(
         'FlutterGameContent',
         onMessageReceived: (message) {
@@ -794,24 +795,8 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
   }
 
   void _handleGameThemeMessage(String theme) {
-    final nextColor = switch (theme) {
-      'moonlit' => const Color(0xFFA7BBD5),
-      'autumn' => const Color(0xFFD89D78),
-      'seaside' => const Color(0xFF8FC8D0),
-      'rose' => const Color(0xFFE8C5C5),
-      'forest' => const Color(0xFFB7D3B6),
-      'lavender' => const Color(0xFFDEC9DA),
-      'winter' => const Color(0xFFB6CDE0),
-      'dawn-garden' => const Color(0xFFF2C28E),
-      'rainy-greenhouse' => const Color(0xFF9FB8B4),
-      'meadowlight' => const Color(0xFFD4DFB4),
-      'orchard-walk' => const Color(0xFFD5B36B),
-      'tropical-grove' => const Color(0xFFA9D5A4),
-      'sunset-terrace' => const Color(0xFFD89B77),
-      'desert-bloom' => const Color(0xFFD3AA86),
-      'misty-lake' => const Color(0xFFB4C8D4),
-      _ => const Color(0xFFC9DCC7),
-    };
+    // Every theme shares the dark "night garden" chrome; only the painting changes.
+    const nextColor = _darkSurface;
     final nextBackgroundAsset = switch (theme) {
       'moonlit' => 'assets/game/images/themes/moonlit.webp',
       'autumn' => 'assets/game/images/themes/autumn.webp',
@@ -1827,15 +1812,28 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
                     duration: const Duration(milliseconds: 320),
                     curve: Curves.easeOut,
                     child: Container(
-                      color: const Color(0xFFEFE6D2),
                       alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: _darkSurface,
+                        image: DecorationImage(
+                          image: AssetImage(_themeBackgroundAsset),
+                          fit: BoxFit.cover,
+                          colorFilter: const ColorFilter.mode(Color(0x99060C09), BlendMode.darken),
+                        ),
+                      ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Image.asset(
-                            'assets/game/images/garden-of-words-logo.png',
-                            width: 240,
-                            fit: BoxFit.contain,
+                          const Text(
+                            'Garden\nof Words',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Color(0xFFFFF3D9),
+                              fontSize: 46,
+                              height: 1.0,
+                              fontWeight: FontWeight.w900,
+                              shadows: [Shadow(color: Color(0xFF3B2410), offset: Offset(0, 4), blurRadius: 0)],
+                            ),
                           ),
                           const SizedBox(height: 28),
                           SizedBox(
@@ -1844,9 +1842,9 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
                               borderRadius: BorderRadius.circular(4),
                               child: const LinearProgressIndicator(
                                 minHeight: 5,
-                                backgroundColor: Color(0x33BE6644),
+                                backgroundColor: Color(0x33B8E986),
                                 valueColor: AlwaysStoppedAnimation<Color>(
-                                  Color(0xFFBE6644),
+                                  Color(0xFF8CCB5A),
                                 ),
                               ),
                             ),
