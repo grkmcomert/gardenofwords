@@ -83,7 +83,7 @@ jobs:
           grep -Fq "PRODUCT_BUNDLE_IDENTIFIER = $BUNDLE_ID;" "$project_file" || { echo "Bundle ID uyuşmuyor"; exit 1; }
           perl -0pi -e 's/TARGETED_DEVICE_FAMILY = "1,2";/TARGETED_DEVICE_FAMILY = "1";/g' "$project_file"
           keychain initialize
-          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --strict-match-identifier --type IOS_APP_STORE --create
           keychain add-certificates
           xcode-project use-profiles --custom-export-options='{"manageAppVersionAndBuildNumber":false}'
 
