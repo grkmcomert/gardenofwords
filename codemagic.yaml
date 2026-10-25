@@ -1,15 +1,15 @@
 definitions:
   environment: &ios_environment
     flutter: 3.47.2
-    # Match the verified 1.1.27+31 release (Codemagic build 45).
+    # Toolchain verified with the 1.1.27+31 release (Codemagic build 45).
     xcode: 26.4.1
     cocoapods: 1.16.2
     ios_signing:
       distribution_type: app_store
       bundle_identifier: com.grkmcomert.gardenofwords
     vars: &ios_vars
-      BUILD_NAME: "1.1.28"
-      BUILD_NUMBER: "32"
+      BUILD_NAME: "1.1.29"
+      BUILD_NUMBER: "33"
       BUNDLE_ID: "com.grkmcomert.gardenofwords"
       FLUTTER_VERSION: "3.47.2"
       # CI publishing credential; never pass to Dart or bundle in assets.
