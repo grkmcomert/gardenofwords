@@ -9,17 +9,18 @@ HERE="$ROOT/tooling/store_screenshots"
 WORK="$ROOT/build/store_shots"
 OUT="$ROOT/store_screenshots"
 CHROME="/c/Program Files/Google/Chrome/Application/chrome.exe"
-rm -rf "$WORK"; mkdir -p "$WORK" "$OUT/6.9" "$OUT/6.5"
+rm -rf "$WORK" || true; mkdir -p "$WORK" "$OUT/6.9" "$OUT/6.5"
 cp -r "$ROOT/assets/game" "$WORK/site"
 cp "$HERE/harness.js" "$WORK/site/"
 cp "$HERE/frame.html" "$WORK/"
 sed -i 's|<script src="meta.js"></script>|<script src="meta.js"></script><script src="harness.js"></script>|' "$WORK/site/index.html"
 
 enc() { local s="$1"; s="${s//%/%25}"; s="${s// /%20}"; s="${s//&/%26}"; s="${s//=/%3D}"; s="${s//\?/%3F}"; s="${s//#/%23}"; s="${s//\'/%27}"; echo -n "$s"; }
-chrome() { # out.png window dsf budget url
-  rm -rf "$WORK/prof"
+RUN=0
+chrome() { # out.png window dsf budget url  (fresh profile each run; exiting Chrome can still lock the old one)
+  RUN=$((RUN + 1))
   "$CHROME" --headless=new --disable-gpu --hide-scrollbars --allow-file-access-from-files \
-    --user-data-dir="$(cygpath -w "$WORK/prof")" --force-device-scale-factor=$3 \
+    --user-data-dir="$(cygpath -w "$WORK/prof$RUN")" --force-device-scale-factor=$3 \
     --window-size=$2 --virtual-time-budget=$4 --screenshot="$(cygpath -w "$1")" "$5" 2>/dev/null
 }
 resize() { # in out w h  (scales the 1290x2796 frame, drops alpha)
