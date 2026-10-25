@@ -1,0 +1,92 @@
+<!doctype html>
+<!-- App Store screenshot frame: headline, a captured game screen in a phone
+     and the garden bunny mascot. Rendered by make.sh at 1290x2796.
+     Query: img (game capture), t (title), s (subtitle), b (bubble), m (mascot side). -->
+<html>
+<head>
+<meta charset="utf-8" />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Figtree:wght@700;800&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; width: 500px; height: 1084px; overflow: hidden; }
+  body {
+    position: relative;
+    font-family: "Figtree", system-ui, sans-serif;
+    background:
+      radial-gradient(circle at 20% 8%, rgba(255, 236, 160, .35), transparent 38%),
+      radial-gradient(circle at 90% 70%, rgba(120, 200, 90, .35), transparent 45%),
+      linear-gradient(170deg, #4E9A3A 0%, #2E6F2C 48%, #17401C 100%);
+  }
+  .deco { position: absolute; font-size: 40px; opacity: .22; }
+  .head { position: absolute; left: 0; right: 0; top: 44px; padding: 0 30px; text-align: center; color: #fff; }
+  .head h1 { margin: 0; font-family: "Fredoka", sans-serif; font-size: 44px; font-weight: 700; line-height: 1.04; letter-spacing: -.3px; text-shadow: 0 4px 0 #1B4A1C, 0 10px 24px rgba(0, 0, 0, .3); }
+  .head p { margin: 12px 0 0; color: #F4FFE6; font-size: 20px; font-weight: 800; line-height: 1.25; text-shadow: 0 2px 6px rgba(0, 0, 0, .35); }
+  .phone {
+    position: absolute;
+    left: 50%;
+    top: 222px;
+    width: 373px;
+    height: 806px;
+    margin-left: -186.5px;
+    border: 11px solid #0E1410;
+    border-radius: 56px;
+    overflow: hidden;
+    background: #0B1612;
+    box-shadow: 0 0 0 2px #2D3A30, 0 30px 60px rgba(0, 0, 0, .45);
+  }
+  .screen { position: absolute; left: 0; top: 40px; width: 351px; height: 744px; overflow: hidden; }
+  .screen img { display: block; width: 450px; height: auto; }
+  .notch { position: absolute; left: 50%; top: 9px; z-index: 2; width: 96px; height: 26px; margin-left: -48px; border-radius: 20px; background: #0E1410; }
+  .statusbar { position: absolute; left: 0; right: 0; top: 0; z-index: 1; display: flex; justify-content: space-between; align-items: center; height: 40px; padding: 4px 28px 0 30px; color: #fff; font: 700 15px "Figtree", sans-serif; background: #0B1612; }
+  .mascot { position: absolute; bottom: -4px; z-index: 3; width: 190px; height: 180px; filter: drop-shadow(0 12px 14px rgba(0, 0, 0, .4)); }
+  .mascot.left { left: -12px; }
+  .mascot.right { right: -12px; transform: scaleX(-1); }
+  .bunny { width: 100%; height: 100%; background: url("site/images/garden-of-words-logo.png") no-repeat; background-size: 860px auto; background-position: -552px -2px; }
+  .bubble {
+    position: absolute;
+    bottom: 182px;
+    z-index: 4;
+    max-width: 210px;
+    padding: 12px 16px;
+    border: 3px solid #1B4A1C;
+    border-radius: 20px;
+    background: #FFFDF4;
+    color: #1E3A15;
+    font-family: "Fredoka", sans-serif;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.15;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, .3);
+  }
+  .bubble.left { left: 18px; }
+  .bubble.right { right: 18px; text-align: right; }
+  .bubble::after { content: ""; position: absolute; bottom: -14px; width: 20px; height: 20px; border-right: 3px solid #1B4A1C; border-bottom: 3px solid #1B4A1C; background: #FFFDF4; transform: rotate(45deg); }
+  .bubble.left::after { left: 40px; }
+  .bubble.right::after { right: 40px; }
+</style>
+</head>
+<body>
+  <span class="deco" style="left:18px;top:180px">🍃</span>
+  <span class="deco" style="right:22px;top:150px">🌸</span>
+  <span class="deco" style="left:30px;top:640px">🌼</span>
+  <span class="deco" style="right:26px;top:560px">🍀</span>
+  <div class="head"><h1 id="t"></h1><p id="s"></p></div>
+  <div class="phone">
+    <span class="notch"></span>
+    <div class="statusbar"><span>9:41</span><svg width="70" height="14" viewBox="0 0 70 14" fill="#fff"><rect x="0" y="9" width="3.5" height="5" rx="1"/><rect x="5" y="6" width="3.5" height="8" rx="1"/><rect x="10" y="3" width="3.5" height="11" rx="1"/><rect x="15" y="0" width="3.5" height="14" rx="1"/><path d="M31 13.5 27.6 10a5 5 0 0 1 6.8 0zM24.8 7.2a9 9 0 0 1 12.4 0l-1.5 1.5a7 7 0 0 0-9.4 0zM22 4.4a13 13 0 0 1 18 0l-1.5 1.5a11 11 0 0 0-15 0z"/><rect x="46" y="1.5" width="20" height="11" rx="3" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.4"/><rect x="48" y="3.5" width="16" height="7" rx="1.5"/><rect x="67" y="5" width="2" height="4" rx="1" fill-opacity=".5"/></svg></div>
+    <div class="screen"><img id="shot" alt="" /></div>
+  </div>
+  <div id="m" class="mascot left"><div class="bunny"></div></div>
+  <div id="b" class="bubble left"></div>
+  <script>
+    const q = new URLSearchParams(location.search);
+    document.getElementById("t").textContent = q.get("t") || "";
+    document.getElementById("s").textContent = q.get("s") || "";
+    const bubble = document.getElementById("b");
+    if (q.get("b")) bubble.textContent = q.get("b"); else bubble.remove();
+    const side = q.get("m") || "left";
+    document.getElementById("m").className = `mascot ${side}`;
+    bubble.className = `bubble ${side}`;
+    document.getElementById("shot").src = q.get("img");
+  </script>
+</body>
+</html>
