@@ -4,7 +4,7 @@ description: Garden of Words
 
 publish_to: 'none'
 
-version: 1.1.27+31
+version: 1.1.28+32
 
 environment:
   sdk: '>=3.10.0 <4.0.0'
@@ -24,6 +24,10 @@ dependencies:
   purchases_flutter: ^10.9.1
   purchases_ui_flutter: ^10.9.1
   url_launcher: ^6.3.1
+  flutter_local_notifications: ^22.3.3
+  timezone: ^0.11.2
+  flutter_timezone: ^5.1.1
+  in_app_review: ^2.0.12
 
 dev_dependencies:
   flutter_test:

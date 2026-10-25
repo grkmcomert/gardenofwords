@@ -8,8 +8,8 @@ definitions:
       distribution_type: app_store
       bundle_identifier: com.grkmcomert.gardenofwords
     vars: &ios_vars
-      BUILD_NAME: "1.1.27"
-      BUILD_NUMBER: "31"
+      BUILD_NAME: "1.1.28"
+      BUILD_NUMBER: "32"
       BUNDLE_ID: "com.grkmcomert.gardenofwords"
       FLUTTER_VERSION: "3.47.2"
       # CI publishing credential; never pass to Dart or bundle in assets.

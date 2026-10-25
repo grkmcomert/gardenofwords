@@ -10605,6 +10605,7 @@ transform-origin: center center; transform-box: border-box;
       const directContinue = progress.unlocked > 1 && progress.lastSelected === progress.unlocked;
       document.getElementById("mainPlayText").textContent = directContinue ? t("continueBed", { id: current.id }) : t("play");
       updateHeroJournal();
+      window.Retention?.onHome?.();
     }
 
     /* ---------- Achievements: unlocking + toast queue + modal ---------- */
@@ -11797,6 +11798,7 @@ transform-origin: center center; transform-box: border-box;
       document.getElementById("nextLevelButton").disabled = isFinal;
       nextLevelTransitionBusy = false;
       SoundFX.levelComplete();
+      window.Retention?.onBedComplete?.({ wasNewCompletion, levelId: activeLevel.id });
       modalBackdrop.classList.add("open");
       // Toasts float above everything (including this modal), so the badge
       // reveal reads as "you unlocked this, on top of finishing the bed."
@@ -13941,5 +13943,6 @@ transform-origin: center center; transform-box: border-box;
     // the native channel because WKWebView can install it after this frame.
     window.__notifyFlutterGameReady?.();
   </script>
+  <script src="retention.js"></script>
 </body>
 </html>

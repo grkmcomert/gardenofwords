@@ -1,0 +1,124 @@
+# Garden of Words iOS: Shorebird release (keeps over-the-air game patches working) -> signed IPA -> TestFlight.
+# Mirrors the Codemagic "kelimeler-bahcesi-ios" workflow. Signing uses the App Store Connect API key
+# (codemagic-cli-tools), so certificates and the App Store profile are fetched or created automatically.
+#
+# Repository secrets:
+#   APP_STORE_CONNECT_ISSUER_ID, APP_STORE_CONNECT_KEY_IDENTIFIER, APP_STORE_CONNECT_PRIVATE_KEY (.p8 contents)
+#   CERTIFICATE_PRIVATE_KEY  RSA key of the distribution certificate (PEM)
+#   SHOREBIRD_TOKEN          Shorebird CI token
+name: iOS IPA (Shorebird)
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload_to_testflight:
+        description: "TestFlight'a yükle"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-release
+  cancel-in-progress: false
+
+env:
+  BUNDLE_ID: com.grkmcomert.gardenofwords
+  APP_STORE_APP_ID: "6797357374"
+  FLUTTER_VERSION: "3.47.2"
+
+jobs:
+  ipa:
+    runs-on: macos-latest
+    timeout-minutes: 90
+    env:
+      APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+      APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.APP_STORE_CONNECT_KEY_IDENTIFIER }}
+      APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+      CERTIFICATE_PRIVATE_KEY: ${{ secrets.CERTIFICATE_PRIVATE_KEY }}
+      SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check secrets
+        run: |
+          missing=0
+          for v in APP_STORE_CONNECT_ISSUER_ID APP_STORE_CONNECT_KEY_IDENTIFIER APP_STORE_CONNECT_PRIVATE_KEY CERTIFICATE_PRIVATE_KEY SHOREBIRD_TOKEN; do
+            if [ -z "${!v}" ]; then echo "::error::$v secret eksik"; missing=1; fi
+          done
+          exit $missing
+
+      - name: Select latest Xcode
+        run: |
+          XCODE_PATH=$(ls -d /Applications/Xcode*.app | sort -V | tail -1)
+          sudo xcode-select -s "$XCODE_PATH/Contents/Developer"
+          xcodebuild -version
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install Shorebird and codemagic-cli-tools
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh | bash
+          echo "$HOME/.shorebird/bin" >> "$GITHUB_PATH"
+          pip3 install --break-system-packages codemagic-cli-tools || pip3 install codemagic-cli-tools
+
+      - name: Prepare Flutter and patchable game code
+        run: |
+          flutter config --no-enable-swift-package-manager
+          flutter pub get
+          dart tooling/build_shorebird_game.dart
+          flutter test test/shorebird_game_test.dart
+
+      - name: Install CocoaPods dependencies
+        run: cd ios && pod install
+
+      - name: Code signing (App Store Connect API)
+        run: |
+          project_file="ios/Runner.xcodeproj/project.pbxproj"
+          grep -Fq "PRODUCT_BUNDLE_IDENTIFIER = $BUNDLE_ID;" "$project_file" || { echo "Bundle ID uyuşmuyor"; exit 1; }
+          perl -0pi -e 's/TARGETED_DEVICE_FAMILY = "1,2";/TARGETED_DEVICE_FAMILY = "1";/g' "$project_file"
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
+          keychain add-certificates
+          xcode-project use-profiles --custom-export-options='{"manageAppVersionAndBuildNumber":false}'
+
+      - name: Version
+        id: version
+        run: |
+          NAME=$(grep '^version:' pubspec.yaml | sed 's/version: *//; s/+.*//')
+          BUILD=$(grep '^version:' pubspec.yaml | sed 's/.*+//')
+          LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APP_ID" 2>/dev/null | tail -1 || echo 0)
+          [[ "$LATEST" =~ ^[0-9]+$ ]] || LATEST=0
+          [ "$BUILD" -le "$LATEST" ] && BUILD=$((LATEST + 1))
+          echo "Sürüm $NAME ($BUILD), TestFlight'taki son derleme: $LATEST"
+          echo "build_name=$NAME" >> "$GITHUB_OUTPUT"
+          echo "build_number=$BUILD" >> "$GITHUB_OUTPUT"
+
+      - name: Shorebird iOS release
+        run: |
+          shorebird release ios \
+            --flutter-version="$FLUTTER_VERSION" \
+            --export-options-plist="$HOME/export_options.plist" \
+            -- \
+            --build-name="${{ steps.version.outputs.build_name }}" \
+            --build-number="${{ steps.version.outputs.build_number }}"
+          ls -la build/ios/ipa
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gardenofwords-${{ steps.version.outputs.build_name }}-${{ steps.version.outputs.build_number }}-ipa
+          path: build/ios/ipa/*.ipa
+          if-no-files-found: error
+
+      - name: Upload to TestFlight
+        if: ${{ inputs.upload_to_testflight }}
+        run: app-store-connect publish --path "$(ls build/ios/ipa/*.ipa | head -1)"
+
+      - name: Clean up keychain
+        if: always()
+        run: keychain use-login || true

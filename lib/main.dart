@@ -14,6 +14,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
+import 'retention_service.dart';
 import 'revenuecat_service.dart';
 import 'ad_load_backoff.dart';
 import 'javascript_reply_queue.dart';
@@ -218,6 +219,11 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
       ..addJavaScriptChannel(
         'FlutterAudio',
         onMessageReceived: (message) => _handleAudioMessage(message.message),
+      )
+      ..addJavaScriptChannel(
+        'FlutterRetention',
+        onMessageReceived: (message) =>
+            unawaited(RetentionService.instance.handle(message.message)),
       )
       ..setNavigationDelegate(
         NavigationDelegate(
