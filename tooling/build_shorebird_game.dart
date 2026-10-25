@@ -24,6 +24,24 @@ void main(List<String> args) {
     );
     return '<script${match[1]}${match[3]}>\n$script\n</script>';
   });
+  final localStyle = RegExp(
+    r'''<link\b[^>]*\brel=["']stylesheet["'][^>]*\bhref=["']([^"']+)["'][^>]*>''',
+    caseSensitive: false,
+  );
+  html = html.replaceAllMapped(localStyle, (match) {
+    final source = match[1]!;
+    final uri = Uri.parse(source);
+    if (uri.hasScheme || source.startsWith('//')) return match[0]!;
+    final resolved = root.uri.resolve(source);
+    if (!resolved.toString().startsWith(root.uri.toString())) {
+      throw StateError('Game stylesheet escapes assets/game: $source');
+    }
+    final css = File.fromUri(resolved).readAsStringSync().replaceAll(
+      RegExp('</style', caseSensitive: false),
+      r'<\/style',
+    );
+    return '<style>\n$css\n</style>';
+  });
 
   final encoded = base64Encode(gzip.encode(utf8.encode(html)));
   final output = StringBuffer()

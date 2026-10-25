@@ -201,7 +201,7 @@
   <link rel="icon" type="image/png" href="images/garden-of-words-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500;1,600&family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500;1,600&family=Work+Sans:wght@400;500;600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     :root {
       --paper: #EFE6D2;
@@ -2708,6 +2708,7 @@ transform-origin: center center; transform-box: border-box;
       padding-bottom: calc(clamp(6px, 1.6vw, 16px) + 6px);
     }
   </style>
+  <link rel="stylesheet" href="redesign.css" />
 </head>
 <body>
   <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
@@ -10099,7 +10100,7 @@ transform-origin: center center; transform-box: border-box;
           if (!Number.isInteger(row) || !Number.isInteger(col) || !cells[row] || !cells[row][col]) return;
           path.push(cells[row][col]);
         }
-        path.forEach(cell => cell.classList.add("found"));
+        path.forEach(cell => { cell.classList.add("found"); cell.style.setProperty("--word-tint", wordTint(puzzle.words.indexOf(word))); });
         const wordItem = wordItemByWord.get(word);
         if (wordItem) wordItem.classList.add("found");
       });
@@ -10988,6 +10989,10 @@ transform-origin: center center; transform-box: border-box;
       board.appendChild(fragment);
     }
 
+    // Each word gets its own highlight colour on the board and in the list.
+    const WORD_TINTS = ["#E2735F", "#F0A93B", "#7DB45A", "#3FA7A0", "#5B8FD6", "#9A74D1", "#D9649A", "#C58B3E", "#4FB27E", "#E2856E", "#6C9BC8", "#B57AC2"];
+    function wordTint(index) { return WORD_TINTS[((index % WORD_TINTS.length) + WORD_TINTS.length) % WORD_TINTS.length]; }
+
     function renderWordList() {
       wordListElement.replaceChildren();
       wordItemByWord = new Map();
@@ -10996,6 +11001,7 @@ transform-origin: center center; transform-box: border-box;
         const item = document.createElement("li");
         item.className = "word-item";
         item.style.setProperty("--word-index", index);
+        item.style.setProperty("--word-tint", wordTint(index));
         item.dataset.word = word;
         const wordLabel = document.createElement("span");
         wordLabel.className = "word-label";
@@ -11684,7 +11690,8 @@ transform-origin: center center; transform-box: border-box;
       if (!placement || foundWords.has(placement.word) || !placementMatchesSelection(placement)) { clearLiveSelection(); return; }
       const selection = [...currentSelection];
       foundWords.add(placement.word);
-      selection.forEach(({ row, col }) => { cells[row][col].classList.remove("selecting"); cells[row][col].classList.add("found"); });
+      const tint = wordTint(puzzle.words.indexOf(placement.word));
+      selection.forEach(({ row, col }) => { cells[row][col].classList.remove("selecting"); cells[row][col].classList.add("found"); cells[row][col].style.setProperty("--word-tint", tint); });
       wordItemByWord.get(placement.word)?.classList.add("found");
       updateProgress();
       scheduleCurrentGameSave();
