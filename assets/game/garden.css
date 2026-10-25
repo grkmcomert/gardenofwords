@@ -1780,3 +1780,111 @@ body.home-active .app { overflow: visible; }
 .sign-svg { height: clamp(150px, 25vh, 260px); }
 .menu-card { padding: clamp(8px, 1.3vh, 16px) 6px; }
 .menu-icon { font-size: clamp(1.7rem, 3.6vh, 2.3rem); }
+
+/* ============================ Perl, the garden bunny ============================ */
+.perl-hello { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 12px; }
+.perl-avatar {
+  position: relative;
+  display: block;
+  width: 132px;
+  height: 132px;
+  overflow: hidden;
+  border: 4px solid #E8C989;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 30%, #CFEFFF, #8FCBEA 60%, #6FAE6A 61%, #4F8F3E);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .45), 0 0 0 6px rgba(158, 211, 106, .18);
+}
+.perl-img {
+  position: absolute;
+  inset: 0;
+  background: url("images/garden-of-words-logo.png") no-repeat;
+  background-size: 567px auto;
+  background-position: -361px 6px;
+  transform-origin: 50% 90%;
+  animation: perlIdle 3s ease-in-out infinite;
+}
+.perl-bubble {
+  position: relative;
+  max-width: 300px;
+  padding: 11px 15px;
+  border-radius: 18px;
+  background: #FFFDF4;
+  color: #24401A !important;
+  font-family: var(--font-display);
+  font-size: 1.02rem !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .3);
+}
+.perl-bubble::before { content: ""; position: absolute; left: 50%; top: -8px; width: 16px; height: 16px; margin-left: -8px; background: #FFFDF4; transform: rotate(45deg); }
+.perl-hello.is-entering .perl-avatar { animation: perlPop .75s cubic-bezier(.2, 1.6, .4, 1) both; }
+.perl-hello.is-entering .perl-img { animation: perlWave 1.1s ease-in-out .6s 2, perlIdle 3s ease-in-out 2.8s infinite; }
+.perl-hello.is-entering .perl-bubble { animation: bubbleIn .45s cubic-bezier(.2, 1.5, .4, 1) .55s both; }
+@keyframes perlPop { 0% { opacity: 0; transform: translateY(60px) scale(.4); } 100% { opacity: 1; transform: none; } }
+@keyframes perlWave { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-9deg); } 75% { transform: rotate(9deg); } }
+@keyframes perlIdle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes bubbleIn { from { opacity: 0; transform: translateY(10px) scale(.8); } to { opacity: 1; transform: none; } }
+.nickname-modal { padding-top: 22px; }
+
+.perl-cheer {
+  position: fixed;
+  inset: 0;
+  z-index: 82;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: radial-gradient(circle at 50% 40%, rgba(70, 110, 40, .7), rgba(4, 10, 6, .88) 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s ease;
+}
+.perl-cheer.open { opacity: 1; pointer-events: auto; }
+.perl-cheer-card { position: relative; display: grid; justify-items: center; gap: 16px; width: min(360px, 100%); text-align: center; }
+.perl-cheer .perl-avatar { width: 170px; height: 170px; animation: perlPop .75s cubic-bezier(.2, 1.6, .4, 1) both; }
+.perl-cheer .perl-img { background-size: 730px auto; background-position: -466px 8px; animation: perlHop 1s ease-in-out .7s 3, perlIdle 3s ease-in-out 3.8s infinite; }
+.perl-cheer .perl-bubble { font-size: 1.15rem !important; animation: bubbleIn .45s cubic-bezier(.2, 1.5, .4, 1) .5s both; }
+.perl-cheer .primary-button { min-width: 200px; animation: riseIn .5s ease .8s both; }
+@keyframes perlHop { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-16px) rotate(-5deg); } 60% { transform: translateY(-16px) rotate(5deg); } }
+
+.premium-teaser {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 6px;
+  padding: 4px 10px;
+  border: 1px solid rgba(255, 202, 79, .6);
+  border-radius: 99px;
+  background: rgba(255, 202, 79, .12);
+  color: var(--gold);
+  font-size: .68rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.levelup .premium-teaser { position: relative; margin-top: 4px; padding: 6px 14px; font-size: .85rem; animation: riseIn .5s ease .75s both; }
+.seed-text .premium-teaser, .quest-bonus-text .premium-teaser, .quest-text .premium-teaser { justify-self: start; }
+
+/* ============================ Home: no dead space ============================ */
+/* The sign keeps its size; the menu grid grows to use the rest of the screen. */
+.sign-scene { flex: 0 0 auto; }
+.sign-svg { height: clamp(150px, 26vh, 300px); }
+.menu-grid { flex: 1 1 auto; grid-auto-rows: 1fr; max-height: 520px; }
+.menu-card { justify-content: center; }
+.menu-icon { font-size: clamp(1.8rem, 4.4vh, 2.8rem); }
+.menu-title { font-size: clamp(.8rem, min(2.2vh, 3.9vw), 1.08rem); }
+.menu-sub { font-size: clamp(.62rem, 1.5vh, .76rem); }
+.chapter-card { padding-block: clamp(10px, 1.8vh, 18px); }
+.home-screen { gap: clamp(8px, 1.4vh, 14px); }
+
+/* ============================ Game: a bigger board ============================ */
+/* Edge-to-edge planter with slim borders so cells are large and easy to hit. */
+body.game-active .app { padding-left: 6px; padding-right: 6px; width: min(640px, 100%); }
+.game-top, .game-progress, .word-panel, .game-actions { margin-left: 6px; margin-right: 6px; }
+.board-frame { padding: 7px; border-radius: 20px; margin-top: 16px; }
+.board { padding: 2px; border-radius: 13px; }
+.cell { font-size: calc((100cqw - 18px) / var(--grid-size, 10) * .58); }
+.planter-blooms { left: 10px; right: 10px; top: -24px; }
+.board-ivy { left: 6px; right: 6px; }
+.game-layout { gap: 10px; }
+.word-panel { padding: 8px; }
+.word-item { min-height: 30px; padding: 3px 11px 3px 8px; font-size: .84rem; }
+.hint-button { min-height: 50px; }
+.game-actions { min-height: 54px; }

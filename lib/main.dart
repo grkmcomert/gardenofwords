@@ -1756,6 +1756,30 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    // Android back closes the game's top modal or screen first; only on the
+    // home screen does it leave the app.
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) unawaited(_handleAndroidBack());
+      },
+      child: _buildGame(context),
+    );
+  }
+
+  Future<void> _handleAndroidBack() async {
+    try {
+      final handled = await _controller.runJavaScriptReturningResult(
+        'window.__nativeSwipeBack ? String(window.__nativeSwipeBack()) : "false"',
+      );
+      if (handled.toString().contains('true')) return;
+    } catch (error) {
+      debugPrint('Back handling failed: $error');
+    }
+    await SystemNavigator.pop();
+  }
+
+  Widget _buildGame(BuildContext context) {
     final banner = _bannerAd;
     return Scaffold(
       // Arka plan rengi oyunla aynı olsun, siyah boşluk görünmesin

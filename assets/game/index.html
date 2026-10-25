@@ -535,8 +535,11 @@
   </div>
 
   <div id="nicknameModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="nicknameModalTitle" aria-hidden="true">
-    <div class="modal">
-      <div class="celebration"><svg class="icon"><use href="#icon-flower"></use></svg></div>
+    <div class="modal nickname-modal">
+      <div class="perl-hello" aria-hidden="true">
+        <span class="perl-avatar"><span class="perl-img"></span></span>
+        <p id="perlGreeting" class="perl-bubble">Hi! I am Perl.</p>
+      </div>
       <h2 id="nicknameModalTitle">Name your garden</h2>
       <p id="nicknameModalText">Pick a nickname and an avatar for your garden journal. Shown on every bed's leaderboard.</p>
       <input id="nicknameInput" class="pin-field nickname-field" type="text" maxlength="18" placeholder="e.g. Wildflower Wren" autocomplete="off" enterkeyhint="done" aria-label="Nickname" />
@@ -956,7 +959,8 @@
     const BOARD_SIZE_BONUS = 2;
     const MAX_BOARD_SIZE = 13;
     const INITIAL_HINTS = 1;
-    const HINT_REWARD_INTERVAL = 6;
+    const HINT_REWARD_INTERVAL = 6; // Premium: +1 hint every 6 new beds
+    const FREE_HINT_REWARD_INTERVAL = 10; // free players earn it more slowly
     const SUPPORTED_LANGUAGES = ["en", "de", "tr"];
     const LANGUAGE_LOCALES = { en: "en-US", de: "de-DE", tr: "tr-TR" };
 
@@ -1099,7 +1103,7 @@
         wordsToFind: "Words to find", wordProgress: "Word-finding progress", letterGrid: "Letter grid", backHome: "Back to home", backGarden: "Back to the garden",
         viewBedLeaderboard: "View {bed}'s leaderboard", viewThisBedLeaderboard: "View this bed's leaderboard", nextBed: "Next bed", wellGrown: "Well grown!",
         completedBed: "You've completed the bed.", leaderboard: "Leaderboard", wholeGardenBloom: "The whole garden's in bloom!", finalCompletion: "You tended all {count} beds in <strong>{time}</strong>. Replay any bed whenever you like.",
-        bedCompletion: "Bed {id} is fully bloomed. Time: <strong>{time}</strong>", newBest: "New best time!", hintEarned: "+1 Hint earned!", hintRewardTitle: "A new hint bloomed!", hintRewardMessage: "Six beds completed · +1 hint",
+        bedCompletion: "Bed {id} is fully bloomed. Time: <strong>{time}</strong>", newBest: "New best time!", hintEarned: "+1 Hint earned!", hintRewardTitle: "A new hint bloomed!", hintRewardMessage: "Garden milestone · +1 hint",
         enterPin: "Enter PIN", pinDescription: "Type the 4-digit code to toggle Premium test mode and remove ads.", pinCode: "PIN code", cancel: "Cancel", confirm: "Confirm",
         nameGarden: "Name your garden", nicknameDescription: "Pick a nickname and an avatar for your garden journal. Shown on every bed's leaderboard.",
         nicknamePlaceholder: "e.g. Wildflower Wren", nickname: "Nickname", avatar: "Avatar", chooseAvatar: "Choose an avatar", nicknameLock: "You can update your name and avatar from the edit button once every 24 hours.", plantName: "Plant my name", editProfile: "Edit profile", editProfileDescription: "Update your garden name and avatar. You can edit once every 24 hours.", profileEditCooldown: "You can edit again in {time}.", profileSaved: "Profile updated.", profileSaveFailed: "Profile could not be updated.", profileEditOffline: "Connect to the internet to edit your profile.", saveProfile: "Save changes",
@@ -1125,7 +1129,7 @@
         wordsToFind: "Zu findende Wörter", wordProgress: "Wortsuche-Fortschritt", letterGrid: "Buchstabengitter", backHome: "Zurück zum Start", backGarden: "Zurück zum Garten",
         viewBedLeaderboard: "Bestenliste von {bed} ansehen", viewThisBedLeaderboard: "Bestenliste dieses Beets ansehen", nextBed: "Nächstes Beet", wellGrown: "Gut gewachsen!",
         completedBed: "Du hast das Beet abgeschlossen.", leaderboard: "Bestenliste", wholeGardenBloom: "Der ganze Garten blüht!", finalCompletion: "Du hast alle {count} Beete in <strong>{time}</strong> gepflegt. Du kannst jedes Beet jederzeit erneut spielen.",
-        bedCompletion: "Beet {id} ist vollständig erblüht. Zeit: <strong>{time}</strong>", newBest: "Neue Bestzeit!", hintEarned: "+1 Tipp erhalten!", hintRewardTitle: "Ein neuer Tipp blüht!", hintRewardMessage: "Sechs Beete abgeschlossen · +1 Tipp",
+        bedCompletion: "Beet {id} ist vollständig erblüht. Zeit: <strong>{time}</strong>", newBest: "Neue Bestzeit!", hintEarned: "+1 Tipp erhalten!", hintRewardTitle: "Ein neuer Tipp blüht!", hintRewardMessage: "Garten-Meilenstein · +1 Tipp",
         enterPin: "PIN eingeben", pinDescription: "Gib den vierstelligen Code ein, um den Premium-Testmodus und werbefreies Spielen zu aktivieren.", pinCode: "PIN-Code", cancel: "Abbrechen", confirm: "Bestätigen",
         nameGarden: "Gib deinem Garten einen Namen", nicknameDescription: "Wähle einen Namen und einen Avatar für dein Gartenjournal. Beides erscheint in der Bestenliste jedes Beets.",
         nicknamePlaceholder: "z. B. Wildblumenfink", nickname: "Spitzname", avatar: "Avatar", chooseAvatar: "Avatar auswählen", nicknameLock: "Du kannst Name und Avatar über die Bearbeiten-Schaltfläche alle 24 Stunden ändern.", plantName: "Namen pflanzen", editProfile: "Profil bearbeiten", editProfileDescription: "Ändere deinen Gartennamen und Avatar. Bearbeiten ist alle 24 Stunden möglich.", profileEditCooldown: "Du kannst in {time} wieder bearbeiten.", profileSaved: "Profil aktualisiert.", profileSaveFailed: "Profil konnte nicht aktualisiert werden.", profileEditOffline: "Verbinde dich mit dem Internet, um dein Profil zu bearbeiten.", saveProfile: "Änderungen speichern",
@@ -1150,7 +1154,7 @@
         wordsToFind: "Bulunacak kelimeler", wordProgress: "Kelime bulma ilerlemesi", letterGrid: "Harf ızgarası", backHome: "Ana sayfaya dön", backGarden: "Bahçeye dön",
         viewBedLeaderboard: "{bed} skor tablosunu gör", viewThisBedLeaderboard: "Bu bölümün skor tablosunu gör", nextBed: "Sonraki bölüm", wellGrown: "Harika yetişti!",
         completedBed: "Bu bölümü tamamladın.", leaderboard: "Skor tablosu", wholeGardenBloom: "Bütün bahçe çiçek açtı!", finalCompletion: "Tüm {count} bölümü <strong>{time}</strong> sürede tamamladın. Dilediğin bölümü yeniden oynayabilirsin.",
-        bedCompletion: "Bölüm {id} tamamen çiçek açtı. Süre: <strong>{time}</strong>", newBest: "Yeni en iyi süre!", hintEarned: "+1 ipucu kazandın!", hintRewardTitle: "Yeni bir ipucu filizlendi!", hintRewardMessage: "6 bölüm tamamlandı · +1 ipucu",
+        bedCompletion: "Bölüm {id} tamamen çiçek açtı. Süre: <strong>{time}</strong>", newBest: "Yeni en iyi süre!", hintEarned: "+1 ipucu kazandın!", hintRewardTitle: "Yeni bir ipucu filizlendi!", hintRewardMessage: "Bahçe kilometre taşı · +1 ipucu",
         enterPin: "PIN gir", pinDescription: "Premium test modunu ve reklamsız oynamayı açmak için 4 haneli kodu yaz.", pinCode: "PIN kodu", cancel: "İptal", confirm: "Onayla",
         nameGarden: "Bahçene bir isim ver", nicknameDescription: "Bahçe günlüğün için bir kullanıcı adı ve avatar seç. İkisi de her bölümün skor tablosunda görünür.",
         nicknamePlaceholder: "ör. Çiçekçi Arı", nickname: "Kullanıcı adı", avatar: "Avatar", chooseAvatar: "Avatar seç", nicknameLock: "İsim ve avatarını düzenle butonundan 24 saatte bir değiştirebilirsin.", plantName: "Adımı dik", editProfile: "Profili düzenle", editProfileDescription: "Bahçe ismini ve avatarını güncelle. 24 saatte bir düzenleyebilirsin.", profileEditCooldown: "Tekrar düzenleyebilmen için {time} kaldı.", profileSaved: "Profil güncellendi.", profileSaveFailed: "Profil güncellenemedi.", profileEditOffline: "Profilini düzenlemek için internete bağlan.", saveProfile: "Değişiklikleri kaydet",
@@ -1193,7 +1197,7 @@
       wordsToFind: "Zu findende Wörter", wordProgress: "Fortschritt bei der Wortsuche", letterGrid: "Buchstabengitter", backHome: "Zurück zum Start", backGarden: "Zurück zum Garten",
       viewBedLeaderboard: "Bestenliste von {bed} anzeigen", viewThisBedLeaderboard: "Bestenliste dieses Beets anzeigen", nextBed: "Nächstes Beet", wellGrown: "Gut gepflegt!",
       completedBed: "Du hast das Beet abgeschlossen.", leaderboard: "Bestenliste", wholeGardenBloom: "Der ganze Garten steht in Blüte!", finalCompletion: "Du hast alle {count} Beete in <strong>{time}</strong> gepflegt. Spiele jederzeit ein Beet erneut.",
-      bedCompletion: "Beet {id} steht vollständig in Blüte. Zeit: <strong>{time}</strong>", newBest: "Neue Bestzeit!", hintEarned: "+1 Tipp erhalten!", hintRewardTitle: "Ein neuer Tipp ist verfügbar!", hintRewardMessage: "Sechs Beete abgeschlossen · +1 Tipp",
+      bedCompletion: "Beet {id} steht vollständig in Blüte. Zeit: <strong>{time}</strong>", newBest: "Neue Bestzeit!", hintEarned: "+1 Tipp erhalten!", hintRewardTitle: "Ein neuer Tipp ist verfügbar!", hintRewardMessage: "Garten-Meilenstein · +1 Tipp",
       enterPin: "PIN eingeben", pinDescription: "Gib den vierstelligen Code ein, um den Premium-Testmodus zu aktivieren und Werbung zu entfernen.", pinCode: "PIN-Code", cancel: "Abbrechen", confirm: "Bestätigen",
       nameGarden: "Deinen Garten benennen", nicknameDescription: "Wähle einen Spitznamen und einen Avatar für dein Gartenjournal. Beides wird in der Bestenliste jedes Beets angezeigt.",
       nicknamePlaceholder: "z. B. Wildblumenfink", nickname: "Spitzname", avatar: "Avatar", chooseAvatar: "Avatar auswählen", nicknameLock: "Du kannst deinen Namen und Avatar über die Bearbeiten-Schaltfläche einmal alle 24 Stunden aktualisieren.", plantName: "Namen pflanzen", editProfile: "Profil bearbeiten", editProfileDescription: "Aktualisiere deinen Gartennamen und Avatar. Du kannst sie einmal alle 24 Stunden ändern.", profileEditCooldown: "Du kannst dein Profil in {time} wieder bearbeiten.", profileSaved: "Profil aktualisiert.", profileSaveFailed: "Profil konnte nicht aktualisiert werden.", profileEditOffline: "Verbinde dich mit dem Internet, um dein Profil zu bearbeiten.", saveProfile: "Änderungen speichern",
@@ -1220,7 +1224,7 @@
       wordsToFind: "Bulunacak kelimeler", wordProgress: "Kelime bulma ilerlemesi", letterGrid: "Harf ızgarası", backHome: "Ana sayfaya dön", backGarden: "Bahçeye dön",
       viewBedLeaderboard: "{bed} skor tablosunu gör", viewThisBedLeaderboard: "Bu bölümün skor tablosunu gör", nextBed: "Sonraki bölüm", wellGrown: "Harika iş!",
       completedBed: "Bu bölümü tamamladın.", leaderboard: "Skor tablosu", wholeGardenBloom: "Bütün bahçe çiçek açtı!", finalCompletion: "Tüm {count} bölümü <strong>{time}</strong> sürede tamamladın. İstediğin bölümü dilediğin zaman yeniden oynayabilirsin.",
-      bedCompletion: "{id}. bölüm tamamen tamamlandı. Süre: <strong>{time}</strong>", newBest: "Yeni en iyi süre!", hintEarned: "+1 ipucu kazandın!", hintRewardTitle: "Yeni bir ipucu hazır!", hintRewardMessage: "6 bölüm tamamlandı · +1 ipucu",
+      bedCompletion: "{id}. bölüm tamamen tamamlandı. Süre: <strong>{time}</strong>", newBest: "Yeni en iyi süre!", hintEarned: "+1 ipucu kazandın!", hintRewardTitle: "Yeni bir ipucu hazır!", hintRewardMessage: "Bahçe kilometre taşı · +1 ipucu",
       enterPin: "PIN'i gir", pinDescription: "Premium test modunu etkinleştirmek ve reklamları kaldırmak için 4 haneli kodu gir.", pinCode: "PIN kodu", cancel: "İptal", confirm: "Onayla",
       nameGarden: "Bahçene bir isim ver", nicknameDescription: "Bahçe günlüğün için bir kullanıcı adı ve avatar seç. İkisi de her bölümün skor tablosunda gösterilir.",
       nicknamePlaceholder: "örn. Çiçekçi Arı", nickname: "Kullanıcı adı", avatar: "Avatar", chooseAvatar: "Avatar seç", nicknameLock: "İsim ve avatarını düzenleme düğmesinden 24 saatte bir güncelleyebilirsin.", plantName: "Adımı bahçeye ekle", editProfile: "Profili düzenle", editProfileDescription: "Bahçe adını ve avatarını güncelle. 24 saatte bir düzenleyebilirsin.", profileEditCooldown: "Profilini {time} sonra yeniden düzenleyebilirsin.", profileSaved: "Profil güncellendi.", profileSaveFailed: "Profil güncellenemedi.", profileEditOffline: "Profilini düzenlemek için internete bağlan.", saveProfile: "Değişiklikleri kaydet",
@@ -1312,7 +1316,7 @@
       "newBest": "Yeni rekor!",
       "hintEarned": "+1 İpucu kazandın!",
       "hintRewardTitle": "Yeni bir ipucu filizlendi!",
-      "hintRewardMessage": "6 bölüm tamamlandı · +1 ipucu",
+      "hintRewardMessage": "Bahçe kilometre taşı · +1 ipucu",
       "enterPin": "PIN'i gir",
       "pinDescription": "Premium test modunu açmak ve reklamları kaldırmak için 4 haneli kodu gir.",
       "pinCode": "PIN kodu",
@@ -1528,7 +1532,7 @@
       "newBest": "Neuer Rekord!",
       "hintEarned": "+1 Tipp erhalten!",
       "hintRewardTitle": "Ein neuer Tipp ist gesprießt!",
-      "hintRewardMessage": "Sechs Beete geschafft · +1 Tipp",
+      "hintRewardMessage": "Garten-Meilenstein · +1 Tipp",
       "enterPin": "PIN eingeben",
       "pinDescription": "Gib den 4-stelligen Code ein, um den Premium-Testmodus zu aktivieren und Werbung zu entfernen.",
       "pinCode": "PIN-Code",
@@ -9476,9 +9480,8 @@
 
       let earnedHint = false;
       if (wasNewCompletion) {
-        progress.hintStreak = getCompletedBedCount() % HINT_REWARD_INTERVAL;
-        // +1 free hint every 6 completed beds. Keep this in sync with the
-        // localized hintRewardMessage strings above.
+        progress.hintStreak = getCompletedBedCount() % (isPremiumUser() ? HINT_REWARD_INTERVAL : FREE_HINT_REWARD_INTERVAL);
+        // +1 hint every 6 new beds for Premium, every 10 for free players.
         if (progress.hintStreak === 0) {
           progress.hints = (progress.hints || 0) + 1;
           earnedHint = true;

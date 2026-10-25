@@ -1,5 +1,6 @@
 #!/bin/bash
-# Builds the App Store screenshots (1290x2796) from the live game.
+# Builds the App Store screenshots from the live game: 6.9" (1290x2796) and
+# 6.5" (1284x2778), RGB without alpha as App Store Connect requires.
 # Usage: bash tooling/store_screenshots/make.sh   (run from the project root; LANGS="en tr de")
 # Pass 1 captures the game screen alone, pass 2 places it in frame.html.
 set -e
@@ -8,7 +9,7 @@ HERE="$ROOT/tooling/store_screenshots"
 WORK="$ROOT/build/store_shots"
 OUT="$ROOT/store_screenshots"
 CHROME="/c/Program Files/Google/Chrome/Application/chrome.exe"
-rm -rf "$WORK"; mkdir -p "$WORK" "$OUT"
+rm -rf "$WORK"; mkdir -p "$WORK" "$OUT/6.9" "$OUT/6.5"
 cp -r "$ROOT/assets/game" "$WORK/site"
 cp "$HERE/harness.js" "$WORK/site/"
 cp "$HERE/frame.html" "$WORK/"
@@ -21,8 +22,8 @@ chrome() { # out.png window dsf budget url
     --user-data-dir="$(cygpath -w "$WORK/prof")" --force-device-scale-factor=$3 \
     --window-size=$2 --virtual-time-budget=$4 --screenshot="$(cygpath -w "$1")" "$5" 2>/dev/null
 }
-crop() { # in out w h
-  powershell.exe -NoProfile -Command "Add-Type -AssemblyName System.Drawing; \$i=[Drawing.Image]::FromFile('$(cygpath -w "$1")'); \$b=New-Object Drawing.Bitmap $3,$4; \$g=[Drawing.Graphics]::FromImage(\$b); \$g.DrawImage(\$i,(New-Object Drawing.Rectangle 0,0,$3,$4),(New-Object Drawing.Rectangle 0,0,$3,$4),[Drawing.GraphicsUnit]::Pixel); \$b.Save('$(cygpath -w "$2")',[Drawing.Imaging.ImageFormat]::Png); \$g.Dispose(); \$i.Dispose(); \$b.Dispose()"
+resize() { # in out w h  (scales the 1290x2796 frame, drops alpha)
+  powershell.exe -NoProfile -Command "Add-Type -AssemblyName System.Drawing; \$i=[Drawing.Image]::FromFile('$(cygpath -w "$1")'); \$b=New-Object Drawing.Bitmap $3,$4,([Drawing.Imaging.PixelFormat]::Format24bppRgb); \$g=[Drawing.Graphics]::FromImage(\$b); \$g.InterpolationMode=[Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic; \$g.PixelOffsetMode=[Drawing.Drawing2D.PixelOffsetMode]::HighQuality; \$g.DrawImage(\$i,(New-Object Drawing.Rectangle 0,0,$3,$4),(New-Object Drawing.Rectangle 0,0,1290,2796),[Drawing.GraphicsUnit]::Pixel); \$b.Save('$(cygpath -w "$2")',[Drawing.Imaging.ImageFormat]::Png); \$g.Dispose(); \$i.Dispose(); \$b.Dispose()"
 }
 
 shot() { # name lang view title subtitle bubble side
@@ -34,8 +35,9 @@ H
   chrome "$game" 500,827 2.32 ${VT:-30000} "file:///$(cygpath -m "$WORK/host.html")"
   local url="file:///$(cygpath -m "$WORK/frame.html")?t=$(enc "$4")&s=$(enc "$5")&b=$(enc "$6")&m=$7&img=$(enc "$(basename "$game")")"
   chrome "$WORK/frame-$lang-$name.png" 500,1084 2.58 4000 "$url"
-  crop "$WORK/frame-$lang-$name.png" "$OUT/$lang-$name.png" 1290 2796
-  echo "$OUT/$lang-$name.png"
+  resize "$WORK/frame-$lang-$name.png" "$OUT/6.9/$lang-$name.png" 1290 2796
+  resize "$WORK/frame-$lang-$name.png" "$OUT/6.5/$lang-$name.png" 1284 2778
+  echo "$lang-$name"
 }
 
 for L in ${LANGS:-en tr de}; do

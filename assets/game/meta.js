@@ -24,21 +24,23 @@
   const KEY = "kelimeler-bahcesi-retention-v1";
   const GIFTS = [1, 1, 2, 1, 2, 2, 4];
   const MILESTONES = { 3: 1, 7: 2, 14: 3, 30: 5, 60: 5, 100: 10 };
-  const REVIEW_AFTER_BEDS = 5;
+  const REVIEW_AFTER_BEDS = 2;
   const CHAPTER_EMOJI = ["🌱", "🍀", "🌷", "🌿", "🌻", "🌹", "🍄", "🍒", "💜", "🌵", "🍁", "🐸", "🎋", "🌺", "🌲", "🌸", "🌙", "🌳", "👑"];
   const CHAPTER_BEDS = 50;
-  const CHEST_HINTS = 5;
+  // Premium earns hints faster; free players can still earn every reward, just less of it.
+  function chestHints() { return premium() ? 5 : 3; }
   const CHEST_PETALS = 100;
   const FLOWER_PETALS = 10;
-  const QUEST_BONUS_HINTS = 2;
-  const PETALS_PER_HINT = 60;
+  function questBonusHints() { return premium() ? 2 : 1; }
+  function petalsPerHint() { return premium() ? 60 : 100; }
+  function seedHints(seed) { return seed.hints[premium() ? 1 : 0]; }
   const XP = { word: 2, bed: 10, star: 5, newBed: 10, quest: 15, chest: 60 };
   const XP_VERSION = 1;
   const SEEDS = [
-    { id: "daisy", emoji: "🌼", cost: 10, minutes: 20, petals: 20, hints: 0 },
-    { id: "tulip", emoji: "🌷", cost: 35, minutes: 120, petals: 10, hints: 1 },
-    { id: "sunflower", emoji: "🌻", cost: 70, minutes: 360, petals: 25, hints: 2 },
-    { id: "rose", emoji: "🌹", cost: 140, minutes: 720, petals: 50, hints: 4 }
+    { id: "daisy", emoji: "🌼", cost: 10, minutes: 20, petals: 20, hints: [0, 0] },
+    { id: "tulip", emoji: "🌷", cost: 35, minutes: 120, petals: 15, hints: [0, 1] },
+    { id: "sunflower", emoji: "🌻", cost: 70, minutes: 360, petals: 25, hints: [1, 2] },
+    { id: "rose", emoji: "🌹", cost: 140, minutes: 720, petals: 50, hints: [2, 4] }
   ];
   // [target, petal reward]. "fast" and "combo" targets are thresholds, the rest are counts.
   const QUEST_POOL = [
@@ -85,6 +87,9 @@
       gardenComplete: "Garden complete!", nextGarden: "Next garden: {name}", awesome: "Wonderful!", flowerBloomed: "A new flower bloomed in your garden",
       chestTitle: "Chapter chest", chestLocked: "Bloom all {n} beds of this chapter to open the chest.",
       chestReward: "+{h} hints · +{p} 🌸", chestOpen: "Open chest", chestClaimed: "Already opened. Well done!", chestProgress: "{done} / {total} beds bloomed",
+      premiumMore: "Premium: {r}", letsGo: "Let's go!",
+      perlHello: "Hi! I'm Perl 🐰 Welcome to my garden! What should I call you?", perlEdit: "Fancy a new look? Pick a new name or avatar!",
+      perlBravo: "Bravo, {name}! You finished your first bed. Keep going, the garden is starting to bloom! 🌷",
       close: "Close", hours: "{h}h {m}m", minutes: "{m}m", seconds: "{s}s",
       chapters: ["Seed Bed", "Clover Path", "Tulip Row", "Fern Hollow", "Sunflower Field", "Rose Arbor", "Mushroom Glade", "Cherry Orchard", "Lavender Lane", "Cactus Garden", "Maple Grove", "Lily Pond", "Bamboo Walk", "Hibiscus Bay", "Pine Ridge", "Blossom Hill", "Moonflower Court", "Evergreen Vale", "Wildwood Crown"]
     },
@@ -121,6 +126,9 @@
       gardenComplete: "Garten vollendet!", nextGarden: "Nächster Garten: {name}", awesome: "Wunderbar!", flowerBloomed: "Eine neue Blume blüht in deinem Garten",
       chestTitle: "Kapiteltruhe", chestLocked: "Lass alle {n} Beete dieses Kapitels erblühen, um die Truhe zu öffnen.",
       chestReward: "+{h} Tipps · +{p} 🌸", chestOpen: "Truhe öffnen", chestClaimed: "Schon geöffnet. Gut gemacht!", chestProgress: "{done} / {total} Beete erblüht",
+      premiumMore: "Premium: {r}", letsGo: "Weiter geht's!",
+      perlHello: "Hallo! Ich bin Perl 🐰 Willkommen in meinem Garten! Wie darf ich dich nennen?", perlEdit: "Lust auf etwas Neues? Wähle einen neuen Namen oder Avatar!",
+      perlBravo: "Bravo, {name}! Dein erstes Beet ist fertig. Weiter so, der Garten fängt an zu blühen! 🌷",
       close: "Schließen", hours: "{h} Std. {m} Min.", minutes: "{m} Min.", seconds: "{s} s",
       chapters: ["Saatbeet", "Kleepfad", "Tulpenreihe", "Farnmulde", "Sonnenblumenfeld", "Rosenlaube", "Pilzlichtung", "Kirschgarten", "Lavendelweg", "Kakteengarten", "Ahornhain", "Seerosenteich", "Bambusweg", "Hibiskusbucht", "Kiefernkamm", "Blütenhügel", "Mondblumenhof", "Immergrünes Tal", "Wildwaldkrone"]
     },
@@ -157,6 +165,9 @@
       gardenComplete: "Bahçe tamamlandı!", nextGarden: "Sıradaki bahçe: {name}", awesome: "Harika!", flowerBloomed: "Bahçende yeni bir çiçek açtı",
       chestTitle: "Bahçe sandığı", chestLocked: "Sandığı açmak için bu bahçedeki {n} bölümün hepsini bitir.",
       chestReward: "+{h} ipucu · +{p} 🌸", chestOpen: "Sandığı aç", chestClaimed: "Zaten açıldı. Harikasın!", chestProgress: "{done} / {total} bölüm bitti",
+      premiumMore: "Premium: {r}", letsGo: "Hadi devam!",
+      perlHello: "Merhaba! Ben Perl 🐰 Bahçeme hoş geldin! Sana nasıl sesleneyim?", perlEdit: "Yeni bir görünüm mü? Yeni bir isim ya da avatar seç!",
+      perlBravo: "Bravo {name}! İlk bölümünü bitirdin. Böyle devam, bahçe çiçek açmaya başladı! 🌷",
       close: "Kapat", hours: "{h} sa {m} dk", minutes: "{m} dk", seconds: "{s} sn",
       chapters: ["Tohum Yatağı", "Yonca Yolu", "Lale Sırası", "Eğrelti Koyağı", "Ayçiçeği Tarlası", "Gül Çardağı", "Mantar Açıklığı", "Kiraz Bahçesi", "Lavanta Yolu", "Kaktüs Bahçesi", "Akçaağaç Korusu", "Nilüfer Göleti", "Bambu Yolu", "Ebegümeci Koyu", "Çam Sırtı", "Çiçek Tepesi", "Ay Çiçeği Avlusu", "Hep Yeşil Vadi", "Yaban Ormanı Tacı"]
     }
@@ -224,7 +235,8 @@
 
   /* ---------- Level & XP ---------- */
 
-  const xpToNext = (level) => 40 + level * 20;
+  // Each level asks for more XP than the last (gentle at first, steeper later).
+  const xpToNext = (level) => 50 + level * 20 + level * level;
   function levelInfo(xp) {
     let level = 1;
     let rest = Math.max(0, Math.floor(xp));
@@ -253,13 +265,30 @@
     save();
     const after = levelInfo(state.xp).level;
     for (let level = before + 1; level <= after; level += 1) {
-      const hints = level % 5 === 0 ? 3 : 1;
+      const { hints, premiumHints } = levelHints(level);
       const petals = level % 5 === 0 ? 50 : 0;
       addHints(hints);
       if (petals) addPetals(petals);
-      queueCelebration(() => showLevelUp(level, hints, petals));
+      queueCelebration((done) => showLevelUp(level, hints, petals, premiumHints, done));
     }
     renderHud();
+  }
+  // Premium: +1 hint every level, +3 every 5th. Free: +1 every 2nd level, +2 every 5th.
+  function levelHints(level) {
+    const premiumHints = level % 5 === 0 ? 3 : 1;
+    const freeHints = level % 5 === 0 ? 2 : level % 2 === 0 ? 1 : 0;
+    return { hints: premium() ? premiumHints : freeHints, premiumHints };
+  }
+  // A small "Premium gives more" button for free players; opens the market.
+  function premiumTeaser(reward) {
+    if (premium() || !reward) return "";
+    return `<button class="premium-teaser" type="button" data-premium-teaser>✦ ${esc(L("premiumMore", { r: reward }))}</button>`;
+  }
+  function bindTeasers(root, beforeOpen) {
+    root.querySelectorAll("[data-premium-teaser]").forEach(btn => btn.addEventListener("click", () => {
+      if (beforeOpen) beforeOpen();
+      try { openMarketModal(); } catch (_) {}
+    }));
   }
 
   /* ---------- Celebrations (level-ups, garden chests) run one at a time ---------- */
@@ -273,7 +302,7 @@
     celebrations.shift()(() => { celebrating = false; window.setTimeout(playCelebrations, 250); });
   }
   let levelUpEl = null;
-  function showLevelUp(level, hints, petals, done) {
+  function showLevelUp(level, hints, petals, premiumHints, done) {
     if (!levelUpEl) {
       levelUpEl = document.createElement("div");
       levelUpEl.className = "levelup";
@@ -287,9 +316,11 @@
         <p class="levelup-kicker">${esc(L("levelUp"))}</p>
         <div class="levelup-badge"><small>${esc(L("level", { n: "" }).trim())}</small><b>${level - 1}</b></div>
         <h2 class="levelup-title">${esc(L("levelUpTitle", { n: level }))}</h2>
-        <div class="levelup-rewards"><span>+${hints} 💡</span>${petals ? `<span>+${petals} 🌸</span>` : ""}</div>
+        <div class="levelup-rewards">${hints ? `<span>+${hints} 💡</span>` : ""}${petals ? `<span>+${petals} 🌸</span>` : ""}${!hints && !petals ? `<span>⭐ ${esc(L("level", { n: level }))}</span>` : ""}</div>
+        ${premiumHints > hints ? premiumTeaser(`+${premiumHints} 💡`) : ""}
         <button class="primary-button" type="button">${esc(L("continue"))}</button>
       </div>`;
+    bindTeasers(levelUpEl, () => levelUpEl.querySelector(".primary-button").click());
     void levelUpEl.offsetWidth;
     levelUpEl.classList.add("open");
     const number = levelUpEl.querySelector(".levelup-badge b");
@@ -515,6 +546,7 @@
   const previousSwipeBack = window.__nativeSwipeBack;
   window.__nativeSwipeBack = function () {
     if (levelUpEl && levelUpEl.classList.contains("open")) { levelUpEl.querySelector(".primary-button")?.click(); return true; }
+    if (perlEl && perlEl.classList.contains("open")) { perlEl.querySelector(".primary-button")?.click(); return true; }
     const open = openIds();
     if (open.length) { if (!busy) closeModal(open[open.length - 1]); return true; }
     return typeof previousSwipeBack === "function" ? previousSwipeBack() : false;
@@ -643,7 +675,7 @@
       }).join("")}</div>
       <div class="quest-bonus">
         <span aria-hidden="true">🎁</span>
-        <span class="quest-bonus-text"><strong>${esc(L("bonusTitle"))}</strong><small>${esc(L("bonusReward", { n: QUEST_BONUS_HINTS }))}</small></span>
+        <span class="quest-bonus-text"><strong>${esc(L("bonusTitle"))}</strong><small>${esc(L("bonusReward", { n: questBonusHints() }))}</small>${premiumTeaser(`+2 💡`)}</span>
         <button class="quest-claim ${bonusReady ? "is-ready" : ""}" type="button" data-act="bonus" ${bonusReady ? "" : "disabled"}>${esc(state.questBonus ? L("claimed") : L("bonusClaim"))}</button>
       </div>
       <p class="quest-reset">${esc(L("questsReset", { t: formatDuration(msUntilMidnight()) }))}</p>
@@ -661,11 +693,12 @@
       if (state.questBonus || !state.quests.every(q => q.claimed)) return;
       state.questBonus = true;
       save();
-      addHints(QUEST_BONUS_HINTS);
-      toast("🎁", L("questsTitle"), `+${QUEST_BONUS_HINTS} 💡`, L("bonusTitle"));
+      addHints(questBonusHints());
+      toast("🎁", L("questsTitle"), `+${questBonusHints()} 💡`, L("bonusTitle"));
       rerender("gowQuestsBackdrop");
     });
     onAct(modal, "close", () => closeModal("gowQuestsBackdrop"));
+    bindTeasers(modal, () => closeModal("gowQuestsBackdrop"));
   }
 
   /* Greenhouse */
@@ -695,7 +728,7 @@
       const seed = seedById(pot.seed);
       const name = esc(L(`seed_${seed.id}`));
       if (potReady(pot)) {
-        return `<div class="pot is-ready" data-pot="${i}"><span class="pot-plant"><span>${seed.emoji}</span></span><span class="pot-name">${name}</span><span class="pot-timer">${esc(rewardText(seed.hints, seed.petals))}</span><button class="pot-action is-primary" type="button" data-harvest="${i}">${esc(L("harvest"))}</button></div>`;
+        return `<div class="pot is-ready" data-pot="${i}"><span class="pot-plant"><span>${seed.emoji}</span></span><span class="pot-name">${name}</span><span class="pot-timer">${esc(rewardText(seedHints(seed), seed.petals))}</span><button class="pot-action is-primary" type="button" data-harvest="${i}">${esc(L("harvest"))}</button></div>`;
       }
       return `<div class="pot is-growing" data-pot="${i}"><span class="pot-plant"><span>🌱</span></span><span class="pot-name">${name}</span><span class="pot-timer">${esc(formatDuration(pot.readyAt - now))}</span><span class="pot-progress"><i style="width:${growPct(pot, now)}%"></i></span>${pot.sped ? "" : `<button class="pot-action" type="button" data-grow="${i}">${esc(premium() ? L("growNowFree") : L("growNow"))}</button>`}</div>`;
     }).join("");
@@ -707,23 +740,24 @@
       <p class="meta-section-title">${esc(L("seedsTitle"))} · ${state.petals} 🌸</p>
       <div class="seed-list">${SEEDS.map(seed => `
         <div class="seed-row"><span aria-hidden="true">${seed.emoji}</span>
-          <span class="seed-text"><strong>${esc(L(`seed_${seed.id}`))}</strong><small>${esc(L("seedInfo", { time: formatDuration(seed.minutes * 60000), reward: rewardText(seed.hints, seed.petals) }))}</small></span>
+          <span class="seed-text"><strong>${esc(L(`seed_${seed.id}`))}</strong><small>${esc(L("seedInfo", { time: formatDuration(seed.minutes * 60000), reward: rewardText(seedHints(seed), seed.petals) }))}</small>${seed.hints[1] > seed.hints[0] ? premiumTeaser(rewardText(seed.hints[1], seed.petals)) : ""}</span>
           <button class="seed-buy ${state.petals >= seed.cost ? "can-afford" : ""}" type="button" data-seed="${seed.id}">${seed.cost} 🌸</button></div>`).join("")}
       </div>
       <div class="exchange-row"><span aria-hidden="true">💡</span>
-        <span class="seed-text"><strong>${esc(L("exchangeTitle"))}</strong><small>${esc(L("exchangeDesc", { n: PETALS_PER_HINT }))}</small></span>
-        <button class="seed-buy ${state.petals >= PETALS_PER_HINT ? "can-afford" : ""}" type="button" data-act="trade">${esc(L("trade"))}</button></div>
+        <span class="seed-text"><strong>${esc(L("exchangeTitle"))}</strong><small>${esc(L("exchangeDesc", { n: petalsPerHint() }))}</small>${premiumTeaser(L("exchangeDesc", { n: 60 }))}</span>
+        <button class="seed-buy ${state.petals >= petalsPerHint() ? "can-afford" : ""}" type="button" data-act="trade">${esc(L("trade"))}</button></div>
       <p class="meta-status" role="status">${esc(ghStatus)}</p>
       <div class="modal-actions"><button class="primary-button" type="button" data-act="close">${esc(L("close"))}</button></div>`;
     const redraw = () => renderGreenhouse(modal, false);
+    bindTeasers(modal, () => closeModal("gowGreenhouseBackdrop"));
     onAct(modal, "close", () => closeModal("gowGreenhouseBackdrop"));
     onAct(modal, "premium", () => {
       closeModal("gowGreenhouseBackdrop");
       try { openMarketModal(); } catch (_) {}
     });
     onAct(modal, "trade", () => {
-      if (state.petals < PETALS_PER_HINT) { ghStatus = L("notEnough"); redraw(); return; }
-      addPetals(-PETALS_PER_HINT);
+      if (state.petals < petalsPerHint()) { ghStatus = L("notEnough"); redraw(); return; }
+      addPetals(-petalsPerHint());
       addHints(1);
       ghStatus = L("traded");
       redraw();
@@ -748,9 +782,9 @@
       const seed = seedById(pot.seed);
       state.pots[i] = null;
       save();
-      addHints(seed.hints);
+      addHints(seedHints(seed));
       addPetals(seed.petals);
-      ghStatus = L("harvested", { reward: rewardText(seed.hints, seed.petals) });
+      ghStatus = L("harvested", { reward: rewardText(seedHints(seed), seed.petals) });
       tellFlutter();
       redraw();
     }));
@@ -826,7 +860,7 @@
           <button class="gc-chest ${chestJustOpened ? "is-open" : ""}" type="button" data-open="1" aria-label="${esc(L("chestOpen"))}">${chestJustOpened ? CHAPTER_EMOJI[chestChapter] || "🌸" : "🎁"}</button>
         </div>
         <div class="gc-rewards ${chestJustOpened ? "is-shown" : ""}">
-          <span class="gc-reward"><b>+${CHEST_HINTS}</b> 💡</span>
+          <span class="gc-reward"><b>+${chestHints()}</b> 💡</span>
           <span class="gc-reward"><b>+${CHEST_PETALS}</b> 🌸</span>
           <span class="gc-reward"><b>+${XP.chest}</b> XP</span>
         </div>
@@ -844,7 +878,7 @@
         modal.querySelector(".gc-chest").classList.add("is-bursting");
         window.setTimeout(() => {
           chestJustOpened = true;
-          addHints(CHEST_HINTS);
+          addHints(chestHints());
           addPetals(CHEST_PETALS);
           try { updateChapterBanners(); } catch (_) {}
           renderChest(modal, false);
@@ -861,12 +895,13 @@
       <p><b>${esc(name)}</b><br>${esc(claimed ? L("chestClaimed") : L("chestLocked", { n: total }))}</p>
       <div class="quest-list"><div class="quest-row" style="grid-template-columns:44px minmax(0,1fr)">
         <span class="quest-icon" aria-hidden="true">${CHAPTER_EMOJI[chestChapter] || "🌱"}</span>
-        <span class="quest-text"><strong>${esc(L("chestReward", { h: CHEST_HINTS, p: CHEST_PETALS }))}</strong>
+        <span class="quest-text"><strong>${esc(L("chestReward", { h: chestHints(), p: CHEST_PETALS }))}</strong>${premiumTeaser(`+5 💡`)}
           <span class="quest-bar"><i style="width:${(done / total) * 100}%"></i></span>
           <span class="quest-meta"><span>${esc(L("chestProgress", { done, total }))}</span></span></span>
       </div></div>
       <div class="modal-actions"><button class="ghost-button" type="button" data-act="close">${esc(L("close"))}</button></div>`;
     onAct(modal, "close", () => closeModal("gowChestBackdrop"));
+    bindTeasers(modal, () => closeModal("gowChestBackdrop"));
   }
   function openChest(index, onClose) {
     if (!Number.isInteger(index) || index < 0) { if (onClose) onClose(); return; }
@@ -1053,14 +1088,73 @@
         panel.appendChild(btn);
       }
     }
+    // Perl cheers the very first finished bed, before any level-up.
+    if (info.wasNewCompletion && state.beds === 1 && !state.perlBravo) {
+      state.perlBravo = Date.now();
+      save();
+      celebrations.unshift((done) => showPerlCheer(done));
+    }
     if (gardenDone >= 0) queueCelebration((done) => openChest(gardenDone, done));
-    // Let the bed card land first, then level-ups and the garden chest take over.
+    // Ask for an App Store rating after the second bed, once everything else has played.
+    const askReview = !state.reviewAsked && state.beds >= REVIEW_AFTER_BEDS;
+    if (askReview) {
+      state.reviewAsked = true;
+      save();
+      queueCelebration((done) => { tellFlutter({ review: true }); window.setTimeout(done, 600); });
+    }
+    // Let the bed card land first, then Perl, level-ups and the garden chest take over.
     window.setTimeout(playCelebrations, 1300);
     renderTiles();
-    const askReview = !state.reviewAsked && state.beds >= REVIEW_AFTER_BEDS;
-    if (askReview) { state.reviewAsked = true; save(); }
-    tellFlutter(askReview ? { review: true } : null);
+    tellFlutter();
   }
+
+  /* ---------- Perl, the garden bunny ---------- */
+
+  function perlMarkup(text, extraClass) {
+    return `<div class="perl-hello ${extraClass || ""}"><span class="perl-avatar" aria-hidden="true"><span class="perl-img"></span></span><p class="perl-bubble">${esc(text)}</p></div>`;
+  }
+  let perlEl = null;
+  function showPerlCheer(done) {
+    if (!perlEl) {
+      perlEl = document.createElement("div");
+      perlEl.className = "perl-cheer";
+      perlEl.setAttribute("role", "dialog");
+      perlEl.setAttribute("aria-modal", "true");
+      document.body.appendChild(perlEl);
+    }
+    let name = "";
+    try { name = getNickname() || ""; } catch (_) {}
+    perlEl.innerHTML = `<div class="perl-cheer-card">${perlMarkup(L("perlBravo", { name }).replace(/\s+!/, "!"), "is-cheering")}
+      <button class="primary-button" type="button">${esc(L("letsGo"))}</button></div>`;
+    void perlEl.offsetWidth;
+    perlEl.classList.add("open");
+    confetti(perlEl.querySelector(".perl-cheer-card"), "levelup-confetti", 18);
+    let closed = false;
+    perlEl.querySelector(".primary-button").addEventListener("click", () => {
+      if (closed) return;
+      closed = true;
+      perlEl.classList.remove("open");
+      window.setTimeout(done, 300);
+    });
+  }
+  // The name prompt (first launch or profile edit) is greeted by Perl.
+  function decoratePerlGreeting() {
+    const bubble = $("perlGreeting");
+    if (!bubble) return;
+    let editing = false;
+    try { editing = nicknameModalMode === "edit"; } catch (_) {}
+    bubble.textContent = editing ? L("perlEdit") : L("perlHello");
+    const hello = bubble.closest(".perl-hello");
+    hello.classList.remove("is-entering");
+    void hello.offsetWidth;
+    hello.classList.add("is-entering");
+  }
+  const nicknameBackdrop = $("nicknameModalBackdrop");
+  if (nicknameBackdrop && window.MutationObserver) {
+    new MutationObserver(() => { if (nicknameBackdrop.classList.contains("open")) decoratePerlGreeting(); })
+      .observe(nicknameBackdrop, { attributes: true, attributeFilter: ["class"] });
+  }
+  decoratePerlGreeting();
 
   function onHome() {
     renderTiles();
@@ -1070,6 +1164,7 @@
   function onLanguage() {
     renderTiles();
     openIds().forEach(rerender);
+    decoratePerlGreeting();
   }
 
   window.Meta = {
