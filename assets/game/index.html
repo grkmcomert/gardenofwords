@@ -203,6 +203,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,800;9..144,900&family=Fredoka:wght@500;600;700&family=Figtree:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="garden.css" />
+  <link rel="stylesheet" href="perl.css" />
 </head>
 <body>
   <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
@@ -382,7 +383,7 @@
       <p id="homeHeroCopy" class="sr-only"></p>
 
       <article id="heroJournalCard" class="chapter-card glass" aria-label="Garden Collection Journal">
-        <button id="perlThumb" class="chapter-thumb perl-thumb" type="button" aria-label="Perl"><span class="perl-img" aria-hidden="true"></span><span id="chapterThumbEmoji" class="perl-thumb-badge" aria-hidden="true">🌱</span></button>
+        <button id="perlThumb" class="chapter-thumb perl-thumb" type="button" aria-label="Perl"><span class="perl-thumb-art" aria-hidden="true"></span><span id="chapterThumbEmoji" class="perl-thumb-badge" aria-hidden="true">🌱</span></button>
         <span class="chapter-card-body">
           <span id="journeyChapterKicker" class="chapter-pill">Chapter 1</span>
           <strong id="journeyChapterName" class="chapter-card-title">Seed Bed</strong>
@@ -537,7 +538,7 @@
   <div id="nicknameModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="nicknameModalTitle" aria-hidden="true">
     <div class="modal nickname-modal">
       <div class="perl-hello" aria-hidden="true">
-        <span class="perl-avatar"><span class="perl-img"></span></span>
+        <span class="perl-avatar is-full"></span>
         <p id="perlGreeting" class="perl-bubble">Hi! I am Perl.</p>
       </div>
       <h2 id="nicknameModalTitle">Name your garden</h2>
@@ -11951,6 +11952,7 @@
     // the native channel because WKWebView can install it after this frame.
     window.__notifyFlutterGameReady?.();
   </script>
+  <script src="perl.js"></script>
   <script src="meta.js"></script>
 </body>
 </html>

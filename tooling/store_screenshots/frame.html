@@ -1,92 +1,156 @@
 <!doctype html>
-<!-- App Store screenshot frame: headline, a captured game screen in a phone
-     and the garden bunny mascot. Rendered by make.sh at 1290x2796.
-     Query: img (game capture), t (title), s (subtitle), b (bubble), m (mascot side). -->
+<!-- App Store screenshot frame (430x932 CSS px, rendered at 3x = 1290x2796).
+     Headline, a captured game screen in a phone, and Perl (vector, from site/perl.js)
+     frozen in a pose. Query: img, t (title, *word* is highlighted), s (subtitle),
+     b (bubble), side (left|right), pose, pt (pose time in s), pal (palette). -->
 <html>
 <head>
 <meta charset="utf-8" />
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Figtree:wght@700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="fonts/fonts.css" />
+<link rel="stylesheet" href="site/perl.css" />
 <style>
-  html, body { margin: 0; width: 500px; height: 1084px; overflow: hidden; }
+  :root { --bg1: #F6F2DF; --bg2: #CFE6B2; --ink: #1F4620; --sub: #3E6A33; --mark: #FFC94D; --blob: #A8D58A; }
+  body[data-pal="sky"]   { --bg1: #EEF8FF; --bg2: #BEE3C7; --mark: #8FD3FF; --blob: #9FD7B6; }
+  body[data-pal="peach"] { --bg1: #FFF4E6; --bg2: #F7D3B5; --mark: #FFB37A; --blob: #F2B48E; }
+  body[data-pal="gold"]  { --bg1: #FFF8DF; --bg2: #F3D886; --mark: #FFDD55; --blob: #EBC75E; }
+  body[data-pal="mint"]  { --bg1: #ECF9EF; --bg2: #B6E1C1; --mark: #9EE6B0; --blob: #8FD1A2; }
+  body[data-pal="rose"]  { --bg1: #FFF1F4; --bg2: #F5C6D3; --mark: #FF9DB8; --blob: #EFA7BC; }
+  html, body { margin: 0; width: 430px; height: 932px; overflow: hidden; }
   body {
     position: relative;
     font-family: "Figtree", system-ui, sans-serif;
     background:
-      radial-gradient(circle at 20% 8%, rgba(255, 236, 160, .35), transparent 38%),
-      radial-gradient(circle at 90% 70%, rgba(120, 200, 90, .35), transparent 45%),
-      linear-gradient(170deg, #4E9A3A 0%, #2E6F2C 48%, #17401C 100%);
+      radial-gradient(circle at 12% 6%, rgba(255, 255, 255, .85), transparent 34%),
+      radial-gradient(circle at 92% 46%, rgba(255, 255, 255, .45), transparent 30%),
+      linear-gradient(172deg, var(--bg1) 0%, var(--bg1) 26%, var(--bg2) 100%);
   }
-  .deco { position: absolute; font-size: 40px; opacity: .22; }
-  .head { position: absolute; left: 0; right: 0; top: 44px; padding: 0 30px; text-align: center; color: #fff; }
-  .head h1 { margin: 0; font-family: "Fredoka", sans-serif; font-size: 44px; font-weight: 700; line-height: 1.04; letter-spacing: -.3px; text-shadow: 0 4px 0 #1B4A1C, 0 10px 24px rgba(0, 0, 0, .3); }
-  .head p { margin: 12px 0 0; color: #F4FFE6; font-size: 20px; font-weight: 800; line-height: 1.25; text-shadow: 0 2px 6px rgba(0, 0, 0, .35); }
+  .blob { position: absolute; border-radius: 50%; background: var(--blob); opacity: .35; filter: blur(2px); }
+  .leaf { position: absolute; width: 120px; height: 120px; opacity: .55; }
+  .petal { position: absolute; width: 14px; height: 14px; }
+  .head { position: absolute; left: 0; right: 0; top: 54px; z-index: 2; padding: 0 30px; text-align: center; }
+  .head h1 {
+    margin: 0;
+    color: var(--ink);
+    font-family: "Fredoka", sans-serif;
+    font-size: 41px;
+    font-weight: 700;
+    line-height: 1.06;
+    letter-spacing: -.4px;
+  }
+  .head h1 mark {
+    white-space: nowrap;
+    padding: 0 4px;
+    color: inherit;
+    background: linear-gradient(180deg, transparent 58%, var(--mark) 58%, var(--mark) 92%, transparent 92%);
+    border-radius: 4px;
+  }
+  .head p { margin: 12px auto 0; max-width: 340px; color: var(--sub); font-size: 18px; font-weight: 700; line-height: 1.3; }
   .phone {
     position: absolute;
     left: 50%;
-    top: 222px;
-    width: 373px;
-    height: 806px;
-    margin-left: -186.5px;
+    top: 236px;
+    z-index: 2;
+    width: 286px;
+    height: 620px;
+    margin-left: calc(-143px + var(--shift, 0px));
     box-sizing: border-box;
-    border: 11px solid #0E1410;
-    border-radius: 56px;
-    overflow: hidden;
-    background: #0B1612;
-    box-shadow: 0 0 0 2px #2D3A30, 0 30px 60px rgba(0, 0, 0, .45);
+    padding: 10px;
+    border-radius: 52px;
+    background: linear-gradient(145deg, #2A2F2C, #121513 60%, #262B28);
+    box-shadow: 0 0 0 1.5px #3E4541, 0 40px 60px -20px rgba(30, 50, 25, .55), 0 14px 26px rgba(30, 50, 25, .25);
   }
-  .screen { position: absolute; left: 0; top: 40px; width: 351px; height: 744px; overflow: hidden; }
-  .screen img { display: block; width: 450px; height: auto; }
-  .notch { position: absolute; left: 50%; top: 9px; z-index: 2; width: 96px; height: 26px; margin-left: -48px; border-radius: 20px; background: #0E1410; }
-  .statusbar { position: absolute; left: 0; right: 0; top: 0; z-index: 1; display: flex; justify-content: space-between; align-items: center; height: 40px; padding: 4px 28px 0 30px; color: #fff; font: 700 15px "Figtree", sans-serif; background: #0B1612; }
-  .mascot { position: absolute; bottom: -4px; z-index: 3; width: 190px; height: 180px; filter: drop-shadow(0 12px 14px rgba(0, 0, 0, .4)); }
-  .mascot.left { left: -12px; }
-  .mascot.right { right: -12px; transform: scaleX(-1); }
-  .bunny { width: 100%; height: 100%; background: url("site/images/garden-of-words-logo.png") no-repeat; background-size: 860px auto; background-position: -552px -2px; }
+  .screen { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 43px; background: #0B1612; }
+  .screen img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .island { position: absolute; left: 50%; top: 10px; z-index: 3; width: 86px; height: 25px; margin-left: -43px; border-radius: 20px; background: #050605; }
+  .status { position: absolute; left: 0; right: 0; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center; height: 44px; padding: 0 26px 0 30px; color: #fff; font: 800 13.5px "Figtree", sans-serif; }
+  .perl {
+    position: absolute;
+    bottom: 22px;
+    z-index: 4;
+    width: 170px;
+    height: 179px;
+    filter: drop-shadow(0 14px 14px rgba(40, 60, 30, .32));
+  }
+  .perl.left { left: -4px; }
+  .perl.right { right: -4px; }
+  body.side-left { --shift: 30px; }
+  body.side-right { --shift: -30px; }
+  .mound { position: absolute; bottom: -10px; z-index: 3; width: 250px; height: 70px; }
+  .mound.left { left: -40px; }
+  .mound.right { right: -40px; transform: scaleX(-1); }
   .bubble {
     position: absolute;
-    bottom: 182px;
-    z-index: 4;
-    max-width: 210px;
-    padding: 12px 16px;
-    border: 3px solid #1B4A1C;
-    border-radius: 20px;
-    background: #FFFDF4;
-    color: #1E3A15;
+    bottom: 206px;
+    z-index: 5;
+    max-width: 190px;
+    padding: 11px 16px 12px;
+    border-radius: 22px;
+    background: #FFFDF6;
+    color: var(--ink);
     font-family: "Fredoka", sans-serif;
     font-size: 19px;
     font-weight: 600;
-    line-height: 1.15;
-    box-shadow: 0 8px 18px rgba(0, 0, 0, .3);
+    line-height: 1.12;
+    box-shadow: 0 10px 22px rgba(40, 60, 30, .22), 0 0 0 2.5px rgba(31, 70, 32, .12);
   }
   .bubble.left { left: 18px; }
   .bubble.right { right: 18px; text-align: right; }
-  .bubble::after { content: ""; position: absolute; bottom: -14px; width: 20px; height: 20px; border-right: 3px solid #1B4A1C; border-bottom: 3px solid #1B4A1C; background: #FFFDF4; transform: rotate(45deg); }
-  .bubble.left::after { left: 40px; }
-  .bubble.right::after { right: 40px; }
+  .bubble::after { content: ""; position: absolute; bottom: -9px; width: 18px; height: 18px; background: #FFFDF6; transform: rotate(45deg); border-radius: 3px; }
+  .bubble.left::after { left: 52px; }
+  .bubble.right::after { right: 52px; }
 </style>
 </head>
 <body>
-  <span class="deco" style="left:18px;top:180px">🍃</span>
-  <span class="deco" style="right:22px;top:150px">🌸</span>
-  <span class="deco" style="left:30px;top:640px">🌼</span>
-  <span class="deco" style="right:26px;top:560px">🍀</span>
+  <span class="blob" style="width:220px;height:220px;left:-80px;top:300px"></span>
+  <span class="blob" style="width:260px;height:260px;right:-120px;top:120px;opacity:.25"></span>
+  <span class="blob" style="width:180px;height:180px;right:-50px;bottom:120px"></span>
+  <svg class="leaf" style="left:-26px;top:-20px;transform:rotate(18deg)" viewBox="0 0 120 120"><path d="M10 110 C30 60 60 30 110 10" stroke="#5E9B3E" stroke-width="3" fill="none"/><g fill="#7DB54B"><ellipse cx="38" cy="72" rx="16" ry="7" transform="rotate(-50 38 72)"/><ellipse cx="60" cy="48" rx="16" ry="7" transform="rotate(-38 60 48)"/><ellipse cx="84" cy="28" rx="14" ry="6" transform="rotate(-28 84 28)"/><ellipse cx="46" cy="52" rx="13" ry="6" transform="rotate(-80 46 52)"/><ellipse cx="72" cy="30" rx="12" ry="5.5" transform="rotate(-70 72 30)"/></g></svg>
+  <svg class="leaf" style="right:-30px;top:170px;transform:rotate(200deg) scale(.8)" viewBox="0 0 120 120"><path d="M10 110 C30 60 60 30 110 10" stroke="#5E9B3E" stroke-width="3" fill="none"/><g fill="#7DB54B"><ellipse cx="38" cy="72" rx="16" ry="7" transform="rotate(-50 38 72)"/><ellipse cx="60" cy="48" rx="16" ry="7" transform="rotate(-38 60 48)"/><ellipse cx="84" cy="28" rx="14" ry="6" transform="rotate(-28 84 28)"/></g></svg>
+  <svg class="petal" style="left:44px;top:252px;transform:rotate(30deg)" viewBox="0 0 14 14"><ellipse cx="7" cy="7" rx="4" ry="7" fill="#F37FA4"/></svg>
+  <svg class="petal" style="right:40px;top:226px;transform:rotate(-40deg) scale(1.2)" viewBox="0 0 14 14"><ellipse cx="7" cy="7" rx="4" ry="7" fill="#FAC94C"/></svg>
+  <svg class="petal" style="right:28px;top:470px;transform:rotate(70deg)" viewBox="0 0 14 14"><ellipse cx="7" cy="7" rx="4" ry="7" fill="#F37FA4"/></svg>
+  <svg class="petal" style="left:22px;top:560px;transform:rotate(-20deg) scale(.9)" viewBox="0 0 14 14"><ellipse cx="7" cy="7" rx="4" ry="7" fill="#9BCB65"/></svg>
+
   <div class="head"><h1 id="t"></h1><p id="s"></p></div>
+
   <div class="phone">
-    <span class="notch"></span>
-    <div class="statusbar"><span>9:41</span><svg width="70" height="14" viewBox="0 0 70 14" fill="#fff"><rect x="0" y="9" width="3.5" height="5" rx="1"/><rect x="5" y="6" width="3.5" height="8" rx="1"/><rect x="10" y="3" width="3.5" height="11" rx="1"/><rect x="15" y="0" width="3.5" height="14" rx="1"/><path d="M31 13.5 27.6 10a5 5 0 0 1 6.8 0zM24.8 7.2a9 9 0 0 1 12.4 0l-1.5 1.5a7 7 0 0 0-9.4 0zM22 4.4a13 13 0 0 1 18 0l-1.5 1.5a11 11 0 0 0-15 0z"/><rect x="46" y="1.5" width="20" height="11" rx="3" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.4"/><rect x="48" y="3.5" width="16" height="7" rx="1.5"/><rect x="67" y="5" width="2" height="4" rx="1" fill-opacity=".5"/></svg></div>
-    <div class="screen"><img id="shot" alt="" /></div>
+    <div class="screen">
+      <span class="island"></span>
+      <div class="status"><span>9:41</span><svg width="64" height="13" viewBox="0 0 70 14" fill="#fff"><rect x="0" y="9" width="3.5" height="5" rx="1"/><rect x="5" y="6" width="3.5" height="8" rx="1"/><rect x="10" y="3" width="3.5" height="11" rx="1"/><rect x="15" y="0" width="3.5" height="14" rx="1"/><path d="M31 13.5 27.6 10a5 5 0 0 1 6.8 0zM24.8 7.2a9 9 0 0 1 12.4 0l-1.5 1.5a7 7 0 0 0-9.4 0zM22 4.4a13 13 0 0 1 18 0l-1.5 1.5a11 11 0 0 0-15 0z"/><rect x="46" y="1.5" width="20" height="11" rx="3" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.4"/><rect x="48" y="3.5" width="16" height="7" rx="1.5"/><rect x="67" y="5" width="2" height="4" rx="1" fill-opacity=".5"/></svg></div>
+      <img id="shot" alt="" />
+    </div>
   </div>
-  <div id="m" class="mascot left"><div class="bunny"></div></div>
+
+  <svg id="mound" class="mound left" viewBox="0 0 250 70">
+    <ellipse cx="125" cy="62" rx="122" ry="34" fill="#6DAA44"/>
+    <ellipse cx="125" cy="58" rx="112" ry="26" fill="#86C25A"/>
+    <g fill="#5E9B3E">
+      <path d="M40 44 q4 -18 2 -26 q6 10 4 26z"/><path d="M58 40 q6 -14 10 -20 q-2 12 -4 20z"/><path d="M196 42 q-2 -16 4 -24 q2 12 0 24z"/><path d="M214 46 q4 -12 10 -16 q-4 10 -6 16z"/>
+    </g>
+    <g><circle cx="62" cy="40" r="5" fill="#F37FA4"/><circle cx="62" cy="40" r="2" fill="#FAC94C"/><circle cx="200" cy="40" r="4.5" fill="#FFFDF4"/><circle cx="200" cy="40" r="1.8" fill="#FAC94C"/></g>
+  </svg>
+  <div id="perl" class="perl left"></div>
   <div id="b" class="bubble left"></div>
+
+  <script src="site/perl.js"></script>
   <script>
     const q = new URLSearchParams(location.search);
-    document.getElementById("t").textContent = q.get("t") || "";
+    document.body.dataset.pal = q.get("pal") || "meadow";
+    const esc = (s) => s.replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+    document.getElementById("t").innerHTML = esc(q.get("t") || "").replace(/\*([^*]+)\*/g, "<mark>$1</mark>");
     document.getElementById("s").textContent = q.get("s") || "";
+    const side = q.get("side") || "left";
+    document.body.classList.add(`side-${side}`);
     const bubble = document.getElementById("b");
     if (q.get("b")) bubble.textContent = q.get("b"); else bubble.remove();
-    const side = q.get("m") || "left";
-    document.getElementById("m").className = `mascot ${side}`;
     bubble.className = `bubble ${side}`;
+    document.getElementById("mound").setAttribute("class", `mound ${side}`);
+    const perl = document.getElementById("perl");
+    perl.className = `perl ${side}`;
+    perl.innerHTML = PerlArt.svg(q.get("pose") || "wave", "is-still");
+    perl.firstElementChild.style.setProperty("--perl-t", `${q.get("pt") || 0}s`);
+    // Perl faces the phone: mirror him on the right-hand side.
+    if (side === "right") perl.firstElementChild.style.transform = "scaleX(-1)";
     document.getElementById("shot").src = q.get("img");
   </script>
 </body>

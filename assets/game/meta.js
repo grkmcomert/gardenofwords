@@ -1134,7 +1134,7 @@
       celebrations.unshift((done) => showPerlCheer(done));
     } else if (state.beds > 1 && Math.random() < .3) {
       // Now and then Perl pops in to cheer a finished bed.
-      window.setTimeout(() => { if (!celebrating && !celebrations.length) perlPeek(perlText(pick(L("perlCheers"))), 3200); }, 1700);
+      window.setTimeout(() => { if (!celebrating && !celebrations.length) perlPeek(perlText(pick(L("perlCheers"))), 3200, "clap"); }, 1700);
     }
     if (gardenDone >= 0) queueCelebration((done) => openChest(gardenDone, done));
     // Ask for an App Store rating after the second bed, once everything else has played.
@@ -1152,8 +1152,12 @@
 
   /* ---------- Perl, the garden bunny ---------- */
 
-  function perlMarkup(text, extraClass) {
-    return `<div class="perl-hello ${extraClass || ""}"><span class="perl-avatar" aria-hidden="true"><span class="perl-img"></span></span><p class="perl-bubble">${esc(text)}</p></div>`;
+  // Vector Perl in the given pose (see perl.js / perl.css). Falls back to nothing if perl.js is missing.
+  function perlArt(pose) {
+    try { return window.PerlArt ? window.PerlArt.svg(pose) : ""; } catch (_) { return ""; }
+  }
+  function perlMarkup(text, extraClass, pose) {
+    return `<div class="perl-hello ${extraClass || ""}"><span class="perl-avatar is-full" aria-hidden="true">${perlArt(pose || "cheer")}</span><p class="perl-bubble">${esc(text)}</p></div>`;
   }
   let perlEl = null;
   // Replaces {name}; drops it cleanly ("Hi {name}!" -> "Hi!") when there is no name yet.
@@ -1169,7 +1173,7 @@
   function pick(list) { return Array.isArray(list) && list.length ? list[Math.floor(Math.random() * list.length)] : String(list || ""); }
 
   // Full-screen Perl card. Used for the first-bed bravo and the daily hello.
-  function showPerlCard(text, buttonLabel, withConfetti, done) {
+  function showPerlCard(text, buttonLabel, withConfetti, done, pose) {
     if (!perlEl) {
       perlEl = document.createElement("div");
       perlEl.className = "perl-cheer";
@@ -1177,7 +1181,7 @@
       perlEl.setAttribute("aria-modal", "true");
       document.body.appendChild(perlEl);
     }
-    perlEl.innerHTML = `<div class="perl-cheer-card">${perlMarkup(text, "is-cheering")}
+    perlEl.innerHTML = `<div class="perl-cheer-card">${perlMarkup(text, "is-cheering", pose)}
       <button class="primary-button" type="button">${esc(buttonLabel)}</button></div>`;
     void perlEl.offsetWidth;
     perlEl.classList.add("open");
@@ -1195,12 +1199,20 @@
     perlEl.querySelector(".primary-button").addEventListener("click", close);
   }
   function showPerlCheer(done) {
-    showPerlCard(perlText(L("perlBravo")), L("letsGo"), true, done);
+    showPerlCard(perlText(L("perlBravo")), L("letsGo"), true, done, "cheer");
   }
   /* Daily hello: the first time the home screen shows on a new day. */
-  function greetingLine() {
+  // Each time of day has its own line and its own Perl: stretching under the sun,
+  // happy hearts, a glowing lantern, or nodding off with Zzz.
+  function greetingSlot() {
     const hour = new Date().getHours();
-    const key = hour >= 5 && hour < 12 ? "perlGreetMorning" : hour >= 12 && hour < 18 ? "perlGreetDay" : hour >= 18 && hour < 23 ? "perlGreetEvening" : "perlGreetNight";
+    if (hour >= 5 && hour < 12) return { key: "perlGreetMorning", pose: "stretch" };
+    if (hour >= 12 && hour < 18) return { key: "perlGreetDay", pose: "hearts" };
+    if (hour >= 18 && hour < 23) return { key: "perlGreetEvening", pose: "lantern" };
+    return { key: "perlGreetNight", pose: "sleepy" };
+  }
+  function greetingLine() {
+    const key = greetingSlot().key;
     let text = perlText(pick(L(key)));
     const streak = liveStreak();
     if (streak >= 2) text += " " + L("perlGreetStreak", { n: streak });
@@ -1224,13 +1236,13 @@
     save();
     // First launch: Perl already says hello on the name prompt.
     if (!named) return;
-    celebrations.unshift((done) => showPerlCard(greetingLine(), L("perlGreetButton"), false, done));
+    celebrations.unshift((done) => showPerlCard(greetingLine(), L("perlGreetButton"), false, done, greetingSlot().pose));
   }
 
   /* Perl peeks in now and then with a speech bubble (non-blocking, taps pass through). */
   let peekEl = null;
   let peekTimer = null;
-  function perlPeek(text, ms) {
+  function perlPeek(text, ms, pose) {
     if (!text) return;
     if (!peekEl) {
       peekEl = document.createElement("div");
@@ -1241,7 +1253,7 @@
     }
     window.clearTimeout(peekTimer);
     peekEl.classList.remove("open");
-    peekEl.innerHTML = `<span class="perl-avatar" aria-hidden="true"><span class="perl-img"></span></span><p class="perl-bubble">${esc(text)}</p>`;
+    peekEl.innerHTML = `<span class="perl-avatar" aria-hidden="true">${perlArt(pose || "talk")}</span><p class="perl-bubble">${esc(text)}</p>`;
     void peekEl.offsetWidth;
     peekEl.classList.add("open");
     peekTimer = window.setTimeout(() => peekEl.classList.remove("open"), ms || 3800);
@@ -1261,21 +1273,32 @@
       const onHome = typeof shownScreenId === "undefined" || shownScreenId === "homeScreen";
       const busy = document.querySelector(".modal-backdrop.open") || celebrating || celebrations.length;
       if (!onHome || busy || document.visibilityState !== "visible") return;
-      if (Math.random() < .6) { homeTipShown = true; perlPeek(randomTip(), 4500); }
+      if (Math.random() < .6) { homeTipShown = true; perlPeek(randomTip(), 4500, "idea"); }
     }, 22000);
   }
-  // The home-card Perl answers a tap.
+  // The home-card Perl idles (breathes, looks around, blinks) and answers a tap with a
+  // different trick each time: a big boing, floppy ears, a giggle fit or a carrot snack.
+  const TAP_TRICKS = [{ pose: "boing", ms: 1000 }, { pose: "earflop", ms: 1200 }, { pose: "giggle", ms: 1200 }, { pose: "munch", ms: 1800 }];
+  let tapTrick = Math.floor(Math.random() * TAP_TRICKS.length);
+  let tapTimer = null;
+  function setThumbPose(thumb, pose) {
+    const art = thumb.querySelector(".perl-thumb-art");
+    if (art) art.innerHTML = perlArt(pose);
+  }
   function bindPerlThumb() {
     const thumb = $("perlThumb");
     if (!thumb || thumb.dataset.bound) return;
     thumb.dataset.bound = "1";
+    setThumbPose(thumb, "idle");
     thumb.addEventListener("click", (event) => {
       event.stopPropagation();
-      thumb.classList.remove("is-tapped");
-      void thumb.offsetWidth;
-      thumb.classList.add("is-tapped");
+      const trick = TAP_TRICKS[tapTrick % TAP_TRICKS.length];
+      tapTrick += 1;
+      window.clearTimeout(tapTimer);
+      setThumbPose(thumb, trick.pose);
+      tapTimer = window.setTimeout(() => setThumbPose(thumb, "idle"), trick.ms + 80);
       const line = Math.random() < .5 ? perlText(pick(L("perlCheers"))) : randomTip();
-      perlPeek(line, 3600);
+      perlPeek(line, 3600, "talk");
     });
   }
 
@@ -1287,6 +1310,9 @@
     try { editing = nicknameModalMode === "edit"; } catch (_) {}
     bubble.textContent = editing ? L("perlEdit") : L("perlHello");
     const hello = bubble.closest(".perl-hello");
+    const avatar = hello.querySelector(".perl-avatar");
+    const pose = editing ? "think" : "wave";
+    if (avatar && avatar.dataset.pose !== pose) { avatar.dataset.pose = pose; avatar.innerHTML = perlArt(pose); }
     hello.classList.remove("is-entering");
     void hello.offsetWidth;
     hello.classList.add("is-entering");
