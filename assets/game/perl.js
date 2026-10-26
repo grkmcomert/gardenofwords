@@ -2,8 +2,9 @@
  * window.PerlArt.svg(pose) returns the markup (the name is kept for older callers).
  *
  * One bunny only: the logo Perl peeking over an edge. perl-sprites.js holds his parts:
- * head (with ears inside it), two paws with forearms, and expression overlays painted on the
- * same face (closed eyes, ^^ eyes, closed mouth). He always peeks over something: a wooden
+ * chest, head (with ears inside it), two paws and expression overlays painted on the
+ * same face (closed eyes, ^^ eyes, closed mouth). His paws stay on the edge like in the logo
+ * (they only pat and fidget), so nothing invented is ever shown. He always peeks over something: a wooden
  * ledge by default, a planter in the greenhouse, or the grass in store art (class "no-ledge").
  * Layout box is 200x210 units; prop SVGs use that viewBox; the canvas runs below the box
  * for the forearms and is clipped at the bottom edge.
@@ -38,34 +39,6 @@
     <g class="pp pp-moon"><path d="M34 18 A18 18 0 1 0 52 44 A14 14 0 1 1 34 18Z" fill="#FFF1B8" stroke="#E6CB73" stroke-width="1.5"/></g>
   </svg>`;
 
-  const HOLD = `<svg class="pr-hold" viewBox="0 0 434 546" aria-hidden="true">
-    <defs>
-      <radialGradient id="prGlowH" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFE7A0" stop-opacity=".95"/><stop offset="1" stop-color="#FFC24A" stop-opacity="0"/></radialGradient>
-      <linearGradient id="prCanH" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FD0F2"/><stop offset="1" stop-color="#3E8FC4"/></linearGradient>
-    </defs>
-    <g class="pp pp-lantern">
-      <circle class="pp-glow" cx="322" cy="410" r="96" fill="url(#prGlowH)"/>
-      <path d="M322 336 V368" stroke="#3B2410" stroke-width="5"/>
-      <path d="M300 366 h44 l6 11 h-56z" fill="#3A332C"/>
-      <rect x="294" y="377" width="56" height="70" rx="9" fill="#FFC867" stroke="#3A332C" stroke-width="6.5"/>
-      <path d="M322 377 v70 M294 412 h56" stroke="#3A332C" stroke-width="4.5"/>
-      <path d="M290 447 h64 l-8 13 h-48z" fill="#3A332C"/>
-      <path d="M305 371 q17 -22 34 0" stroke="#3A332C" stroke-width="4" fill="none"/>
-    </g>
-    <g class="pp pp-can">
-      <path d="M392 262 q30 6 40 34" stroke="#3E8FC4" stroke-width="9" stroke-linecap="round" fill="none"/>
-      <path d="M424 294 l18 -6 l6 14 l-18 6z" fill="#3E8FC4" stroke="#2D6E99" stroke-width="2"/>
-      <rect x="332" y="240" width="62" height="54" rx="12" fill="url(#prCanH)" stroke="#2D6E99" stroke-width="3"/>
-      <path d="M340 242 q24 -30 48 0" stroke="#2D6E99" stroke-width="6" fill="none"/>
-      <ellipse cx="348" cy="256" rx="6" ry="12" fill="#fff" opacity=".4"/>
-      <g class="pp-drops-h" fill="#7CC8F2" stroke="#3E8FC4" stroke-width="2">
-        <path class="pp-drop pp-d1" d="M442 312 q7 11 0 16 q-7 -5 0 -16z"/>
-        <path class="pp-drop pp-d2" d="M454 308 q7 11 0 16 q-7 -5 0 -16z"/>
-        <path class="pp-drop pp-d3" d="M448 322 q7 11 0 16 q-7 -5 0 -16z"/>
-      </g>
-    </g>
-  </svg>`;
-
   const LEDGE = `<svg class="pr-ledge" viewBox="0 0 200 210" preserveAspectRatio="none" aria-hidden="true">
     <defs><linearGradient id="prWood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0CF98"/><stop offset=".45" stop-color="#DDAE6E"/><stop offset="1" stop-color="#B97F45"/></linearGradient></defs>
     <path d="M-6 199 Q100 194 206 199 V214 H-6Z" fill="url(#prWood)" stroke="#8C5A2B" stroke-width="1.6"/>
@@ -78,12 +51,30 @@
       <linearGradient id="prPot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E58A57"/><stop offset="1" stop-color="#B85A33"/></linearGradient>
       <linearGradient id="prLeaf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8FCB5C"/><stop offset="1" stop-color="#4C8A2A"/></linearGradient>
     </defs>
+    <defs><radialGradient id="prGlowF" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFE7A0" stop-opacity=".9"/><stop offset="1" stop-color="#FFC24A" stop-opacity="0"/></radialGradient>
+      <linearGradient id="prCanF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FD0F2"/><stop offset="1" stop-color="#3E8FC4"/></linearGradient></defs>
+    <g class="pp pp-lantern">
+      <circle class="pp-glow" cx="178" cy="178" r="36" fill="url(#prGlowF)"/>
+      <path d="M170 156 h16 l2.4 4.4 h-20.8z" fill="#3A332C"/>
+      <rect x="167" y="160.4" width="22" height="30" rx="4" fill="#FFC867" stroke="#3A332C" stroke-width="2.6"/>
+      <path d="M178 160.4 v30 M167 175.4 h22" stroke="#3A332C" stroke-width="1.8"/>
+      <path d="M164 190.4 h28 l-3 6 h-22z" fill="#3A332C"/>
+      <path d="M171.5 156 q6.5 -10 13 0" stroke="#3A332C" stroke-width="2" fill="none"/>
+    </g>
     <g class="pp pp-planter">
       <g class="pp-sprout pp-sp-a"><path d="M40 190 q-2 -16 3 -26" stroke="#4C8A2A" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M42 170 q-12 -8 -17 -2 q7 8 17 2z M43 166 q10 -11 17 -7 q-6 10 -17 7z" fill="url(#prLeaf)" stroke="#3A6B20" stroke-width=".8"/></g>
-      <g class="pp-sprout pp-sp-b"><path d="M188 190 q2 -12 -2 -20" stroke="#4C8A2A" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M187 175 q10 -7 15 -2 q-6 7 -15 2z M186 172 q-9 -9 -15 -5 q5 8 15 5z" fill="url(#prLeaf)" stroke="#3A6B20" stroke-width=".8"/><circle cx="186" cy="168" r="4.5" fill="#F57FA6" stroke="#D25A85" stroke-width=".8"/><circle cx="186" cy="168" r="1.8" fill="${GOLD}"/></g>
+      <g class="pp-sprout pp-sp-b"><path d="M146 190 q2 -12 -2 -20" stroke="#4C8A2A" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M145 175 q10 -7 15 -2 q-6 7 -15 2z M144 172 q-9 -9 -15 -5 q5 8 15 5z" fill="url(#prLeaf)" stroke="#3A6B20" stroke-width=".8"/><circle cx="144" cy="168" r="4.5" fill="#F57FA6" stroke="#D25A85" stroke-width=".8"/><circle cx="144" cy="168" r="1.8" fill="${GOLD}"/></g>
       <path d="M8 196 h184 l-10 20 h-164z" fill="url(#prPot)" stroke="#8E4424" stroke-width="1.6"/>
       <rect x="4" y="190" width="192" height="11" rx="4" fill="#E99A68" stroke="#8E4424" stroke-width="1.6"/>
       <path d="M14 192 h170" stroke="#FFD2B0" stroke-width="2" stroke-linecap="round" opacity=".6"/>
+    </g>
+    <g class="pp pp-can">
+      <path d="M176 172 q-12 -4 -20 -16" stroke="#3E8FC4" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+      <path d="M158 158 l-8 -6 l3.6 -4 l7.4 6z" fill="#3E8FC4" stroke="#2D6E99" stroke-width=".8"/>
+      <rect x="172" y="164" width="24" height="22" rx="5" fill="url(#prCanF)" stroke="#2D6E99" stroke-width="1.3"/>
+      <path d="M175 165 q9 -11 18 0" stroke="#2D6E99" stroke-width="2.4" fill="none"/>
+      <ellipse cx="178" cy="171" rx="2.4" ry="4.6" fill="#fff" opacity=".4"/>
+      <g fill="#7CC8F2" stroke="#3E8FC4" stroke-width=".7"><path class="pp-drop pp-d1" d="M150 156 q2.6 4.4 0 6 q-2.6 -1.6 0 -6z"/><path class="pp-drop pp-d2" d="M146 158 q2.6 4.4 0 6 q-2.6 -1.6 0 -6z"/><path class="pp-drop pp-d3" d="M150 161 q2.6 4.4 0 6 q-2.6 -1.6 0 -6z"/></g>
     </g>
     <g class="pp pp-zzz" fill="#EAF2FF" stroke="#5B6F9A" stroke-width="1.4" font-family="Fredoka, system-ui, sans-serif" font-weight="700">
       <text class="pp-z1" x="18" y="92" font-size="20">z</text>
@@ -117,6 +108,7 @@
     const p = POSES.includes(pose) ? pose : "idle";
     return `<div class="perl-svg perl-rig pose-${p}${extraClass ? ` ${extraClass}` : ""}" aria-hidden="true">${BACK}
       <div class="pr-all"><div class="pr-canvas">
+        <div class="pr-part pr-body">${img("body", "")}</div>
         <div class="pr-part pr-head">
           <div class="pr-part pr-ear-l">${img("ear-l", "")}</div>
           <div class="pr-part pr-ear-r">${img("ear-r", "")}</div>
@@ -124,7 +116,7 @@
           <i class="pr-blush pr-blush-l"></i><i class="pr-blush pr-blush-r"></i>
         </div>
         <div class="pr-part pr-paw-l">${img("paw-l", "")}</div>
-        <div class="pr-part pr-paw-r">${img("paw-r", "")}${HOLD}</div>
+        <div class="pr-part pr-paw-r">${img("paw-r", "")}</div>
       </div></div>${LEDGE}${FRONT}</div>`;
   }
 

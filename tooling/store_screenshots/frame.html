@@ -78,6 +78,10 @@
   .mound { position: absolute; bottom: -12px; z-index: 5; width: 270px; height: 84px; }
   /* Stills: no whole-body jump, so the rig stays seated behind the grass. */
   .perl .perl-rig.is-still .pr-all { animation: none !important; transform: none !important; }
+  /* Greenhouse still: the grass is the edge, so no pot; the sprouts and can stand in the grass. */
+  .perl .pose-water .pp-planter > path, .perl .pose-water .pp-planter > rect { display: none; }
+  .perl .pose-water .pp-can { transform: translate(-6px, -4px) scale(1.25); transform-origin: 184px 186px; }
+  .perl .pose-water .pp-sprout { transform: scale(1.25) !important; }
   .mound.left { left: -40px; }
   .mound.right { right: -40px; transform: scaleX(-1); }
   .bubble {

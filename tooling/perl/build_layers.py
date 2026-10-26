@@ -79,14 +79,17 @@ hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV_FULL).astype(np.float32)
 Hh, S, V = hsv[..., 0] * 360 / 255, hsv[..., 1] / 255, hsv[..., 2] / 255
 green = ((Hh > 60) & (Hh < 160) & (S > 0.25)).astype(np.float32)
 
-# 1. Remove the sign and the big leaf (everything that is not Perl).
-sign = np.maximum(poly([(0, 165), (42, 182), (60, 232), (66, 296), (58, 330), (0, H0)]),
-                  poly([(0, 300), (60, 305), (130, 322), (200, 334), (270, 345), (330, 356), (W, 372), (W, H0), (0, H0)]))
-leaf = poly([(388, 266), (W, 255), (W, H0), (352, H0), (372, 330), (386, 300)])
-paw_l_m = poly([(60, 300), (80, 285), (125, 286), (142, 305), (140, 342), (100, 350), (64, 338)], 1.0)
-paw_r_m = poly([(260, 340), (284, 323), (326, 325), (347, 345), (345, H0), (260, H0)], 1.0)
-not_perl = np.maximum(sign * (1 - np.maximum(paw_l_m, paw_r_m)), leaf)
-alpha *= 1 - blur(not_perl, 1.0)
+# 1. Silhouette. perl-logo-isnet.png is the rembg (isnet) cut-out: it drops the sign and the
+#    leaf cleanly but also eats the right ear and the flower, so the top keeps the logo's alpha.
+isnet = np.zeros((H, W), np.float32)
+isnet[:H0] = np.asarray(Image.open(HERE / "perl-logo-isnet.png").convert("RGBA"))[..., 3] / 255.0
+top_keep = np.maximum(poly([(70, 0), (W, 0), (W, 232), (392, 232), (392, 252), (280, 252), (280, 232), (70, 232)]),
+                      poly([(0, 0), (70, 0), (70, 165), (0, 165)]))
+top_keep = blur(top_keep, 3)
+alpha = isnet * (1 - top_keep) + alpha * top_keep
+alpha[alpha < 0.03] = 0
+paw_l_m = poly([(60, 300), (80, 285), (125, 286), (142, 305), (146, 352), (100, 358), (58, 345)], 1.0)
+paw_r_m = poly([(258, 342), (284, 323), (326, 325), (350, 345), (350, H0), (258, H0)], 1.0)
 
 # 2. Ears: lifted out of the head, drawn behind it.
 greenish = ((Hh > 55) & (Hh < 170) & (S > 0.12)).astype(np.float32)
@@ -114,59 +117,107 @@ ear_l_m, ear_r_m = ear_l_poly * (1 - keep_l), ear_r_poly * (1 - keep_r)
 
 # 3. Head: everything left once ears and paws are lifted; fill what they covered.
 paws_hole = np.maximum(paw_l_m, paw_r_m)
-head_a = alpha * (1 - ear_l_m) * (1 - ear_r_m) * (1 - grow(paws_hole, 2))
+head_a = alpha * (1 - ear_l_m) * (1 - ear_r_m) * (1 - grow(paws_hole, 3))
 head_a[head_a < 0.06] = 0
-head_shape = ellipse(205, 250, 128, 103)              # where the face continues behind paws/sign
-chin = head_shape * poly([(70, 286), (350, 286), (350, 362), (70, 362)])
-fill_zone = np.clip(np.maximum(paws_hole, chin) * head_shape - head_a, 0, 1)
-known = (head_a > 0.6).astype(np.uint8)
-filled = bleed(rgb, head_a)
+head_shape = ellipse(208, 252, 136, 104, 1.2)         # the face continues behind paws and sign
+# Trust the painting only where it is clearly face: drop the sign's shadow under the chin and
+# thin gaps the cut-out left; everything else inside the face oval is repainted from the fur.
+brownish = ((Hh > 15) & (Hh < 45) & (V < 0.68) & (S > 0.35)).astype(np.float32)
+below_mouth = poly([(60, 326), (360, 326), (360, H), (60, H)], 3)
+trust = head_a * (1 - grow(brownish * below_mouth, 2))
+trust = cv2.erode((trust > 0.85).astype(np.uint8), np.ones((3, 3), np.uint8)).astype(np.float32) * trust
+hat_px = alpha * (green > 0.5) * (1 - np.maximum(ear_l_m, ear_r_m))        # the hat brim, even where a paw was
+outside = head_a * (1 - head_shape)
+low = poly([(0, 280), (W, 280), (W, H), (0, H)], 2)
+outside = outside * (1 - low) + outside * low * blur((green > 0.5).astype(np.float32), 0.7)   # below the brim: hat only
+head_a = np.maximum(np.maximum(trust, outside), hat_px * poly([(300, 230), (W, 230), (W, H0), (300, H0)]))
+fill_zone = np.clip(head_shape - trust, 0, 1)
+def smooth_fill(rgb_, a_, sigma):
+    """Fill hidden fur from the visible fur around it: coarse estimate first, refined by finer
+    ones blended smoothly (no hard steps, so no visible patches)."""
+    have = (a_ > 0.6).astype(np.float32)
+    est = []
+    for s_ in (sigma * 8, sigma * 3, sigma):
+        w = cv2.GaussianBlur(have, (0, 0), s_)
+        c = cv2.GaussianBlur(rgb_.astype(np.float32) * have[..., None], (0, 0), s_)
+        est.append((c / np.maximum(w[..., None], 1e-6), w))
+    out = est[0][0]
+    for e, w in est[1:]:
+        k = np.clip(w * 4, 0, 1)[..., None]
+        out = out * (1 - k) + e * k
+    return out
+
+
+filled = smooth_fill(rgb, trust, 6)
 fur_noise = cv2.GaussianBlur(np.random.default_rng(7).normal(0, 9, (H, W)).astype(np.float32), (0, 0), 0.8)[..., None]
-wk = np.clip((head_a - 0.25) / 0.55, 0, 1)[..., None]
+wk = blur(np.clip((trust - 0.25) / 0.55, 0, 1), 1.0)[..., None]
 head_rgb = np.clip(rgb * wk + (filled + fur_noise) * (1 - wk), 0, 255).astype(np.uint8)
 # Soft shading toward the chin so the completed part does not look flat.
 shade = blur(head_shape * poly([(60, 318), (360, 318), (360, 370), (60, 370)]), 10) * 0.12
 head_rgb = np.clip(head_rgb.astype(np.float32) * (1 - shade[..., None]), 0, 255).astype(np.uint8)
-head_alpha = np.maximum(head_a, blur(head_shape, 1.2) * np.maximum(fill_zone > 0.02, head_a > 0.02) * (1 - np.maximum(ear_l_m, ear_r_m)))
+head_alpha = np.maximum(head_a, head_shape * (1 - np.maximum(ear_l_m, ear_r_m)))
+# A soft darker edge on the repainted lower outline, like the painting's own outline.
+edge = np.clip(head_shape - blur(cv2.erode((head_shape > 0.5).astype(np.uint8), np.ones((5, 5), np.uint8)).astype(np.float32), 1.5), 0, 1)
+edge *= (1 - trust) * poly([(0, 280), (W, 280), (W, H), (0, H)], 4)
+head_rgb = np.clip(head_rgb * (1 - edge[..., None] * 0.5) + np.array([176, 128, 84]) * edge[..., None] * 0.5, 0, 255).astype(np.uint8)
 save("head", head_rgb, head_alpha)
 save("ear-l", ear_rgb, ear_l)
 save("ear-r", ear_rgb, ear_r)
 
-# 4. Paws with forearms reaching down behind the ledge.
-# A patch of plain forehead fur, tiled down the forearm so it matches the painting.
-FUR_PATCH = rgb[222:258, 186:222].astype(np.float32)
+# 4. Body (chest), paws and forearms.
+fur_ref = rgb[(head_a > 0.9) & (V > 0.72) & (S < 0.45) & (np.arange(H)[:, None] > 260)].reshape(-1, 3).astype(np.float32)
+FUR = np.median(fur_ref, 0)                      # the face's light fur
+OUTLINE = np.array([176, 128, 84], np.float32)   # the soft brown line the art uses around fur
 
 
-def paw_with_arm(mask, name, x0, x1, top):
-    paw_a = mask * alpha
-    cx, half = (x0 + x1) / 2, (x1 - x0) / 2
-    shape = Image.new("L", (W * SS, H * SS), 0)
-    d = ImageDraw.Draw(shape)
-    pts = [(cx - half * 0.70, top), (cx + half * 0.70, top), (cx + half * 0.80, top + 120), (cx + half * 0.88, H), (cx - half * 0.88, H), (cx - half * 0.80, top + 120)]
-    d.polygon([(x * SS, y * SS) for x, y in pts], fill=255)
-    arm_a = np.asarray(shape.resize(size, Image.LANCZOS), np.float32) / 255
-    ph, pw = FUR_PATCH.shape[:2]
-    reps = (H // ph + 2, W // pw + 2)
-    block = np.concatenate([np.concatenate([FUR_PATCH, FUR_PATCH[:, ::-1]], 1), np.concatenate([FUR_PATCH[::-1], FUR_PATCH[::-1, ::-1]], 1)], 0)
-    tile = np.tile(block, (H // block.shape[0] + 1, W // block.shape[1] + 1, 1))[:H, :W]
-    tile = cv2.GaussianBlur(tile, (0, 0), 0.7)
-    ys_, xs_ = np.nonzero(paw_a > 0.5)
-    px_ = rgb[ys_, xs_].reshape(-1, 3).astype(np.float32)
-    paw_mean = px_[px_.sum(1) > np.percentile(px_.sum(1), 55)].mean(0)
-    tile = np.clip(tile * (paw_mean / tile.reshape(-1, 3).mean(0)), 0, 255)          # match the paw's lighter fur
+def aa_shape(pts):
+    m = Image.new("L", (W * SS, H * SS), 0)
+    ImageDraw.Draw(m).polygon([(x * SS, y * SS) for x, y in pts], fill=255)
+    return np.asarray(m.resize(size, Image.LANCZOS), np.float32) / 255
+
+
+def fur_texture(seed, streak=6.0):
+    """Fine fur grain: noise smeared along the hair direction (mostly vertical)."""
+    n = np.random.default_rng(seed).normal(0, 1, (H, W)).astype(np.float32)
+    n = cv2.GaussianBlur(n, (0, 0), sigmaX=0.7, sigmaY=streak)
+    return n / (n.std() + 1e-6)
+
+
+def shaded_fur(mask, cx, half, base, seed, light=0.0):
     xx = (np.arange(W)[None, :] - cx) / max(half, 1)
-    yy = np.clip((np.arange(H)[:, None] - top) / 140, 0, 1)
-    vol = np.clip(1.06 - 0.24 * (xx / 0.8) ** 2, 0.7, 1.08) * (1 - 0.08 * yy)          # round, darker lower down
-    arm_rgb = tile * vol[..., None]
-    inner = blur(cv2.erode((arm_a > 0.5).astype(np.uint8), np.ones((7, 7), np.uint8)).astype(np.float32), 1.5)
-    rim = np.clip(arm_a - inner, 0, 1)[..., None]
-    arm_rgb = arm_rgb * (1 - rim * 0.45) + np.array([168, 118, 74]) * rim * 0.45
-    out_rgb = np.clip(rgb * paw_a[..., None] + arm_rgb * (1 - paw_a[..., None]), 0, 255).astype(np.uint8)
-    save(name, out_rgb, np.maximum(paw_a, arm_a))
+    vol = np.clip(1.05 - 0.28 * xx ** 2 + light * xx, 0.68, 1.1)            # rounded, lit from the left
+    col = base[None, None, :] * vol[..., None] + fur_texture(seed)[..., None] * 4
+    inner = blur(cv2.erode((mask > 0.5).astype(np.uint8), np.ones((5, 5), np.uint8)).astype(np.float32), 1.6)
+    rim = np.clip(mask - inner, 0, 1)[..., None]
+    return np.clip(col * (1 - rim * 0.55) + OUTLINE * rim * 0.55, 0, 255)
 
 
-paw_with_arm(paw_l_m, "paw-l", 70, 136, 322)
-paw_with_arm(paw_r_m, "paw-r", 268, 340, 352)
+# Chest: rises behind the chin and runs down out of the canvas (always hidden by the ledge).
+chest_pts = [(118, 340), (150, 318), (205, 312), (262, 318), (300, 342), (318, H), (96, H)]
+chest_a = aa_shape(chest_pts)
+yy = np.clip((np.arange(H)[:, None] - 312) / 120, 0, 1)
+chest_rgb = shaded_fur(chest_a, 207, 110, FUR * 0.88, 21, 0.06) * (1 - 0.10 * yy[..., None])
+chest_rgb = chest_rgb * (1 - 0.16 * np.exp(-((np.arange(H)[:, None] - 330) / 18) ** 2))[..., None]   # shadow under the chin
+save("body", chest_rgb.astype(np.uint8), chest_a)
+
+
+def paw_layer(mask, name, cx, half, top, seed):
+    paw_a = mask * alpha * (1 - blur(grow(green * (alpha > 0.5), 1), 0.8))
+    save(name, rgb, paw_a)
+    # Forearm: behind the paw, starting under its middle, a little narrower and tapering out.
+    pts = [(cx - half * 0.50, top), (cx + half * 0.50, top), (cx + half * 0.56, top + 90), (cx + half * 0.62, H), (cx - half * 0.62, H), (cx - half * 0.56, top + 90)]
+    arm_a = aa_shape(pts)
+    ys_, xs_ = np.nonzero(paw_a > 0.8)
+    px_ = rgb[ys_, xs_].reshape(-1, 3).astype(np.float32)
+    base = px_[px_.sum(1) > np.percentile(px_.sum(1), 45)].mean(0)
+    arm_rgb = shaded_fur(arm_a, cx, half * 0.56, base, seed, 0.08)
+    arm_rgb *= (1 - 0.10 * np.clip((np.arange(H)[:, None] - top) / 160, 0, 1))[..., None]
+    arm_rgb *= (1 - 0.22 * np.exp(-((np.arange(H)[:, None] - top - 6) / 12) ** 2))[..., None]    # shade right under the paw
+    save(name.replace("paw", "arm"), arm_rgb.astype(np.uint8), arm_a)
+
+
+paw_layer(paw_l_m, "paw-l", 103, 40, 328, 31)
+paw_layer(paw_r_m, "paw-r", 304, 44, 356, 37)
 
 # 5. Expressions painted over the same face.
 eyes = [(152, 243, 25, 28), (253, 278, 27, 27)]
@@ -232,29 +283,29 @@ for cx, cy, rx, ry in eyes:
 expression("eyes-closed", closed, 4.6, eyeless, lid_a)
 expression("eyes-happy", happy, 5.0, eyeless, lid_a)
 
-mouth_hole = (ellipse(185, 316, 25, 22) > 0.5).astype(np.uint8)
-mouthless = head_rgb.astype(np.float32).copy()
-samples = []
-for ang in np.linspace(0, 2 * np.pi, 14, endpoint=False):
-    sx, sy = 185 + 34 * np.cos(ang), 316 + 30 * np.sin(ang)
-    if 0 <= int(sy) < H0:
-        patch = head_rgb[int(sy) - 2:int(sy) + 3, int(sx) - 2:int(sx) + 3].reshape(-1, 3).astype(np.float32)
-        if patch.mean() > 170:
-            samples.append((sx, sy, patch.mean(0)))
-num = np.zeros((H, W, 3), np.float32); den = np.zeros((H, W, 1), np.float32)
-for sx, sy, c in samples:
-    w = 1.0 / (((xx_ - sx) ** 2 + (yy_ - sy) ** 2)[..., None] + 25.0) ** 1.5
-    num += w * c; den += w
-m = ellipse(185, 316, 27, 24, 3.0)[..., None]
-mouthless = np.clip(mouthless * (1 - m) + (num / np.maximum(den, 1e-9)) * m, 0, 255).astype(np.uint8)
-mouthless = (cv2.GaussianBlur(mouthless, (0, 0), 1.4) * (mouth_hole[..., None] > 0) + head_rgb * (mouth_hole[..., None] == 0)).astype(np.uint8)
-smile = [curve((168, 302), (176, 312), (185, 304)), curve((185, 304), (194, 312), (202, 302))]
-expression("mouth-closed", smile, 3.4, mouthless, ellipse(185, 316, 29, 26, 2.5))
+# Closed mouth: only the open part (dark mouth, tongue, teeth) is painted over with the fur
+# around it; the painting's own "w" upper lip stays and becomes the closed smile.
+hsv_h = cv2.cvtColor(head_rgb, cv2.COLOR_RGB2HSV_FULL).astype(np.float32)
+hh, ss, vv = hsv_h[..., 0] * 360 / 255, hsv_h[..., 1] / 255, hsv_h[..., 2] / 255
+inside = (((hh < 20) | (hh > 330)) & (ss > 0.32)) | (vv < 0.5) | ((ss < 0.12) & (vv > 0.93))
+zone = ellipse(186, 320, 25, 21) * poly([(0, 303), (W, 303), (W, H), (0, H)])
+open_m = (inside * (zone > 0.5)).astype(np.uint8)
+n_, lab_, st_, _ = cv2.connectedComponentsWithStats(open_m)
+if n_ > 1:
+    big = 1 + int(np.argmax(st_[1:, cv2.CC_STAT_AREA]))
+    open_m = (lab_ == big).astype(np.uint8)
+open_m = cv2.morphologyEx(open_m, cv2.MORPH_CLOSE, np.ones((7, 7), np.uint8))
+open_m = cv2.dilate(open_m, np.ones((9, 9), np.uint8)).astype(np.float32)
+fill_m = blur(open_m, 2.4)
+fur_m = smooth_fill(head_rgb, head_alpha * (1 - grow(open_m, 2)) * (vv > 0.6), 3)
+fur_m = fur_m + fur_texture(51, 1.5)[..., None] * 2.5
+mouthless = np.clip(head_rgb * (1 - fill_m[..., None]) + fur_m * fill_m[..., None], 0, 255).astype(np.uint8)
+save("mouth-closed", mouthless, np.clip(fill_m * 1.4, 0, 1) * head_alpha)
 
 # 6. Web sprites (scaled up a little for crisp store art), embedded as data URIs.
 SCALE = 1.3
 sprites = {}
-for name in ["head", "ear-l", "ear-r", "paw-l", "paw-r", "eyes-closed", "eyes-happy", "mouth-closed"]:
+for name in ["body", "head", "ear-l", "ear-r", "paw-l", "paw-r", "eyes-closed", "eyes-happy", "mouth-closed"]:
     im = Image.open(OUT / f"{name}.png")
     im = im.resize((round(W * SCALE), round(H * SCALE)), Image.LANCZOS)
     if name == "head":
