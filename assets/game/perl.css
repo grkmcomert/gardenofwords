@@ -17,14 +17,14 @@
 .perl-svg .p-hat { transform-origin: 100px 100px; }
 .perl-svg .p-flower { transform-origin: 140px 84px; }
 .perl-svg .p-face { transform-origin: 100px 135px; }
-.perl-svg .p-eyes { transform-origin: 100px 125px; }
-.perl-svg .p-eye-l { transform-origin: 77px 125px; }
-.perl-svg .p-eye-r { transform-origin: 123px 125px; }
+.perl-svg .p-eyes { transform-origin: 100px 128px; }
+.perl-svg .p-eye-l { transform-origin: 78px 128px; }
+.perl-svg .p-eye-r { transform-origin: 122px 128px; }
 .perl-svg .p-cheek { transform-box: fill-box; transform-origin: center; }
-.perl-svg .p-mouth-open { transform-origin: 100px 146px; }
+.perl-svg .p-mouth-open { transform-origin: 100px 151px; }
 .perl-svg .p-arm-l { transform-origin: 68px 166px; }
 .perl-svg .p-arm-r { transform-origin: 132px 166px; }
-.perl-svg .p-mouth-o { transform-origin: 100px 152px; }
+.perl-svg .p-mouth-o { transform-origin: 100px 155px; }
 .perl-svg .pp-lantern { transform-origin: 141px 203px; }
 .perl-svg .pp-carrot { transform-origin: 100px 166px; }
 .perl-svg .pp-sun, .perl-svg .pp-sun-rays { transform-origin: 34px 30px; }
@@ -203,6 +203,29 @@
 @keyframes pClapL { from { transform: rotate(-28deg); } to { transform: rotate(-62deg); } }
 @keyframes pClapR { from { transform: rotate(28deg); } to { transform: rotate(62deg); } }
 @keyframes pClapBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+
+/* ---------- water: greenhouse (waters a sprout that grows; happy, watching it) ---------- */
+.perl-svg .pp-can { transform-origin: 168px 186px; }
+.perl-svg .pp-sprout { transform-origin: 201px 207px; }
+.perl-svg .pp-drop { transform-box: fill-box; transform-origin: center; }
+.pose-water .p-arm-r { animation: pWaterArm 2.4s ease-in-out infinite; }
+.pose-water .pp-can { display: inline; animation: pPour 2.4s ease-in-out infinite; }
+.pose-water .pp-drops { display: inline; }
+.pose-water .pp-drop { animation: pDrop .9s ease-in infinite; }
+.pose-water .pp-d2 { animation-delay: .3s; }
+.pose-water .pp-d3 { animation-delay: .6s; }
+.pose-water .pp-sprout { display: inline; animation: pSprout 2.4s ease-in-out infinite; }
+.pose-water .p-headwrap { transform: rotate(5deg); animation: pWaterHead 2.4s ease-in-out infinite; }
+.pose-water .p-face { transform: translate(3px, 1px); }
+.pose-water .p-eyes { animation: pBlink 3.4s ease-in-out infinite; }
+.pose-water .p-mouth-open { opacity: 0; }
+.pose-water .p-mouth-smile { opacity: 1; }
+.pose-water .p-ear-l { animation: pEarSway 2.4s ease-in-out infinite; }
+@keyframes pWaterArm { 0%, 100% { transform: translate(6px, -2px) rotate(-58deg); } 50% { transform: translate(6px, -4px) rotate(-66deg); } }
+@keyframes pPour { 0%, 100% { transform: rotate(6deg); } 50% { transform: rotate(22deg); } }
+@keyframes pDrop { 0% { opacity: 0; transform: translate(0, 0); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(-1px, 38px); } }
+@keyframes pSprout { 0%, 100% { transform: scale(.92); } 50% { transform: scale(1.08) rotate(-3deg); } }
+@keyframes pWaterHead { 0%, 100% { transform: rotate(5deg); } 50% { transform: rotate(8deg); } }
 
 /* ---------- talk: answering a tap (chatty mouth, head bob, hand gesture) ---------- */
 .pose-talk .p-mouth-open { animation: pTalk .26s ease-in-out infinite alternate; }

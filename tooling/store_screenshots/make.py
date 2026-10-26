@@ -32,7 +32,7 @@ SHOTS = [
     ("2-play", "view=game&bed=42&found=3", "idea", 1.8, "right", "sky"),
     ("3-complete", "view=gamedone&bed=42&xp=300&clean=1", "clap", 0.18, "left", "peach"),
     ("4-leaderboard", "view=leaderboard", "cheer", 0.42, "right", "gold"),
-    ("5-greenhouse", "view=greenhouse", "munch", 0.7, "left", "mint"),
+    ("5-greenhouse", "view=greenhouse", "water", 1.2, "left", "mint"),
     ("6-themes", "view=themes", "hearts", 0.62, "right", "rose"),
 ]
 
@@ -43,7 +43,7 @@ COPY = {
         "2-play": ("Every word makes *a flower bloom*", "Swipe letters in any direction", "I see one!"),
         "3-complete": ("Finish beds, *earn rewards*", "XP, petals and quests with every bed", "Bravo!"),
         "4-leaderboard": ("Climb the *XP leaderboard*", "Keep your daily streak burning", "To the top!"),
-        "5-greenhouse": ("Grow treats in *your greenhouse*", "Plant seeds, harvest hints and petals", "Yum, carrots!"),
+        "5-greenhouse": ("Grow treats in *your greenhouse*", "Plant seeds, harvest hints and petals", "Grow, little sprout!"),
         "6-themes": ("Pick your *garden's mood*", "Cozy themes, from rose cottage to moonlit nights", "I love this one!"),
     },
     "tr": {
@@ -52,7 +52,7 @@ COPY = {
         "2-play": ("Her kelime *bir çiçek* açtırır", "Harfleri her yöne kaydır", "Bir tane gördüm!"),
         "3-complete": ("Bölümü bitir, *ödülleri topla*", "Her bölümde XP, yaprak ve görevler", "Bravo!"),
         "4-leaderboard": ("*XP tablosunda* zirveye çık", "Günlük serini koru, herkesi geç", "Zirve bizim!"),
-        "5-greenhouse": ("*Serada* ödül yetiştir", "Tohum ek, ipucu ve yaprak hasat et", "Mmm, havuç!"),
+        "5-greenhouse": ("*Serada* ödül yetiştir", "Tohum ek, ipucu ve yaprak hasat et", "Hadi büyü, minik filiz!"),
         "6-themes": ("Bahçenin *havasını* seç", "Gül kulübesinden ay ışıklı gecelere temalar", "Buna bayıldım!"),
     },
     "de": {
@@ -61,7 +61,7 @@ COPY = {
         "2-play": ("Jedes Wort lässt *eine Blume* blühen", "Wische Buchstaben in jede Richtung", "Da ist eins!"),
         "3-complete": ("Beete fertig, *Belohnung* sichern", "EP, Blütenblätter und Aufgaben in jedem Beet", "Bravo!"),
         "4-leaderboard": ("Klettere in der *EP-Bestenliste*", "Halte deine Tagesserie am Leben", "Ganz nach oben!"),
-        "5-greenhouse": ("Ernte im *Gewächshaus*", "Säe Samen, ernte Tipps und Blütenblätter", "Mmh, Karotten!"),
+        "5-greenhouse": ("Ernte im *Gewächshaus*", "Säe Samen, ernte Tipps und Blütenblätter", "Wachs, kleiner Spross!"),
         "6-themes": ("Wähle deine *Gartenstimmung*", "Vom Rosenhäuschen bis zur Mondnacht", "Das liebe ich!"),
     },
 }
