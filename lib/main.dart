@@ -101,12 +101,12 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
   // interstitial), not a standard rewarded ad. Loading it through RewardedAd
   // produces "Ad unit doesn't match format" on iOS.
   RewardedInterstitialAd? _rewardedInterstitialAd;
-  // The WebView starts on the moonlit default theme before its first JS theme
+  // The WebView starts on the Rose Cottage default theme before its first JS theme
   // message reaches Flutter. Keep the native banner frame on that same surface
   // from the very first frame, otherwise the ad gets a garden-coloured surround.
   static const _darkSurface = Color(0xFF0E1A15);
   Color _themeSurfaceColor = _darkSurface;
-  String _themeBackgroundAsset = 'assets/game/images/themes/moonlit.webp';
+  String _themeBackgroundAsset = 'assets/game/images/themes/rose-cottage.webp';
   bool _bannerVisible = false;
   bool _bannerLoading = false;
   bool _bannerRequested = false;
@@ -180,7 +180,7 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
     _controller = WebViewController.fromPlatformCreationParams(webViewParams)
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       // An opaque WebView avoids an extra transparent platform-view
-      // composition pass on Android. Match the moonlit default before the
+      // composition pass on Android. Match the Rose Cottage default before the
       // first theme message arrives from the page.
       ..setBackgroundColor(_darkSurface)
       ..addJavaScriptChannel(

@@ -22,25 +22,30 @@
   "use strict";
 
   const KEY = "kelimeler-bahcesi-retention-v1";
+  // Premium gift calendar (claimed doubled). Free players get the smaller list; a video doubles it.
   const GIFTS = [1, 1, 2, 1, 2, 2, 4];
+  const FREE_GIFTS = [1, 1, 1, 1, 1, 1, 2];
+  function giftList() { return premium() ? GIFTS : FREE_GIFTS; }
   const MILESTONES = { 3: 1, 7: 2, 14: 3, 30: 5, 60: 5, 100: 10 };
+  // Free players get half of every streak milestone (never less than 1).
+  function milestoneHints(base) { return premium() ? base : Math.max(1, Math.floor(base / 2)); }
   const REVIEW_AFTER_BEDS = 2;
   const CHAPTER_EMOJI = ["🌱", "🍀", "🌷", "🌿", "🌻", "🌹", "🍄", "🍒", "💜", "🌵", "🍁", "🐸", "🎋", "🌺", "🌲", "🌸", "🌙", "🌳", "👑"];
   const CHAPTER_BEDS = 50;
-  // Premium earns hints faster; free players can still earn every reward, just less of it.
-  function chestHints() { return premium() ? 5 : 3; }
+  // Premium earns hints much faster; free players still earn, but slowly enough that Premium is worth it.
+  function chestHints() { return premium() ? 5 : 1; }
   const CHEST_PETALS = 100;
   const FLOWER_PETALS = 10;
   function questBonusHints() { return premium() ? 2 : 1; }
-  function petalsPerHint() { return premium() ? 60 : 100; }
+  function petalsPerHint() { return premium() ? 60 : 150; }
   function seedHints(seed) { return seed.hints[premium() ? 1 : 0]; }
   const XP = { word: 2, bed: 10, star: 5, newBed: 10, quest: 15, chest: 60 };
   const XP_VERSION = 1;
   const SEEDS = [
     { id: "daisy", emoji: "🌼", cost: 10, minutes: 20, petals: 20, hints: [0, 0] },
     { id: "tulip", emoji: "🌷", cost: 35, minutes: 120, petals: 15, hints: [0, 1] },
-    { id: "sunflower", emoji: "🌻", cost: 70, minutes: 360, petals: 25, hints: [1, 2] },
-    { id: "rose", emoji: "🌹", cost: 140, minutes: 720, petals: 50, hints: [2, 4] }
+    { id: "sunflower", emoji: "🌻", cost: 70, minutes: 360, petals: 25, hints: [0, 2] },
+    { id: "rose", emoji: "🌹", cost: 140, minutes: 720, petals: 50, hints: [1, 4] }
   ];
   // [target, petal reward]. "fast" and "combo" targets are thresholds, the rest are counts.
   const QUEST_POOL = [
@@ -58,8 +63,8 @@
       greeting: "Welcome,", level: "Level {n}", xpText: "{a} / {b} XP", signTagline: "A cozy word garden", music: "Lo-fi garden radio",
       levelUp: "Level up", levelUpTitle: "You reached level {n}!", continue: "Continue",
       levelTitle: "Gardener level", levelIntro: "Earn XP by finding words, finishing beds and completing quests.",
-      levelNext: "{n} XP to level {l}", levelRewards: "Every level: +1 hint\nEvery 5th level: +3 hints and +50 🌸",
-      xpEarned: "Experience", mapSub: "{n} beds open", leaderboardSub: "Best times", marketSub: "Hints & Premium",
+      levelNext: "{n} XP to level {l}", levelRewards: "Every level: +1 hint\nEvery 5th level: +3 hints and +50 🌸", levelRewardsFree: "Every 5th level: +1 hint and +50 🌸\nPremium: +1 hint every level, +3 every 5th",
+      xpEarned: "Experience", mapSub: "{n} beds open", leaderboardSub: "Ranked by XP", marketSub: "Hints & Premium",
       themesSub: "Change the scenery", helpSub: "Privacy & contact", questsSub: "{n}/3 done", questsSubAll: "All done ✓",
       ghSubReady: "Ready to harvest!", ghSubEmpty: "Plant a seed", ghSubGrowing: "Blooms in {t}",
       streakSub: "{n} days in a row", streakSubZero: "Start today", achievementsSub: "{n} badges",
@@ -89,6 +94,15 @@
       chestReward: "+{h} hints · +{p} 🌸", chestOpen: "Open chest", chestClaimed: "Already opened. Well done!", chestProgress: "{done} / {total} beds bloomed",
       premiumMore: "Premium: {r}", letsGo: "Let's go!",
       perlHello: "Hi! I'm Perl 🐰 Welcome to my garden! What should I call you?", perlEdit: "Fancy a new look? Pick a new name or avatar!",
+      perlGreetMorning: ["Good morning, {name}! ☀️ The garden missed you. Have a great game!", "Morning, {name}! 🌼 Fresh dew, fresh words. Let's play!"],
+      perlGreetDay: ["Hi {name}! 🌷 Welcome back. Which words will we find today?", "Hello {name}! 🐰 Great to see you. Have fun!"],
+      perlGreetEvening: ["Good evening, {name}! 🌙 How about a bed or two before bed?", "Evening, {name}! 🏮 The lanterns are on. Enjoy the game!"],
+      perlGreetNight: ["Still awake, {name}? 🦉 Welcome! A cozy round, then sleep.", "A night gardener! 🌌 Hi {name}, have a calm game."],
+      perlGreetStreak: "🔥 {n}-day streak, let's keep it going!",
+      perlGreetButton: "Let's play!",
+      perlCheers: ["Great job, {name}! 🌼", "At this pace the garden turns into a forest! 🌳", "Even my ears are clapping! 👏", "One more bed? I'm in! 🥕", "Eagle eyes! 🦅", "That was quick! ⚡"],
+      perlTips: ["Planted a seed in the greenhouse? Blooms bring hints! 🌻", "Finish all 3 quests for a bonus hint! 🎯", "One bed a day keeps your streak alive! 🔥", "Stuck? A hint lights up the first letter 💡", "Every 5 new beds, a flower opens in your garden 🌷"],
+      perlTipPremium: "Premium fills your hint basket much faster ✨",
       perlBravo: "Bravo, {name}! You finished your first bed. Keep going, the garden is starting to bloom! 🌷",
       close: "Close", hours: "{h}h {m}m", minutes: "{m}m", seconds: "{s}s",
       chapters: ["Seed Bed", "Clover Path", "Tulip Row", "Fern Hollow", "Sunflower Field", "Rose Arbor", "Mushroom Glade", "Cherry Orchard", "Lavender Lane", "Cactus Garden", "Maple Grove", "Lily Pond", "Bamboo Walk", "Hibiscus Bay", "Pine Ridge", "Blossom Hill", "Moonflower Court", "Evergreen Vale", "Wildwood Crown"]
@@ -97,8 +111,8 @@
       greeting: "Willkommen,", level: "Level {n}", xpText: "{a} / {b} EP", signTagline: "Ein gemütlicher Wortgarten", music: "Lo-Fi-Gartenradio",
       levelUp: "Level-Aufstieg", levelUpTitle: "Du hast Level {n} erreicht!", continue: "Weiter",
       levelTitle: "Gärtnerlevel", levelIntro: "Sammle EP, indem du Wörter findest, Beete abschließt und Aufgaben erledigst.",
-      levelNext: "{n} EP bis Level {l}", levelRewards: "Jedes Level: +1 Tipp\nJedes 5. Level: +3 Tipps und +50 🌸",
-      xpEarned: "Erfahrung", mapSub: "{n} Beete offen", leaderboardSub: "Bestzeiten", marketSub: "Tipps & Premium",
+      levelNext: "{n} EP bis Level {l}", levelRewards: "Jedes Level: +1 Tipp\nJedes 5. Level: +3 Tipps und +50 🌸", levelRewardsFree: "Jedes 5. Level: +1 Tipp und +50 🌸\nPremium: +1 Tipp pro Level, +3 jedes 5. Level",
+      xpEarned: "Erfahrung", mapSub: "{n} Beete offen", leaderboardSub: "Nach EP sortiert", marketSub: "Tipps & Premium",
       themesSub: "Szenerie wechseln", helpSub: "Datenschutz & Kontakt", questsSub: "{n}/3 erledigt", questsSubAll: "Alles erledigt ✓",
       ghSubReady: "Erntebereit!", ghSubEmpty: "Pflanze einen Samen", ghSubGrowing: "Blüht in {t}",
       streakSub: "{n} Tage in Folge", streakSubZero: "Heute starten", achievementsSub: "{n} Abzeichen",
@@ -128,6 +142,15 @@
       chestReward: "+{h} Tipps · +{p} 🌸", chestOpen: "Truhe öffnen", chestClaimed: "Schon geöffnet. Gut gemacht!", chestProgress: "{done} / {total} Beete erblüht",
       premiumMore: "Premium: {r}", letsGo: "Weiter geht's!",
       perlHello: "Hallo! Ich bin Perl 🐰 Willkommen in meinem Garten! Wie darf ich dich nennen?", perlEdit: "Lust auf etwas Neues? Wähle einen neuen Namen oder Avatar!",
+      perlGreetMorning: ["Guten Morgen, {name}! ☀️ Der Garten hat dich vermisst. Viel Spaß!", "Morgen, {name}! 🌼 Frischer Tau, frische Wörter. Los geht's!"],
+      perlGreetDay: ["Hallo {name}! 🌷 Schön, dass du da bist. Welche Wörter finden wir heute?", "Hi {name}! 🐰 Toll, dich zu sehen. Viel Spaß!"],
+      perlGreetEvening: ["Guten Abend, {name}! 🌙 Noch ein, zwei Beete vor dem Schlafen?", "Abend, {name}! 🏮 Die Laternen leuchten. Viel Spaß!"],
+      perlGreetNight: ["Noch wach, {name}? 🦉 Willkommen! Eine gemütliche Runde, dann ab ins Bett.", "Ein Nachtgärtner! 🌌 Hallo {name}, viel Ruhe beim Spielen."],
+      perlGreetStreak: "🔥 {n} Tage in Folge, weiter so!",
+      perlGreetButton: "Los geht's!",
+      perlCheers: ["Super gemacht, {name}! 🌼", "So wird der Garten bald ein Wald! 🌳", "Sogar meine Ohren klatschen! 👏", "Noch ein Beet? Ich bin dabei! 🥕", "Adleraugen! 🦅", "Das ging schnell! ⚡"],
+      perlTips: ["Schon einen Samen im Gewächshaus gepflanzt? Blüten bringen Tipps! 🌻", "Schließe alle 3 Aufgaben ab und hol dir einen Bonus-Tipp! 🎯", "Ein Beet am Tag hält deine Serie am Leben! 🔥", "Festgefahren? Ein Tipp zeigt den ersten Buchstaben 💡", "Alle 5 neuen Beete blüht eine Blume in deinem Garten 🌷"],
+      perlTipPremium: "Mit Premium füllt sich dein Tippkorb viel schneller ✨",
       perlBravo: "Bravo, {name}! Dein erstes Beet ist fertig. Weiter so, der Garten fängt an zu blühen! 🌷",
       close: "Schließen", hours: "{h} Std. {m} Min.", minutes: "{m} Min.", seconds: "{s} s",
       chapters: ["Saatbeet", "Kleepfad", "Tulpenreihe", "Farnmulde", "Sonnenblumenfeld", "Rosenlaube", "Pilzlichtung", "Kirschgarten", "Lavendelweg", "Kakteengarten", "Ahornhain", "Seerosenteich", "Bambusweg", "Hibiskusbucht", "Kiefernkamm", "Blütenhügel", "Mondblumenhof", "Immergrünes Tal", "Wildwaldkrone"]
@@ -136,8 +159,8 @@
       greeting: "Hoş geldin,", level: "Seviye {n}", xpText: "{a} / {b} XP", signTagline: "Kelimelerle büyüyen bahçe", music: "Lo-fi bahçe radyosu",
       levelUp: "Seviye atladın", levelUpTitle: "{n}. seviyeye ulaştın!", continue: "Devam et",
       levelTitle: "Bahçıvan seviyesi", levelIntro: "Kelime bularak, bölüm bitirerek ve görev tamamlayarak XP kazan.",
-      levelNext: "{l}. seviyeye {n} XP", levelRewards: "Her seviye: +1 ipucu\nHer 5. seviye: +3 ipucu ve +50 🌸",
-      xpEarned: "Deneyim", mapSub: "{n} bölüm açık", leaderboardSub: "En iyi süreler", marketSub: "İpucu ve Premium",
+      levelNext: "{l}. seviyeye {n} XP", levelRewards: "Her seviye: +1 ipucu\nHer 5. seviye: +3 ipucu ve +50 🌸", levelRewardsFree: "Her 5. seviye: +1 ipucu ve +50 🌸\nPremium: Her seviye +1 ipucu, her 5. seviye +3",
+      xpEarned: "Deneyim", mapSub: "{n} bölüm açık", leaderboardSub: "XP sıralaması", marketSub: "İpucu ve Premium",
       themesSub: "Manzarayı değiştir", helpSub: "Gizlilik ve iletişim", questsSub: "{n}/3 tamam", questsSubAll: "Hepsi tamam ✓",
       ghSubReady: "Toplamaya hazır!", ghSubEmpty: "Bir tohum ek", ghSubGrowing: "{t} sonra açar",
       streakSub: "{n} gün üst üste", streakSubZero: "Bugün başla", achievementsSub: "{n} rozet",
@@ -167,6 +190,15 @@
       chestReward: "+{h} ipucu · +{p} 🌸", chestOpen: "Sandığı aç", chestClaimed: "Zaten açıldı. Harikasın!", chestProgress: "{done} / {total} bölüm bitti",
       premiumMore: "Premium: {r}", letsGo: "Hadi devam!",
       perlHello: "Merhaba! Ben Perl 🐰 Bahçeme hoş geldin! Sana nasıl sesleneyim?", perlEdit: "Yeni bir görünüm mü? Yeni bir isim ya da avatar seç!",
+      perlGreetMorning: ["Günaydın {name}! ☀️ Bahçe seni özlemiş. İyi oyunlar!", "Günaydın {name}! 🌼 Taze çiy, taze kelimeler. Hadi başlayalım!"],
+      perlGreetDay: ["Selam {name}! 🌷 Hoş geldin, bugün hangi kelimeleri bulacağız?", "Merhaba {name}! 🐰 Seni görmek ne güzel. İyi oyunlar!"],
+      perlGreetEvening: ["İyi akşamlar {name}! 🌙 Yatmadan önce bir iki bölüm?", "Akşam oldu {name}! 🏮 Fenerler yandı, iyi oyunlar!"],
+      perlGreetNight: ["Hâlâ uyanık mısın {name}? 🦉 Hoş geldin! Tatlı bir tur, sonra uyku.", "Gece bahçıvanı! 🌌 Selam {name}, keyifli oyunlar."],
+      perlGreetStreak: "🔥 {n} günlük serin var, bugün de koruyalım!",
+      perlGreetButton: "Hadi oynayalım!",
+      perlCheers: ["Harika gidiyorsun {name}! 🌼", "Bu hızla bahçe ormana dönecek! 🌳", "Kulaklarım bile alkışlıyor! 👏", "Bir bölüm daha? Ben varım! 🥕", "Gözlerin kartal gibi! 🦅", "Ne çabuk bitirdin! ⚡"],
+      perlTips: ["Serada tohum ektin mi? Açan çiçekler ipucu getirir! 🌻", "3 görevi de bitir, bonus ipucu kap! 🎯", "Serini korumak için günde bir bölüm yeter! 🔥", "Takıldın mı? İpucu ilk harfi yakar 💡", "Her 5 yeni bölümde bahçende bir çiçek açar 🌷"],
+      perlTipPremium: "Premium'la ipucu sepetin çok daha hızlı dolar ✨",
       perlBravo: "Bravo {name}! İlk bölümünü bitirdin. Böyle devam, bahçe çiçek açmaya başladı! 🌷",
       close: "Kapat", hours: "{h} sa {m} dk", minutes: "{m} dk", seconds: "{s} sn",
       chapters: ["Tohum Yatağı", "Yonca Yolu", "Lale Sırası", "Eğrelti Koyağı", "Ayçiçeği Tarlası", "Gül Çardağı", "Mantar Açıklığı", "Kiraz Bahçesi", "Lavanta Yolu", "Kaktüs Bahçesi", "Akçaağaç Korusu", "Nilüfer Göleti", "Bambu Yolu", "Ebegümeci Koyu", "Çam Sırtı", "Çiçek Tepesi", "Ay Çiçeği Avlusu", "Hep Yeşil Vadi", "Yaban Ormanı Tacı"]
@@ -220,7 +252,11 @@
   while (state.pots.length < 4) state.pots.push(null);
   if (!Array.isArray(state.playDays)) state.playDays = [];
   if (!state.chests || typeof state.chests !== "object") state.chests = {};
-  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (_) {} };
+  const save = () => {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (_) {}
+    // Keeps the global XP leaderboard row fresh (debounced on the other side).
+    try { window.__gowXpChanged?.(); } catch (_) {}
+  };
 
   const premium = () => {
     try { return Boolean((typeof isPremiumUser === "function" && isPremiumUser()) || progress.adsBypassEnabled); } catch (_) { return false; }
@@ -273,10 +309,10 @@
     }
     renderHud();
   }
-  // Premium: +1 hint every level, +3 every 5th. Free: +1 every 2nd level, +2 every 5th.
+  // Premium: +1 hint every level, +3 every 5th. Free: only +1 every 5th level.
   function levelHints(level) {
     const premiumHints = level % 5 === 0 ? 3 : 1;
-    const freeHints = level % 5 === 0 ? 2 : level % 2 === 0 ? 1 : 0;
+    const freeHints = level % 5 === 0 ? 1 : 0;
     return { hints: premium() ? premiumHints : freeHints, premiumHints };
   }
   // A small "Premium gives more" button for free players; opens the market.
@@ -568,17 +604,19 @@
     if (tick) return;
     const available = giftAvailable();
     const day = available ? nextGiftDay() : state.giftDay;
-    const base = GIFTS[day - 1] || 1;
+    const gifts = giftList();
+    const base = gifts[day - 1] || 0;
     const isPremium = premium();
     modal.innerHTML = `
       <div class="celebration" aria-hidden="true">🎁</div>
       <h2>${esc(L("giftTitle"))}</h2>
       <p>${esc(L("giftSubtitle"))}</p>
-      <div class="gift-grid">${GIFTS.map((n, i) => {
+      <div class="gift-grid">${gifts.map((n, i) => {
         const d = i + 1;
         const cls = available ? (d < day ? "done" : d === day ? "today" : "") : (d <= day ? "done" : "");
         return `<div class="gift-cell ${cls} ${d === 7 ? "big" : ""}">${esc(L("giftDay", { n: d }))}<b>${d === 7 ? "🎁" : "🌿"}</b>+${n}</div>`;
       }).join("")}</div>
+      ${available && !isPremium ? `<div class="gift-teaser">${premiumTeaser(`+${(GIFTS[day - 1] || 1) * 2} 💡`)}</div>` : ""}
       <p class="meta-status" role="status">${esc(giftStatus)}</p>
       <div class="modal-actions">
         ${available
@@ -586,6 +624,7 @@
              ${isPremium ? "" : `<button class="ghost-button" type="button" data-act="claim">${esc(L("giftClaim", { n: base }))}</button>`}`
           : `<button class="primary-button" type="button" data-act="close">${esc(L("close"))}</button>`}
       </div>`;
+    bindTeasers(modal, () => closeModal("gowGiftBackdrop"));
     onAct(modal, "claim", () => { if (!busy) claimGift(1); });
     onAct(modal, "close", () => closeModal("gowGiftBackdrop"));
     onAct(modal, "double", (e) => {
@@ -608,7 +647,7 @@
   function claimGift(multiplier) {
     if (!giftAvailable()) { closeModal("gowGiftBackdrop"); return; }
     const day = nextGiftDay();
-    const amount = GIFTS[day - 1] * multiplier;
+    const amount = (giftList()[day - 1] || 0) * multiplier;
     state.giftDay = day;
     state.lastGiftDay = dayKey();
     state.lastGiftAt = Date.now();
@@ -638,7 +677,7 @@
       <h2>${esc(L("streakTitle"))}</h2>
       <div class="streak-hero"><b>${n}</b><span><strong>${esc(L("streakDays"))}</strong>${esc(L("streakBest", { n: Math.max(state.best, n) }))}</span></div>
       <div class="streak-week">${days.join("")}</div>
-      <p class="milestone-line">${esc(L("streakHint"))}${nextMilestone ? `<br>${esc(L("streakNext", { n: nextMilestone, h: MILESTONES[nextMilestone] }))}` : ""}</p>
+      <p class="milestone-line">${esc(L("streakHint"))}${nextMilestone ? `<br>${esc(L("streakNext", { n: nextMilestone, h: milestoneHints(MILESTONES[nextMilestone]) }))}` : ""}</p>
       <div class="modal-actions">
         ${giftAvailable() ? `<button class="primary-button" type="button" data-act="gift">${esc(L("openGift"))}</button>` : ""}
         <button class="ghost-button" type="button" data-act="close">${esc(L("close"))}</button>
@@ -825,7 +864,7 @@
         <span class="quest-text"><strong>${esc(L("xpText", { a: info.into, b: info.need }))}</strong>
           <span class="quest-bar"><i style="width:${(info.into / info.need) * 100}%"></i></span></span>
       </div></div>
-      <p class="milestone-line" style="white-space:pre-line">${esc(L("levelRewards"))}</p>
+      <p class="milestone-line" style="white-space:pre-line">${esc(L(premium() ? "levelRewards" : "levelRewardsFree"))}</p>
       <div class="modal-actions"><button class="primary-button" type="button" data-act="close">${esc(L("close"))}</button></div>`;
     onAct(modal, "close", () => closeModal("gowLevelBackdrop"));
   }
@@ -1024,7 +1063,7 @@
       state.best = Math.max(state.best, state.streak);
       state.lastPlayDay = today;
       streakLine = saved ? L("streakSaved", { n: state.streak }) : L("streakToday", { n: state.streak });
-      const bonus = MILESTONES[state.streak];
+      const bonus = MILESTONES[state.streak] ? milestoneHints(MILESTONES[state.streak]) : 0;
       if (bonus && !state.milestones[state.streak]) {
         state.milestones[state.streak] = Date.now();
         addHints(bonus);
@@ -1093,6 +1132,9 @@
       state.perlBravo = Date.now();
       save();
       celebrations.unshift((done) => showPerlCheer(done));
+    } else if (state.beds > 1 && Math.random() < .3) {
+      // Now and then Perl pops in to cheer a finished bed.
+      window.setTimeout(() => { if (!celebrating && !celebrations.length) perlPeek(perlText(pick(L("perlCheers"))), 3200, "clap"); }, 1700);
     }
     if (gardenDone >= 0) queueCelebration((done) => openChest(gardenDone, done));
     // Ask for an App Store rating after the second bed, once everything else has played.
@@ -1110,11 +1152,28 @@
 
   /* ---------- Perl, the garden bunny ---------- */
 
-  function perlMarkup(text, extraClass) {
-    return `<div class="perl-hello ${extraClass || ""}"><span class="perl-avatar" aria-hidden="true"><span class="perl-img"></span></span><p class="perl-bubble">${esc(text)}</p></div>`;
+  // Perl (the real artwork, rigged) in the given pose (see perl.js / perl.css). Empty if perl.js is missing.
+  function perlArt(pose) {
+    try { return window.PerlArt ? window.PerlArt.svg(pose) : ""; } catch (_) { return ""; }
+  }
+  function perlMarkup(text, extraClass, pose) {
+    return `<div class="perl-hello ${extraClass || ""}"><span class="perl-avatar is-full" aria-hidden="true">${perlArt(pose || "cheer")}</span><p class="perl-bubble">${esc(text)}</p></div>`;
   }
   let perlEl = null;
-  function showPerlCheer(done) {
+  // Replaces {name}; drops it cleanly ("Hi {name}!" -> "Hi!") when there is no name yet.
+  function perlText(text, vars) {
+    let name = "";
+    try { name = getNickname() || ""; } catch (_) {}
+    let out = String(text || "");
+    if (!name) out = out.replace(/,?\s*\{name\}/g, "");
+    out = out.split("{name}").join(name);
+    Object.keys(vars || {}).forEach(k => { out = out.split("{" + k + "}").join(String(vars[k])); });
+    return out.replace(/\s+([!?,.])/g, "$1");
+  }
+  function pick(list) { return Array.isArray(list) && list.length ? list[Math.floor(Math.random() * list.length)] : String(list || ""); }
+
+  // Full-screen Perl card. Used for the first-bed bravo and the daily hello.
+  function showPerlCard(text, buttonLabel, withConfetti, done, pose) {
     if (!perlEl) {
       perlEl = document.createElement("div");
       perlEl.className = "perl-cheer";
@@ -1122,21 +1181,127 @@
       perlEl.setAttribute("aria-modal", "true");
       document.body.appendChild(perlEl);
     }
-    let name = "";
-    try { name = getNickname() || ""; } catch (_) {}
-    perlEl.innerHTML = `<div class="perl-cheer-card">${perlMarkup(L("perlBravo", { name }).replace(/\s+!/, "!"), "is-cheering")}
-      <button class="primary-button" type="button">${esc(L("letsGo"))}</button></div>`;
+    perlEl.innerHTML = `<div class="perl-cheer-card">${perlMarkup(text, "is-cheering", pose)}
+      <button class="primary-button" type="button">${esc(buttonLabel)}</button></div>`;
     void perlEl.offsetWidth;
     perlEl.classList.add("open");
-    confetti(perlEl.querySelector(".perl-cheer-card"), "levelup-confetti", 18);
+    if (withConfetti) confetti(perlEl.querySelector(".perl-cheer-card"), "levelup-confetti", 18);
     let closed = false;
-    perlEl.querySelector(".primary-button").addEventListener("click", () => {
+    const close = () => {
       if (closed) return;
       closed = true;
       perlEl.classList.remove("open");
+      perlEl.removeEventListener("click", onBackdrop);
       window.setTimeout(done, 300);
+    };
+    const onBackdrop = (event) => { if (event.target === perlEl) close(); };
+    perlEl.addEventListener("click", onBackdrop);
+    perlEl.querySelector(".primary-button").addEventListener("click", close);
+  }
+  function showPerlCheer(done) {
+    showPerlCard(perlText(L("perlBravo")), L("letsGo"), true, done, "cheer");
+  }
+  /* Daily hello: the first time the home screen shows on a new day. */
+  // Each time of day has its own line and its own Perl: stretching under the sun,
+  // happy hearts, a glowing lantern, or nodding off with Zzz.
+  function greetingSlot() {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return { key: "perlGreetMorning", pose: "stretch" };
+    if (hour >= 12 && hour < 18) return { key: "perlGreetDay", pose: "hearts" };
+    if (hour >= 18 && hour < 23) return { key: "perlGreetEvening", pose: "lantern" };
+    return { key: "perlGreetNight", pose: "sleepy" };
+  }
+  function greetingLine() {
+    const key = greetingSlot().key;
+    let text = perlText(pick(L(key)));
+    const streak = liveStreak();
+    if (streak >= 2) text += " " + L("perlGreetStreak", { n: streak });
+    return text;
+  }
+  let greetRetry = null;
+  function maybeQueueDailyGreeting(attempt) {
+    const today = dayKey();
+    if (state.perlGreetDay === today) return;
+    const onHome = typeof shownScreenId === "undefined" || shownScreenId === "homeScreen";
+    if (!onHome || document.visibilityState === "hidden") return;
+    let named = false;
+    try { named = hasNickname(); } catch (_) {}
+    // Never on top of another dialog (e.g. a profile edit): try again shortly.
+    if (named && document.querySelector(".modal-backdrop.open")) {
+      window.clearTimeout(greetRetry);
+      if ((attempt || 0) < 30) greetRetry = window.setTimeout(() => { maybeQueueDailyGreeting((attempt || 0) + 1); playCelebrations(); }, 2000);
+      return;
+    }
+    state.perlGreetDay = today;
+    save();
+    // First launch: Perl already says hello on the name prompt.
+    if (!named) return;
+    celebrations.unshift((done) => showPerlCard(greetingLine(), L("perlGreetButton"), false, done, greetingSlot().pose));
+  }
+
+  /* Perl peeks in now and then with a speech bubble (non-blocking, taps pass through). */
+  let peekEl = null;
+  let peekTimer = null;
+  function perlPeek(text, ms, pose) {
+    if (!text) return;
+    if (!peekEl) {
+      peekEl = document.createElement("div");
+      peekEl.className = "perl-peek";
+      peekEl.setAttribute("role", "status");
+      peekEl.setAttribute("aria-live", "polite");
+      document.body.appendChild(peekEl);
+    }
+    window.clearTimeout(peekTimer);
+    peekEl.classList.remove("open");
+    peekEl.innerHTML = `<span class="perl-avatar" aria-hidden="true">${perlArt(pose || "talk")}</span><p class="perl-bubble">${esc(text)}</p>`;
+    void peekEl.offsetWidth;
+    peekEl.classList.add("open");
+    peekTimer = window.setTimeout(() => peekEl.classList.remove("open"), ms || 3800);
+  }
+  function randomTip() {
+    const tips = (L("perlTips") || []).slice();
+    if (!premium()) tips.push(L("perlTipPremium"));
+    return perlText(pick(tips));
+  }
+  // Once per session, if the player lingers on the home screen.
+  let homeTipShown = false;
+  let homeTipTimer = null;
+  function scheduleHomeTip() {
+    if (homeTipShown) return;
+    window.clearTimeout(homeTipTimer);
+    homeTipTimer = window.setTimeout(() => {
+      const onHome = typeof shownScreenId === "undefined" || shownScreenId === "homeScreen";
+      const busy = document.querySelector(".modal-backdrop.open") || celebrating || celebrations.length;
+      if (!onHome || busy || document.visibilityState !== "visible") return;
+      if (Math.random() < .6) { homeTipShown = true; perlPeek(randomTip(), 4500, "idea"); }
+    }, 22000);
+  }
+  // The home-card Perl idles (breathes, looks around, blinks) and answers a tap with a
+  // different trick each time: a big boing, floppy ears, a giggle fit or peekaboo.
+  const TAP_TRICKS = [{ pose: "boing", ms: 1000 }, { pose: "earflop", ms: 1200 }, { pose: "giggle", ms: 1200 }, { pose: "peekaboo", ms: 1800 }];
+  let tapTrick = Math.floor(Math.random() * TAP_TRICKS.length);
+  let tapTimer = null;
+  function setThumbPose(thumb, pose) {
+    const art = thumb.querySelector(".perl-thumb-art");
+    if (art) art.innerHTML = perlArt(pose);
+  }
+  function bindPerlThumb() {
+    const thumb = $("perlThumb");
+    if (!thumb || thumb.dataset.bound) return;
+    thumb.dataset.bound = "1";
+    setThumbPose(thumb, "idle");
+    thumb.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const trick = TAP_TRICKS[tapTrick % TAP_TRICKS.length];
+      tapTrick += 1;
+      window.clearTimeout(tapTimer);
+      setThumbPose(thumb, trick.pose);
+      tapTimer = window.setTimeout(() => setThumbPose(thumb, "idle"), trick.ms + 80);
+      const line = Math.random() < .5 ? perlText(pick(L("perlCheers"))) : randomTip();
+      perlPeek(line, 3600, "talk");
     });
   }
+
   // The name prompt (first launch or profile edit) is greeted by Perl.
   function decoratePerlGreeting() {
     const bubble = $("perlGreeting");
@@ -1145,6 +1310,9 @@
     try { editing = nicknameModalMode === "edit"; } catch (_) {}
     bubble.textContent = editing ? L("perlEdit") : L("perlHello");
     const hello = bubble.closest(".perl-hello");
+    const avatar = hello.querySelector(".perl-avatar");
+    const pose = editing ? "think" : "wave";
+    if (avatar && avatar.dataset.pose !== pose) { avatar.dataset.pose = pose; avatar.innerHTML = perlArt(pose); }
     hello.classList.remove("is-entering");
     void hello.offsetWidth;
     hello.classList.add("is-entering");
@@ -1158,8 +1326,12 @@
 
   function onHome() {
     renderTiles();
+    maybeQueueDailyGreeting();
+    bindPerlThumb();
+    scheduleHomeTip();
     playCelebrations();
     scheduleGift(0);
+    try { window.__gowXpChanged?.(); } catch (_) {}
   }
   function onLanguage() {
     renderTiles();
@@ -1173,7 +1345,14 @@
     chapterInfo: (index) => ({ name: L("chapters")[index] || null, emoji: CHAPTER_EMOJI[index] || "🌱" }),
     level: () => levelInfo(state.xp),
     flushCelebrations: playCelebrations,
-    state: () => Object.assign({}, state, { live: liveStreak() })
+    state: () => Object.assign({}, state, { live: liveStreak() }),
+    leaderboardSnapshot: () => ({
+      xp: state.xp,
+      level: levelInfo(state.xp).level,
+      streak: liveStreak(),
+      streakDay: state.lastPlayDay || "",
+      premium: premium()
+    })
   };
 
   bindHome();
