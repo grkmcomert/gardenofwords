@@ -27,14 +27,14 @@ resize() { # in out w h  (scales the 1290x2796 frame, drops alpha)
   powershell.exe -NoProfile -Command "Add-Type -AssemblyName System.Drawing; \$i=[Drawing.Image]::FromFile('$(cygpath -w "$1")'); \$b=New-Object Drawing.Bitmap $3,$4,([Drawing.Imaging.PixelFormat]::Format24bppRgb); \$g=[Drawing.Graphics]::FromImage(\$b); \$g.InterpolationMode=[Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic; \$g.PixelOffsetMode=[Drawing.Drawing2D.PixelOffsetMode]::HighQuality; \$g.DrawImage(\$i,(New-Object Drawing.Rectangle 0,0,$3,$4),(New-Object Drawing.Rectangle 0,0,1290,2796),[Drawing.GraphicsUnit]::Pixel); \$b.Save('$(cygpath -w "$2")',[Drawing.Imaging.ImageFormat]::Png); \$g.Dispose(); \$i.Dispose(); \$b.Dispose()"
 }
 
-shot() { # name lang view title subtitle bubble side
+shot() { # name lang view title subtitle bubble side pose
   local name=$1 lang=$2 view="$3&lang=$2&name=Lily&hints=12&petals=248&streak=6&done=${DONE:-41}"
   local game="$WORK/game-$lang-$name.png"
   cat > "$WORK/host.html" <<H
 <!doctype html><html><body style="margin:0;background:#0B1612"><iframe src="site/index.html?$view" style="border:0;width:390px;height:827px;display:block"></iframe></body></html>
 H
   chrome "$game" 500,827 2.32 ${VT:-30000} "file:///$(cygpath -m "$WORK/host.html")"
-  local url="file:///$(cygpath -m "$WORK/frame.html")?t=$(enc "$4")&s=$(enc "$5")&b=$(enc "$6")&m=$7&img=$(enc "$(basename "$game")")"
+  local url="file:///$(cygpath -m "$WORK/frame.html")?t=$(enc "$4")&s=$(enc "$5")&b=$(enc "$6")&m=$7&p=${8:-wave}&img=$(enc "$(basename "$game")")"
   chrome "$WORK/frame-$lang-$name.png" 500,1084 2.58 4000 "$url"
   resize "$WORK/frame-$lang-$name.png" "$OUT/6.9/$lang-$name.png" 1290 2796
   resize "$WORK/frame-$lang-$name.png" "$OUT/6.5/$lang-$name.png" 1284 2778
@@ -62,10 +62,10 @@ for L in ${LANGS:-en tr de}; do
         T5="Steig beim Spielen auf"; S5="Sammle EP und Tipps und werde besser"; B5="Super gemacht!"
         T6="Belohnungen aus dem Gewächshaus"; S6="Tägliche Aufgaben, Geschenke und Samen"; B6="Bis morgen!" ;;
   esac
-  shot 1-home $L "view=home" "$T1" "$S1" "$B1" left
-  shot 2-play $L "view=game&bed=42&found=3" "$T2" "$S2" "$B2" right
-  shot 3-map $L "view=levels" "$T3" "$S3" "$B3" left
-  DONE=49 shot 4-chest $L "view=gamedone&bed=50&xp=1" "$T4" "$S4" "$B4" right
-  shot 5-levelup $L "view=gamedone&bed=42&xp=1250" "$T5" "$S5" "$B5" left
-  shot 6-greenhouse $L "view=greenhouse" "$T6" "$S6" "$B6" right
+  shot 1-home $L "view=home" "$T1" "$S1" "$B1" left wave
+  shot 2-play $L "view=game&bed=42&found=3" "$T2" "$S2" "$B2" right think
+  shot 3-map $L "view=levels" "$T3" "$S3" "$B3" left idle
+  DONE=49 shot 4-chest $L "view=gamedone&bed=50&xp=1" "$T4" "$S4" "$B4" right celebrate
+  shot 5-levelup $L "view=gamedone&bed=42&xp=1580" "$T5" "$S5" "$B5" left celebrate
+  shot 6-greenhouse $L "view=greenhouse" "$T6" "$S6" "$B6" right water
 done

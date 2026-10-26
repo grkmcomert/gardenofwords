@@ -49,6 +49,7 @@
       };
       restoreSavedGameState();
       fitGameScreen();
+      if (p.get("nudge")) window.Meta.showPerlNudge();
       if (view === "gamedone") {
         const last = puzzle.placements.find(pl => !foundWords.has(pl.word));
         currentSelection = Array.from({ length: last.word.length }, (_, i) => ({ row: last.row + last.dr * i, col: last.col + last.dc * i }));
@@ -65,7 +66,10 @@
     if (view === "market") openMarketModal();
     if (view === "settings") openSettingsModal();
     if (view === "nick") openNicknameModal();
-    if (shownScreenId === "homeScreen") fitHomeScreen();
+    if (view === "nudge") window.Meta.showPerlNudge();
+    if (view === "streak0") document.getElementById("tileStreak").click();
+    if (view === "nohint") openHintMoreModal();
+    if (shownScreenId === "homeScreen") { window.Meta.wakePerl(); fitHomeScreen(); }
   } catch (e) {
     document.body.insertAdjacentHTML("beforeend", `<pre style="position:fixed;top:0;left:0;z-index:99;background:#fff;color:red;font-size:10px">${e.stack || e}</pre>`);
   }

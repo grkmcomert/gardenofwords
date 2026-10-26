@@ -90,6 +90,12 @@
       premiumMore: "Premium: {r}", letsGo: "Let's go!",
       perlHello: "Hi! I'm Perl 🐰 Welcome to my garden! What should I call you?", perlEdit: "Fancy a new look? Pick a new name or avatar!",
       perlBravo: "Bravo, {name}! You finished your first bed. Keep going, the garden is starting to bloom! 🌷",
+      perlSleepy: "Zzz… Perl is napping. Tap to wake her!", perlAwake: "Oh! I'm awake! Let's find some words 🌱",
+      perlGreenhouse: "Your greenhouse bloomed! Come harvest 🌻", perlGift: "Today's gift is waiting for you 🎁",
+      perlQuests: "A quest is done, claim your reward! 🎯",
+      perlMorning: "Good morning, {name}! ☀️", perlAfternoon: "Hi {name}! Ready to grow? 🌿", perlEvening: "Good evening, {name}! 🌙",
+      perlNudge: "Stuck? Try a hint 💡", perlNudgeEmpty: "Out of hints? Tap for more 💡",
+      perlTips: ["Words can hide diagonally and backwards!", "Every 5 new beds, a flower blooms in your garden 🌷", "One bed a day keeps your streak alive 🔥", "Quests give petals. Petals grow seeds 🌸", "Plant a rose: it gives hints when it blooms 🌹", "Finish a garden to open a big chest 🎁", "Fast finishes earn 3 blooms ⭐", "I love it when you visit! 💚"],
       close: "Close", hours: "{h}h {m}m", minutes: "{m}m", seconds: "{s}s",
       chapters: ["Seed Bed", "Clover Path", "Tulip Row", "Fern Hollow", "Sunflower Field", "Rose Arbor", "Mushroom Glade", "Cherry Orchard", "Lavender Lane", "Cactus Garden", "Maple Grove", "Lily Pond", "Bamboo Walk", "Hibiscus Bay", "Pine Ridge", "Blossom Hill", "Moonflower Court", "Evergreen Vale", "Wildwood Crown"]
     },
@@ -129,6 +135,12 @@
       premiumMore: "Premium: {r}", letsGo: "Weiter geht's!",
       perlHello: "Hallo! Ich bin Perl 🐰 Willkommen in meinem Garten! Wie darf ich dich nennen?", perlEdit: "Lust auf etwas Neues? Wähle einen neuen Namen oder Avatar!",
       perlBravo: "Bravo, {name}! Dein erstes Beet ist fertig. Weiter so, der Garten fängt an zu blühen! 🌷",
+      perlSleepy: "Zzz… Perl macht ein Nickerchen. Tippe, um sie zu wecken!", perlAwake: "Oh! Ich bin wach! Lass uns Wörter finden 🌱",
+      perlGreenhouse: "Dein Gewächshaus blüht! Komm ernten 🌻", perlGift: "Dein heutiges Geschenk wartet 🎁",
+      perlQuests: "Eine Aufgabe ist fertig, hol dir die Belohnung! 🎯",
+      perlMorning: "Guten Morgen, {name}! ☀️", perlAfternoon: "Hallo {name}! Bereit zum Gärtnern? 🌿", perlEvening: "Guten Abend, {name}! 🌙",
+      perlNudge: "Festgesteckt? Probier einen Tipp 💡", perlNudgeEmpty: "Keine Tipps mehr? Tippe für mehr 💡",
+      perlTips: ["Wörter verstecken sich auch diagonal und rückwärts!", "Alle 5 neuen Beete blüht eine Blume in deinem Garten 🌷", "Ein Beet am Tag hält deine Serie am Leben 🔥", "Aufgaben bringen Blütenblätter. Damit wachsen Samen 🌸", "Pflanze eine Rose: Sie bringt Tipps, wenn sie blüht 🌹", "Schließe einen Garten ab und öffne eine große Truhe 🎁", "Schnell fertig heißt 3 Blüten ⭐", "Ich freue mich so, wenn du kommst! 💚"],
       close: "Schließen", hours: "{h} Std. {m} Min.", minutes: "{m} Min.", seconds: "{s} s",
       chapters: ["Saatbeet", "Kleepfad", "Tulpenreihe", "Farnmulde", "Sonnenblumenfeld", "Rosenlaube", "Pilzlichtung", "Kirschgarten", "Lavendelweg", "Kakteengarten", "Ahornhain", "Seerosenteich", "Bambusweg", "Hibiskusbucht", "Kiefernkamm", "Blütenhügel", "Mondblumenhof", "Immergrünes Tal", "Wildwaldkrone"]
     },
@@ -168,6 +180,12 @@
       premiumMore: "Premium: {r}", letsGo: "Hadi devam!",
       perlHello: "Merhaba! Ben Perl 🐰 Bahçeme hoş geldin! Sana nasıl sesleneyim?", perlEdit: "Yeni bir görünüm mü? Yeni bir isim ya da avatar seç!",
       perlBravo: "Bravo {name}! İlk bölümünü bitirdin. Böyle devam, bahçe çiçek açmaya başladı! 🌷",
+      perlSleepy: "Zzz… Perl uyuyor. Uyandırmak için dokun!", perlAwake: "Aa! Uyandım! Hadi kelime bulalım 🌱",
+      perlGreenhouse: "Seranda çiçek açtı! Toplamaya gel 🌻", perlGift: "Bugünün hediyesi seni bekliyor 🎁",
+      perlQuests: "Bir görevin bitti, ödülünü al! 🎯",
+      perlMorning: "Günaydın {name}! ☀️", perlAfternoon: "Selam {name}! Bahçeyi büyütmeye hazır mısın? 🌿", perlEvening: "İyi akşamlar {name}! 🌙",
+      perlNudge: "Takıldın mı? Bir ipucu dene 💡", perlNudgeEmpty: "İpucun mu bitti? Dokun, daha fazla al 💡",
+      perlTips: ["Kelimeler çapraz ve ters de saklanabilir!", "Her 5 yeni bölümde bahçende bir çiçek açar 🌷", "Günde bir bölüm, serini canlı tutar 🔥", "Görevler yaprak verir, yapraklar tohum büyütür 🌸", "Gül ek: açınca ipucu verir 🌹", "Bir bahçeyi bitir, büyük sandığı aç 🎁", "Hızlı bitirirsen 3 çiçek kazanırsın ⭐", "Geldiğinde çok seviniyorum! 💚"],
       close: "Kapat", hours: "{h} sa {m} dk", minutes: "{m} dk", seconds: "{s} sn",
       chapters: ["Tohum Yatağı", "Yonca Yolu", "Lale Sırası", "Eğrelti Koyağı", "Ayçiçeği Tarlası", "Gül Çardağı", "Mantar Açıklığı", "Kiraz Bahçesi", "Lavanta Yolu", "Kaktüs Bahçesi", "Akçaağaç Korusu", "Nilüfer Göleti", "Bambu Yolu", "Ebegümeci Koyu", "Çam Sırtı", "Çiçek Tepesi", "Ay Çiçeği Avlusu", "Hep Yeşil Vadi", "Yaban Ormanı Tacı"]
     }
@@ -314,7 +332,7 @@
       <div class="levelup-inner">
         <span class="levelup-rays" aria-hidden="true"></span>
         <p class="levelup-kicker">${esc(L("levelUp"))}</p>
-        <div class="levelup-badge"><small>${esc(L("level", { n: "" }).trim())}</small><b>${level - 1}</b></div>
+        <div class="levelup-badge"><small>${esc(L("level", { n: "" }).trim())}</small><b>${level - 1}</b>${perlFigure("celebrate", "perl-levelup")}</div>
         <h2 class="levelup-title">${esc(L("levelUpTitle", { n: level }))}</h2>
         <div class="levelup-rewards">${hints ? `<span>+${hints} 💡</span>` : ""}${petals ? `<span>+${petals} 🌸</span>` : ""}${!hints && !petals ? `<span>⭐ ${esc(L("level", { n: level }))}</span>` : ""}</div>
         ${premiumHints > hints ? premiumTeaser(`+${premiumHints} 💡`) : ""}
@@ -571,7 +589,7 @@
     const base = GIFTS[day - 1] || 1;
     const isPremium = premium();
     modal.innerHTML = `
-      <div class="celebration" aria-hidden="true">🎁</div>
+      ${perlHero("wave")}
       <h2>${esc(L("giftTitle"))}</h2>
       <p>${esc(L("giftSubtitle"))}</p>
       <div class="gift-grid">${GIFTS.map((n, i) => {
@@ -634,7 +652,7 @@
     }
     const nextMilestone = Object.keys(MILESTONES).map(Number).find(m => m > n);
     modal.innerHTML = `
-      <div class="celebration" aria-hidden="true">🔥</div>
+      ${perlHero(n > 0 ? "celebrate" : "sleep")}
       <h2>${esc(L("streakTitle"))}</h2>
       <div class="streak-hero"><b>${n}</b><span><strong>${esc(L("streakDays"))}</strong>${esc(L("streakBest", { n: Math.max(state.best, n) }))}</span></div>
       <div class="streak-week">${days.join("")}</div>
@@ -658,7 +676,7 @@
     const allClaimed = state.quests.every(q => q.claimed);
     const bonusReady = allClaimed && !state.questBonus;
     modal.innerHTML = `
-      <div class="celebration" aria-hidden="true">🎯</div>
+      ${perlHero("think")}
       <h2>${esc(L("questsTitle"))}</h2>
       <p>${esc(L("questsSubtitle"))}</p>
       <div class="quest-list">${state.quests.map((q, i) => {
@@ -733,7 +751,7 @@
       return `<div class="pot is-growing" data-pot="${i}"><span class="pot-plant"><span>🌱</span></span><span class="pot-name">${name}</span><span class="pot-timer">${esc(formatDuration(pot.readyAt - now))}</span><span class="pot-progress"><i style="width:${growPct(pot, now)}%"></i></span>${pot.sped ? "" : `<button class="pot-action" type="button" data-grow="${i}">${esc(premium() ? L("growNowFree") : L("growNow"))}</button>`}</div>`;
     }).join("");
     modal.innerHTML = `
-      <div class="celebration" aria-hidden="true">🌻</div>
+      ${perlHero("water")}
       <h2>${esc(L("ghTitle"))}</h2>
       <p>${esc(L("ghSubtitle"))}</p>
       <div class="pot-grid">${pots}</div>
@@ -816,7 +834,7 @@
     if (tick) return;
     const info = levelInfo(state.xp);
     modal.innerHTML = `
-      <div class="celebration" aria-hidden="true">🌿</div>
+      ${perlHero("idle")}
       <h2>${esc(L("levelTitle"))}</h2>
       <p>${esc(L("levelIntro"))}</p>
       <div class="streak-hero"><b>${info.level}</b><span><strong>${esc(L("level", { n: info.level }))}</strong>${esc(L("levelNext", { n: info.need - info.into, l: info.level + 1 }))}</span></div>
@@ -857,7 +875,7 @@
         <h2 class="gc-title">${esc(L("gardenComplete"))}</h2>
         <div class="gc-stage">
           <span class="gc-rays" aria-hidden="true"></span>
-          <button class="gc-chest ${chestJustOpened ? "is-open" : ""}" type="button" data-open="1" aria-label="${esc(L("chestOpen"))}">${chestJustOpened ? CHAPTER_EMOJI[chestChapter] || "🌸" : "🎁"}</button>
+          <button class="gc-chest ${chestJustOpened ? "is-open" : ""}" type="button" data-open="1" aria-label="${esc(L("chestOpen"))}">${chestJustOpened ? perlFigure("celebrate", "perl-chest") : "🎁"}</button>
         </div>
         <div class="gc-rewards ${chestJustOpened ? "is-shown" : ""}">
           <span class="gc-reward"><b>+${chestHints()}</b> 💡</span>
@@ -890,7 +908,7 @@
       return;
     }
     modal.innerHTML = `
-      <div class="celebration" aria-hidden="true">${claimed ? "✨" : "🎁"}</div>
+      ${perlHero(claimed ? "celebrate" : "think")}
       <h2>${esc(L("chestTitle"))}</h2>
       <p><b>${esc(name)}</b><br>${esc(claimed ? L("chestClaimed") : L("chestLocked", { n: total }))}</p>
       <div class="quest-list"><div class="quest-row" style="grid-template-columns:44px minmax(0,1fr)">
@@ -1006,6 +1024,8 @@
   function onWordFound(info) {
     bedWordPetals += 1;
     bedWordXp += XP.word;
+    lastWordAt = Date.now();
+    hideNudge();
     addPetals(1);
     addXp(XP.word); // level-ups found mid-bed wait in the queue until the bed is done
     bumpQuest("words", 1);
@@ -1089,7 +1109,8 @@
       }
     }
     // Perl cheers the very first finished bed, before any level-up.
-    if (info.wasNewCompletion && state.beds === 1 && !state.perlBravo) {
+    const completedBeds = typeof getCompletedBedCount === "function" ? getCompletedBedCount() : state.beds;
+    if (info.wasNewCompletion && completedBeds === 1 && !state.perlBravo) {
       state.perlBravo = Date.now();
       save();
       celebrations.unshift((done) => showPerlCheer(done));
@@ -1110,9 +1131,23 @@
 
   /* ---------- Perl, the garden bunny ---------- */
 
-  function perlMarkup(text, extraClass) {
-    return `<div class="perl-hello ${extraClass || ""}"><span class="perl-avatar" aria-hidden="true"><span class="perl-img"></span></span><p class="perl-bubble">${esc(text)}</p></div>`;
+  // Six painted poses, each with its own loop (see garden.css "Perl"):
+  // idle breathes, wave rocks, think ponders with thought dots, celebrate jumps
+  // with sparkles, water pours drops, sleep snoozes with floating Zs.
+  const PERL_EXTRAS = {
+    think: `<i class="perl-dot"></i><i class="perl-dot"></i><i class="perl-dot"></i>`,
+    celebrate: `<i class="perl-spark">✨</i><i class="perl-spark">🌸</i><i class="perl-spark">✨</i>`,
+    water: `<i class="perl-drop"></i><i class="perl-drop"></i><i class="perl-drop"></i>`,
+    sleep: `<i class="perl-z">z</i><i class="perl-z">Z</i><i class="perl-z">z</i>`
+  };
+  function perlFigure(pose, extraClass) {
+    return `<span class="perl perl-${pose} ${extraClass || ""}" aria-hidden="true"><img class="perl-pose" src="images/perl/${pose}.webp" alt="" draggable="false">${PERL_EXTRAS[pose] || ""}</span>`;
   }
+  function perlHero(pose) {
+    return `<div class="perl-hero-wrap">${perlFigure(pose, "perl-hero perl-enter")}</div>`;
+  }
+  const nickname = () => { try { return getNickname() || ""; } catch (_) { return ""; } };
+
   let perlEl = null;
   function showPerlCheer(done) {
     if (!perlEl) {
@@ -1122,13 +1157,15 @@
       perlEl.setAttribute("aria-modal", "true");
       document.body.appendChild(perlEl);
     }
-    let name = "";
-    try { name = getNickname() || ""; } catch (_) {}
-    perlEl.innerHTML = `<div class="perl-cheer-card">${perlMarkup(L("perlBravo", { name }).replace(/\s+!/, "!"), "is-cheering")}
-      <button class="primary-button" type="button">${esc(L("letsGo"))}</button></div>`;
+    perlEl.innerHTML = `<div class="perl-cheer-card">
+        <span class="perl-cheer-glow" aria-hidden="true"></span>
+        ${perlFigure("celebrate", "perl-cheer-figure perl-enter")}
+        <p class="perl-bubble">${esc(L("perlBravo", { name: nickname() }).replace(/\s+!/, "!"))}</p>
+        <button class="primary-button" type="button">${esc(L("letsGo"))}</button>
+      </div>`;
     void perlEl.offsetWidth;
     perlEl.classList.add("open");
-    confetti(perlEl.querySelector(".perl-cheer-card"), "levelup-confetti", 18);
+    window.setTimeout(() => confetti(perlEl.querySelector(".perl-cheer-card"), "levelup-confetti", 22), 350);
     let closed = false;
     perlEl.querySelector(".primary-button").addEventListener("click", () => {
       if (closed) return;
@@ -1137,13 +1174,16 @@
       window.setTimeout(done, 300);
     });
   }
-  // The name prompt (first launch or profile edit) is greeted by Perl.
+
+  // The name prompt (first launch or profile edit): Perl hops in and waves.
   function decoratePerlGreeting() {
     const bubble = $("perlGreeting");
     if (!bubble) return;
     let editing = false;
     try { editing = nicknameModalMode === "edit"; } catch (_) {}
     bubble.textContent = editing ? L("perlEdit") : L("perlHello");
+    const figure = $("perlGreetingFigure");
+    if (figure) figure.innerHTML = perlFigure("wave", "perl-enter perl-hello-figure");
     const hello = bubble.closest(".perl-hello");
     hello.classList.remove("is-entering");
     void hello.offsetWidth;
@@ -1156,10 +1196,146 @@
   }
   decoratePerlGreeting();
 
+  /* Home companion: Perl stands on the chapter card, greets by time of day,
+     points at whatever is waiting (greenhouse, gift, quests) and shares tips
+     when tapped. At night she sleeps until you wake her. */
+  const homePerl = $("homePerl");
+  const homeBubble = $("homePerlBubble");
+  let perlPose = "";
+  let perlAwake = false;
+  let perlBubbleTimer = 0;
+  let perlPoseTimer = 0;
+  let perlGreetAt = 0;
+  let perlTip = Math.floor(Math.random() * 8);
+  function setPerlPose(pose, enter) {
+    if (!homePerl || (pose === perlPose && !enter)) return;
+    perlPose = pose;
+    homePerl.querySelector(".home-perl-figure").innerHTML = perlFigure(pose, enter ? "perl-enter" : "perl-swap");
+  }
+  function hidePerlBubble() {
+    window.clearTimeout(perlBubbleTimer);
+    homeBubble?.classList.remove("is-shown");
+  }
+  function sayPerl(text, action, ms) {
+    if (!homeBubble) return;
+    homeBubble.textContent = text;
+    homeBubble.classList.toggle("is-action", Boolean(action));
+    homeBubble.onclick = (e) => {
+      e.stopPropagation();
+      hidePerlBubble();
+      if (action) action();
+    };
+    homeBubble.classList.remove("is-shown");
+    void homeBubble.offsetWidth;
+    homeBubble.classList.add("is-shown");
+    window.clearTimeout(perlBubbleTimer);
+    perlBubbleTimer = window.setTimeout(hidePerlBubble, ms || 5000);
+  }
+  const isNight = () => { const h = new Date().getHours(); return h >= 23 || h < 6; };
+  function perlMood() {
+    if (isNight() && !perlAwake) return { pose: "sleep", text: L("perlSleepy") };
+    if (state.pots.slice(0, potCount()).some(potReady)) return { pose: "water", text: L("perlGreenhouse"), action: openGreenhouse };
+    if (giftAvailable()) return { pose: "wave", text: L("perlGift"), action: openGift };
+    if (claimableQuests() > 0) return { pose: "think", text: L("perlQuests"), action: () => openModal("gowQuestsBackdrop", renderQuests) };
+    const h = new Date().getHours();
+    return { pose: "wave", text: L(h < 12 ? "perlMorning" : h < 18 ? "perlAfternoon" : "perlEvening", { name: nickname() }).replace(/\s+!/, "!") };
+  }
+  function settlePerl(ms) {
+    window.clearTimeout(perlPoseTimer);
+    perlPoseTimer = window.setTimeout(() => {
+      if (perlPose !== "sleep" && perlPose !== "water") setPerlPose("idle");
+    }, ms);
+  }
+  function greetHome(force) {
+    if (!homePerl) return;
+    const onHome = typeof shownScreenId === "undefined" || shownScreenId === "homeScreen";
+    if (!onHome) return;
+    if (!force && Date.now() - perlGreetAt < 20000) { if (!perlPose) setPerlPose("idle", true); return; }
+    perlGreetAt = Date.now();
+    const mood = perlMood();
+    setPerlPose(mood.pose, true);
+    // Wait for modals (gift, first-run name prompt) so the bubble is not hidden behind them.
+    window.setTimeout(function speak(tries) {
+      if (document.querySelector(".modal-backdrop.open") || celebrating) {
+        if ((tries || 0) < 20) window.setTimeout(() => speak((tries || 0) + 1), 1500);
+        return;
+      }
+      sayPerl(mood.text, mood.action, 5500);
+    }, 700);
+    settlePerl(3600);
+  }
+  function tapPerl() {
+    if (!homePerl) return;
+    const fig = homePerl.querySelector(".perl");
+    fig?.classList.remove("perl-boing");
+    void fig?.offsetWidth;
+    fig?.classList.add("perl-boing");
+    if (perlPose === "sleep") {
+      perlAwake = true;
+      setPerlPose("wave");
+      sayPerl(L("perlAwake"), null, 4000);
+      settlePerl(3000);
+      return;
+    }
+    const tips = L("perlTips");
+    perlTip = (perlTip + 1) % tips.length;
+    const poses = ["think", "wave", "celebrate", "idle"];
+    setPerlPose(poses[perlTip % poses.length]);
+    sayPerl(tips[perlTip], null, 5000);
+    settlePerl(3200);
+  }
+  homePerl?.addEventListener("click", tapPerl);
+  homePerl?.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); tapPerl(); } });
+
+  /* In a bed: if no word is found for a while, Perl peeks in and offers a hint. */
+  const nudge = $("perlNudge");
+  const nudgeBubble = $("perlNudgeBubble");
+  let nudgePuzzle = null;
+  let nudgeSince = 0;
+  let nudgeShown = false;
+  let nudgeHideTimer = 0;
+  let lastWordAt = 0;
+  const NUDGE_AFTER_MS = 35000;
+  function hideNudge() {
+    window.clearTimeout(nudgeHideTimer);
+    if (nudge && !nudge.hidden) {
+      nudge.classList.remove("is-shown");
+      window.setTimeout(() => { if (!nudge.classList.contains("is-shown")) nudge.hidden = true; }, 350);
+    }
+  }
+  function showNudge(keep) {
+    if (!nudge) return;
+    let hints = 0;
+    try { hints = progress.hints || 0; } catch (_) {}
+    nudge.querySelector(".perl-nudge-figure").innerHTML = perlFigure("think");
+    nudgeBubble.textContent = hints > 0 ? L("perlNudge") : L("perlNudgeEmpty");
+    nudge.hidden = false;
+    void nudge.offsetWidth;
+    nudge.classList.add("is-shown");
+    window.clearTimeout(nudgeHideTimer);
+    if (!keep) nudgeHideTimer = window.setTimeout(hideNudge, 8000);
+  }
+  nudge?.addEventListener("click", () => {
+    hideNudge();
+    try { showHint(); } catch (_) {}
+  });
+  window.setInterval(() => {
+    let inBed = false;
+    try { inBed = shownScreenId === "gameScreen" && Boolean(puzzle) && foundWords.size < puzzle.words.length; } catch (_) {}
+    if (!inBed) { nudgePuzzle = null; hideNudge(); return; }
+    if (puzzle !== nudgePuzzle) { nudgePuzzle = puzzle; nudgeSince = Date.now(); nudgeShown = false; hideNudge(); }
+    if (nudgeShown || document.querySelector(".modal-backdrop.open")) return;
+    if (Date.now() - Math.max(nudgeSince, lastWordAt) > NUDGE_AFTER_MS) {
+      nudgeShown = true;
+      showNudge();
+    }
+  }, 3000);
+
   function onHome() {
     renderTiles();
     playCelebrations();
     scheduleGift(0);
+    greetHome(false);
   }
   function onLanguage() {
     renderTiles();
@@ -1173,6 +1349,8 @@
     chapterInfo: (index) => ({ name: L("chapters")[index] || null, emoji: CHAPTER_EMOJI[index] || "🌱" }),
     level: () => levelInfo(state.xp),
     flushCelebrations: playCelebrations,
+    wakePerl: () => { perlAwake = true; greetHome(true); },
+    showPerlNudge: () => { try { nudgePuzzle = puzzle; } catch (_) {} nudgeShown = true; showNudge(true); },
     state: () => Object.assign({}, state, { live: liveStreak() })
   };
 

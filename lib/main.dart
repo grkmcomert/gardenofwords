@@ -1848,6 +1848,13 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          // Perl waits on the loading screen too.
+                          Image.asset(
+                            'assets/game/images/perl/wave.webp',
+                            height: 170,
+                            fit: BoxFit.contain,
+                          ),
+                          const SizedBox(height: 18),
                           const Text(
                             'Garden\nof Words',
                             textAlign: TextAlign.center,

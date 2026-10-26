@@ -382,6 +382,7 @@
       <p id="homeHeroCopy" class="sr-only"></p>
 
       <article id="heroJournalCard" class="chapter-card glass" aria-label="Garden Collection Journal">
+        <div id="homePerl" class="home-perl" role="button" tabindex="0" aria-label="Perl"><span class="home-perl-figure"></span><button id="homePerlBubble" class="perl-say" type="button"></button></div>
         <span class="chapter-thumb" aria-hidden="true"><span id="chapterThumbEmoji">🌱</span></span>
         <span class="chapter-card-body">
           <span id="journeyChapterKicker" class="chapter-pill">Chapter 1</span>
@@ -499,13 +500,14 @@
           <span id="hintLockNotice" class="hint-lock-notice" aria-live="polite" hidden><span id="hintLockNoticeText"></span></span>
         </div>
       </div>
+      <div id="perlNudge" class="perl-nudge" hidden><span class="perl-nudge-figure"></span><button id="perlNudgeBubble" class="perl-say is-shown is-action" type="button"></button></div>
       <div id="admobBannerSlot" class="admob-banner-slot" aria-hidden="true"></div>
     </section>
   </main>
 
   <div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal complete-modal">
-      <div class="complete-crest" aria-hidden="true"><span class="complete-rays"></span><svg class="icon"><use href="#icon-flower"></use></svg></div>
+      <div class="complete-crest" aria-hidden="true"><span class="complete-rays"></span><span class="perl perl-celebrate perl-crest"><img class="perl-pose" src="images/perl/celebrate.webp" alt="" draggable="false"><i class="perl-spark">✨</i><i class="perl-spark">🌸</i><i class="perl-spark">✨</i></span></div>
       <div id="starRating" class="bloom-rating" aria-label="3 blooms"></div>
       <h2 id="modalTitle">Well grown!</h2>
       <p id="modalText">You've completed the bed.</p>
@@ -537,7 +539,7 @@
   <div id="nicknameModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="nicknameModalTitle" aria-hidden="true">
     <div class="modal nickname-modal">
       <div class="perl-hello" aria-hidden="true">
-        <span class="perl-avatar"><span class="perl-img"></span></span>
+        <span id="perlGreetingFigure" class="perl-greeting-figure"><span class="perl perl-wave"><img class="perl-pose" src="images/perl/wave.webp" alt="" draggable="false"></span></span>
         <p id="perlGreeting" class="perl-bubble">Hi! I am Perl.</p>
       </div>
       <h2 id="nicknameModalTitle">Name your garden</h2>
@@ -865,7 +867,7 @@
 
   <div id="hintMoreModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="hintMoreTitle" aria-hidden="true">
     <div id="hintMoreModal" class="modal hint-more-modal">
-      <div class="celebration" aria-hidden="true"><svg class="icon"><use href="#icon-bulb"></use></svg></div>
+      <div class="perl-hero-wrap" aria-hidden="true"><span class="perl perl-think perl-hero"><img class="perl-pose" src="images/perl/think.webp" alt="" draggable="false"><i class="perl-dot"></i><i class="perl-dot"></i><i class="perl-dot"></i></span></div>
       <h2 id="hintMoreTitle" class="hint-more-title">Need More?</h2>
       <p id="hintMoreSubtitle" class="hint-more-subtitle">Watch a short video to get +1 hint.</p>
       <button id="hintWatchVideoButton" class="primary-button hint-video-button" type="button"><svg class="icon"><use href="#icon-play"></use></svg><span id="hintWatchVideoLabel">Watch video for +1 hint</span></button>

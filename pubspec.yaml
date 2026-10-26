@@ -47,6 +47,7 @@ flutter:
     - assets/game/audio/
     - assets/game/images/
     - assets/game/images/themes/
+    - assets/game/images/perl/
 
 flutter_launcher_icons:
   android: true
