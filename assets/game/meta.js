@@ -1152,7 +1152,7 @@
 
   /* ---------- Perl, the garden bunny ---------- */
 
-  // Vector Perl in the given pose (see perl.js / perl.css). Falls back to nothing if perl.js is missing.
+  // Perl (the real artwork, rigged) in the given pose (see perl.js / perl.css). Empty if perl.js is missing.
   function perlArt(pose) {
     try { return window.PerlArt ? window.PerlArt.svg(pose) : ""; } catch (_) { return ""; }
   }
@@ -1277,8 +1277,8 @@
     }, 22000);
   }
   // The home-card Perl idles (breathes, looks around, blinks) and answers a tap with a
-  // different trick each time: a big boing, floppy ears, a giggle fit or a carrot snack.
-  const TAP_TRICKS = [{ pose: "boing", ms: 1000 }, { pose: "earflop", ms: 1200 }, { pose: "giggle", ms: 1200 }, { pose: "munch", ms: 1800 }];
+  // different trick each time: a big boing, floppy ears, a giggle fit or a little dance.
+  const TAP_TRICKS = [{ pose: "boing", ms: 1000 }, { pose: "earflop", ms: 1200 }, { pose: "giggle", ms: 1200 }, { pose: "dance", ms: 1600 }];
   let tapTrick = Math.floor(Math.random() * TAP_TRICKS.length);
   let tapTimer = null;
   function setThumbPose(thumb, pose) {

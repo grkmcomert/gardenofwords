@@ -28,10 +28,10 @@ PORT = 8791
 
 # view query, Perl pose, pose time (s), Perl side, palette
 SHOTS = [
-    ("1-home", "view=home", "wave", 0.33, "left", "meadow"),
-    ("2-play", "view=game&bed=42&found=3", "idea", 1.8, "right", "sky"),
-    ("3-complete", "view=gamedone&bed=42&xp=300&clean=1", "clap", 0.18, "left", "peach"),
-    ("4-leaderboard", "view=leaderboard", "cheer", 0.42, "right", "gold"),
+    ("1-home", "view=home", "wave", 0.3, "left", "meadow"),
+    ("2-play", "view=game&bed=42&found=3", "idea", 1.7, "right", "sky"),
+    ("3-complete", "view=gamedone&bed=42&xp=300&clean=1", "clap", 0.9, "left", "peach"),
+    ("4-leaderboard", "view=leaderboard", "cheer", 0.4, "right", "gold"),
     ("5-greenhouse", "view=greenhouse", "water", 1.2, "left", "mint"),
     ("6-themes", "view=themes", "hearts", 0.62, "right", "rose"),
 ]

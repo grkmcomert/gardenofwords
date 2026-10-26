@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- App Store screenshot frame (430x932 CSS px, rendered at 3x = 1290x2796).
-     Headline, a captured game screen in a phone, and Perl (vector, from site/perl.js)
+     Headline, a captured game screen in a phone, and Perl (the real artwork rig, from site/perl.js)
      frozen in a pose. Query: img, t (title, *word* is highlighted), s (subtitle),
      b (bubble), side (left|right), pose, pt (pose time in s), pal (palette). -->
 <html>
@@ -65,22 +65,24 @@
   .status { position: absolute; left: 0; right: 0; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center; height: 44px; padding: 0 26px 0 30px; color: #fff; font: 800 13.5px "Figtree", sans-serif; }
   .perl {
     position: absolute;
-    bottom: 22px;
+    bottom: 20px;
     z-index: 4;
-    width: 170px;
-    height: 179px;
+    width: 188px;
+    height: 197px;
     filter: drop-shadow(0 14px 14px rgba(40, 60, 30, .32));
   }
   .perl.left { left: -4px; }
   .perl.right { right: -4px; }
   body.side-left { --shift: 30px; }
   body.side-right { --shift: -30px; }
-  .mound { position: absolute; bottom: -10px; z-index: 3; width: 250px; height: 70px; }
+  .mound { position: absolute; bottom: -12px; z-index: 5; width: 270px; height: 84px; }
+  /* Stills: no whole-body jump, so the rig stays seated behind the grass. */
+  .perl .perl-rig.is-still .pr-all { animation: none !important; transform: none !important; }
   .mound.left { left: -40px; }
   .mound.right { right: -40px; transform: scaleX(-1); }
   .bubble {
     position: absolute;
-    bottom: 206px;
+    bottom: 238px;
     z-index: 5;
     max-width: 190px;
     padding: 11px 16px 12px;
@@ -126,12 +128,14 @@
     <ellipse cx="125" cy="58" rx="112" ry="26" fill="#86C25A"/>
     <g fill="#5E9B3E">
       <path d="M40 44 q4 -18 2 -26 q6 10 4 26z"/><path d="M58 40 q6 -14 10 -20 q-2 12 -4 20z"/><path d="M196 42 q-2 -16 4 -24 q2 12 0 24z"/><path d="M214 46 q4 -12 10 -16 q-4 10 -6 16z"/>
+      <path d="M90 36 q2 -16 -2 -24 q8 8 6 24z"/><path d="M104 34 q4 -12 10 -18 q-2 12 -5 18z"/><path d="M150 36 q-3 -14 1 -22 q5 10 3 22z"/><path d="M166 38 q4 -10 9 -14 q-3 9 -5 14z"/><path d="M124 34 q0 -12 4 -18 q2 10 0 18z"/>
     </g>
     <g><circle cx="62" cy="40" r="5" fill="#F37FA4"/><circle cx="62" cy="40" r="2" fill="#FAC94C"/><circle cx="200" cy="40" r="4.5" fill="#FFFDF4"/><circle cx="200" cy="40" r="1.8" fill="#FAC94C"/></g>
   </svg>
   <div id="perl" class="perl left"></div>
   <div id="b" class="bubble left"></div>
 
+  <script src="site/perl-sprites.js"></script>
   <script src="site/perl.js"></script>
   <script>
     const q = new URLSearchParams(location.search);
