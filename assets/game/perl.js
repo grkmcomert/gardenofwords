@@ -1,20 +1,18 @@
-/* Perl, the garden bunny, animated from the real artwork (cut-out puppet style).
+/* Perl, the garden bunny, animated from the logo artwork (cut-out rig).
  * window.PerlArt.svg(pose) returns the markup (the name is kept for older callers).
  *
- * Two rigs, both from the official art (sprites live in perl-sprites.js):
- *  - "icon": the app-icon Perl with headphones; ears and the waving paw are separate layers.
- *  - "peek": the logo Perl with open eyes, peeking over an edge with both paws.
- * Each pose picks a rig and an animation set in perl.css, plus small props (sun, Zzz, notes...).
- * Layout box is 200x210 units; prop SVGs use that viewBox.
+ * One bunny only: the logo Perl peeking over an edge. perl-sprites.js holds his parts:
+ * head (with ears inside it), two paws with forearms, and expression overlays painted on the
+ * same face (closed eyes, ^^ eyes, closed mouth). He always peeks over something: a wooden
+ * ledge by default, a planter in the greenhouse, or the grass in store art (class "no-ledge").
+ * Layout box is 200x210 units; prop SVGs use that viewBox; the canvas runs below the box
+ * for the forearms and is clipped at the bottom edge.
  */
 (function () {
   "use strict";
 
-  const RIG = {
-    idle: "peek", think: "peek", idea: "peek", talk: "peek", boing: "peek", water: "peek",
-    wave: "icon", stretch: "icon", hearts: "icon", lantern: "icon", sleepy: "icon", cheer: "icon",
-    clap: "icon", earflop: "icon", giggle: "icon", dance: "icon"
-  };
+  const POSES = ["idle", "wave", "think", "stretch", "hearts", "lantern", "sleepy", "cheer", "idea", "clap", "talk",
+    "water", "boing", "earflop", "giggle", "peekaboo"];
   const GOLD = "#FAC94C", GOLD_DARK = "#DE9E26";
 
   function star(cx, cy, r, cls) {
@@ -29,101 +27,106 @@
   function heart(x, y, s, cls) {
     return `<g class="${cls}"><path transform="translate(${x} ${y}) scale(${s})" d="M0 4 C-2 -2 -10 -2 -10 4 C-10 9 -4 12 0 16 C4 12 10 9 10 4 C10 -2 2 -2 0 4Z" fill="#FF7FA3" stroke="#D9557E" stroke-width="1.2"/></g>`;
   }
-  function note(x, y, s, cls, double) {
-    const d = double
-      ? "M0 0 L14 -4 V14 a4 3.2 0 1 1 -2 -2.6 V2 L2 5 V18 a4 3.2 0 1 1 -2 -2.6Z"
-      : "M2 -2 V15 a4.2 3.4 0 1 1 -2 -2.8 V-4 Q6 -1 9 4 Q5 0 2 -2Z";
-    return `<g class="${cls}"><path transform="translate(${x} ${y}) scale(${s})" d="${d}" fill="#8E6BD8" stroke="#5E43A6" stroke-width=".9"/></g>`;
-  }
 
   const BACK = `<svg class="pr-back" viewBox="0 0 200 210" aria-hidden="true">
-    <defs><radialGradient id="prGlow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFE7A0" stop-opacity=".95"/><stop offset="1" stop-color="#FFC24A" stop-opacity="0"/></radialGradient></defs>
     <g class="pp pp-sun">
       <g class="pp-sun-rays" stroke="#FFC94A" stroke-width="5" stroke-linecap="round">
-        ${[0, 45, 90, 135, 180, 225, 270, 315].map(a => `<line x1="30" y1="2" x2="30" y2="-6" transform="rotate(${a} 30 26)"/>`).join("")}
+        ${[0, 45, 90, 135, 180, 225, 270, 315].map(a => `<line x1="30" y1="12" x2="30" y2="4" transform="rotate(${a} 30 36)"/>`).join("")}
       </g>
-      <circle cx="30" cy="26" r="15" fill="#FFD866" stroke="#F2B53A" stroke-width="2"/>
+      <circle cx="30" cy="36" r="15" fill="#FFD866" stroke="#F2B53A" stroke-width="2"/>
     </g>
-    <g class="pp pp-moon"><path d="M36 10 A18 18 0 1 0 54 36 A14 14 0 1 1 36 10Z" fill="#FFF1B8" stroke="#E6CB73" stroke-width="1.5"/></g>
+    <g class="pp pp-moon"><path d="M34 18 A18 18 0 1 0 52 44 A14 14 0 1 1 34 18Z" fill="#FFF1B8" stroke="#E6CB73" stroke-width="1.5"/></g>
+  </svg>`;
+
+  const HOLD = `<svg class="pr-hold" viewBox="0 0 434 546" aria-hidden="true">
+    <defs>
+      <radialGradient id="prGlowH" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFE7A0" stop-opacity=".95"/><stop offset="1" stop-color="#FFC24A" stop-opacity="0"/></radialGradient>
+      <linearGradient id="prCanH" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FD0F2"/><stop offset="1" stop-color="#3E8FC4"/></linearGradient>
+    </defs>
+    <g class="pp pp-lantern">
+      <circle class="pp-glow" cx="322" cy="410" r="96" fill="url(#prGlowH)"/>
+      <path d="M322 336 V368" stroke="#3B2410" stroke-width="5"/>
+      <path d="M300 366 h44 l6 11 h-56z" fill="#3A332C"/>
+      <rect x="294" y="377" width="56" height="70" rx="9" fill="#FFC867" stroke="#3A332C" stroke-width="6.5"/>
+      <path d="M322 377 v70 M294 412 h56" stroke="#3A332C" stroke-width="4.5"/>
+      <path d="M290 447 h64 l-8 13 h-48z" fill="#3A332C"/>
+      <path d="M305 371 q17 -22 34 0" stroke="#3A332C" stroke-width="4" fill="none"/>
+    </g>
+    <g class="pp pp-can">
+      <path d="M392 262 q30 6 40 34" stroke="#3E8FC4" stroke-width="9" stroke-linecap="round" fill="none"/>
+      <path d="M424 294 l18 -6 l6 14 l-18 6z" fill="#3E8FC4" stroke="#2D6E99" stroke-width="2"/>
+      <rect x="332" y="240" width="62" height="54" rx="12" fill="url(#prCanH)" stroke="#2D6E99" stroke-width="3"/>
+      <path d="M340 242 q24 -30 48 0" stroke="#2D6E99" stroke-width="6" fill="none"/>
+      <ellipse cx="348" cy="256" rx="6" ry="12" fill="#fff" opacity=".4"/>
+      <g class="pp-drops-h" fill="#7CC8F2" stroke="#3E8FC4" stroke-width="2">
+        <path class="pp-drop pp-d1" d="M442 312 q7 11 0 16 q-7 -5 0 -16z"/>
+        <path class="pp-drop pp-d2" d="M454 308 q7 11 0 16 q-7 -5 0 -16z"/>
+        <path class="pp-drop pp-d3" d="M448 322 q7 11 0 16 q-7 -5 0 -16z"/>
+      </g>
+    </g>
+  </svg>`;
+
+  const LEDGE = `<svg class="pr-ledge" viewBox="0 0 200 210" preserveAspectRatio="none" aria-hidden="true">
+    <defs><linearGradient id="prWood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0CF98"/><stop offset=".45" stop-color="#DDAE6E"/><stop offset="1" stop-color="#B97F45"/></linearGradient></defs>
+    <path d="M-6 199 Q100 194 206 199 V214 H-6Z" fill="url(#prWood)" stroke="#8C5A2B" stroke-width="1.6"/>
+    <path d="M2 200 Q100 196 198 200" stroke="#FFE6BC" stroke-width="1.4" fill="none" opacity=".7"/>
+    <path d="M20 205 q30 -2 60 1 M110 206 q34 -2 70 0" stroke="#A9733F" stroke-width=".8" fill="none" opacity=".6"/>
   </svg>`;
 
   const FRONT = `<svg class="pr-front" viewBox="0 0 200 210" aria-hidden="true">
     <defs>
-      <radialGradient id="prGlow2" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFE7A0" stop-opacity=".9"/><stop offset="1" stop-color="#FFC24A" stop-opacity="0"/></radialGradient>
       <linearGradient id="prPot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E58A57"/><stop offset="1" stop-color="#B85A33"/></linearGradient>
       <linearGradient id="prLeaf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8FCB5C"/><stop offset="1" stop-color="#4C8A2A"/></linearGradient>
-      <linearGradient id="prCan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FD0F2"/><stop offset="1" stop-color="#3E8FC4"/></linearGradient>
     </defs>
-    <g class="pp pp-lantern">
-      <circle class="pp-glow" cx="24" cy="186" r="32" fill="url(#prGlow2)"/>
-      <path d="M17 167 h14 l2 4 h-18z" fill="#3A332C"/>
-      <rect x="15" y="171" width="18" height="24" rx="3.5" fill="#FFC867" stroke="#3A332C" stroke-width="2.4"/>
-      <path d="M24 171 v24 M15 183 h18" stroke="#3A332C" stroke-width="1.6"/>
-      <path d="M13 195 h22 l-3 5 h-16z" fill="#3A332C"/>
-      <path d="M19 167 q5 -9 10 0" stroke="#3A332C" stroke-width="1.8" fill="none"/>
-    </g>
     <g class="pp pp-planter">
-      <g class="pp-sprout pp-sp-a"><path d="M30 178 q-2 -16 3 -26" stroke="#4C8A2A" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M32 158 q-12 -8 -17 -2 q7 8 17 2z M33 154 q10 -11 17 -7 q-6 10 -17 7z" fill="url(#prLeaf)" stroke="#3A6B20" stroke-width=".8"/></g>
-      <g class="pp-sprout pp-sp-b"><path d="M174 178 q2 -12 -2 -20" stroke="#4C8A2A" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M173 163 q10 -7 15 -2 q-6 7 -15 2z M172 160 q-9 -9 -15 -5 q5 8 15 5z" fill="url(#prLeaf)" stroke="#3A6B20" stroke-width=".8"/><circle cx="172" cy="156" r="4.5" fill="#F57FA6" stroke="#D25A85" stroke-width=".8"/><circle cx="172" cy="156" r="1.8" fill="${GOLD}"/></g>
-      <path d="M8 182 h184 l-10 28 h-164z" fill="url(#prPot)" stroke="#8E4424" stroke-width="1.6"/>
-      <rect x="4" y="176" width="192" height="12" rx="4" fill="#E99A68" stroke="#8E4424" stroke-width="1.6"/>
-      <path d="M14 178 h170" stroke="#FFD2B0" stroke-width="2" stroke-linecap="round" opacity=".6"/>
-    </g>
-    <g class="pp pp-can">
-      <path d="M166 40 q-8 4 -14 14" stroke="#3E8FC4" stroke-width="4" stroke-linecap="round" fill="none"/>
-      <path d="M154 52 l-8 6 l-4 -5 l8 -5z" fill="#3E8FC4" stroke="#2D6E99" stroke-width=".8"/>
-      <rect x="164" y="26" width="26" height="22" rx="6" fill="url(#prCan)" stroke="#2D6E99" stroke-width="1.4"/>
-      <path d="M167 27 q10 -13 20 0" stroke="#2D6E99" stroke-width="2.6" fill="none"/>
-      <ellipse cx="171" cy="33" rx="2.6" ry="5" fill="#fff" opacity=".4"/>
-    </g>
-    <g class="pp pp-drops" fill="#7CC8F2" stroke="#3E8FC4" stroke-width=".8">
-      <path class="pp-drop pp-d1" d="M144 60 q3 5 0 7 q-3 -2 0 -7z"/>
-      <path class="pp-drop pp-d2" d="M138 62 q3 5 0 7 q-3 -2 0 -7z"/>
-      <path class="pp-drop pp-d3" d="M142 66 q3 5 0 7 q-3 -2 0 -7z"/>
+      <g class="pp-sprout pp-sp-a"><path d="M40 190 q-2 -16 3 -26" stroke="#4C8A2A" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M42 170 q-12 -8 -17 -2 q7 8 17 2z M43 166 q10 -11 17 -7 q-6 10 -17 7z" fill="url(#prLeaf)" stroke="#3A6B20" stroke-width=".8"/></g>
+      <g class="pp-sprout pp-sp-b"><path d="M188 190 q2 -12 -2 -20" stroke="#4C8A2A" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M187 175 q10 -7 15 -2 q-6 7 -15 2z M186 172 q-9 -9 -15 -5 q5 8 15 5z" fill="url(#prLeaf)" stroke="#3A6B20" stroke-width=".8"/><circle cx="186" cy="168" r="4.5" fill="#F57FA6" stroke="#D25A85" stroke-width=".8"/><circle cx="186" cy="168" r="1.8" fill="${GOLD}"/></g>
+      <path d="M8 196 h184 l-10 20 h-164z" fill="url(#prPot)" stroke="#8E4424" stroke-width="1.6"/>
+      <rect x="4" y="190" width="192" height="11" rx="4" fill="#E99A68" stroke="#8E4424" stroke-width="1.6"/>
+      <path d="M14 192 h170" stroke="#FFD2B0" stroke-width="2" stroke-linecap="round" opacity=".6"/>
     </g>
     <g class="pp pp-zzz" fill="#EAF2FF" stroke="#5B6F9A" stroke-width="1.4" font-family="Fredoka, system-ui, sans-serif" font-weight="700">
-      <text class="pp-z1" x="150" y="62" font-size="20">z</text>
-      <text class="pp-z2" x="162" y="42" font-size="26">z</text>
-      <text class="pp-z3" x="176" y="20" font-size="32">Z</text>
+      <text class="pp-z1" x="18" y="92" font-size="20">z</text>
+      <text class="pp-z2" x="8" y="70" font-size="26">z</text>
+      <text class="pp-z3" x="18" y="44" font-size="32">Z</text>
     </g>
     <g class="pp pp-bulb">
       <g class="pp-bulb-rays" stroke="#FFC94A" stroke-width="3.5" stroke-linecap="round">
-        <line x1="170" y1="2" x2="170" y2="-6"/><line x1="188" y1="10" x2="194" y2="5"/><line x1="152" y1="10" x2="146" y2="5"/><line x1="194" y1="26" x2="201" y2="26"/><line x1="146" y1="26" x2="139" y2="26"/>
+        <line x1="34" y1="6" x2="34" y2="-2"/><line x1="52" y1="14" x2="58" y2="9"/><line x1="16" y1="14" x2="10" y2="9"/><line x1="58" y1="30" x2="65" y2="30"/><line x1="10" y1="30" x2="3" y2="30"/>
       </g>
-      <path d="M170 10 a15 15 0 0 1 9 27 v5 h-18 v-5 a15 15 0 0 1 9 -27z" fill="#FFE27A" stroke="#E0A92E" stroke-width="2"/>
-      <rect x="162" y="42" width="16" height="8" rx="2" fill="#B8C2C9" stroke="#7F8A92" stroke-width="1.5"/>
+      <path d="M34 14 a15 15 0 0 1 9 27 v5 h-18 v-5 a15 15 0 0 1 9 -27z" fill="#FFE27A" stroke="#E0A92E" stroke-width="2"/>
+      <rect x="26" y="46" width="16" height="8" rx="2" fill="#B8C2C9" stroke="#7F8A92" stroke-width="1.5"/>
     </g>
-    <g class="pp pp-question"><text x="164" y="44" font-size="40" font-family="Fredoka, system-ui, sans-serif" font-weight="700" fill="#FFFDF4" stroke="#3B6B22" stroke-width="2">?</text></g>
-    <g class="pp pp-hearts">${heart(172, 74, 1.1, "pp-heart pp-h1")}${heart(26, 84, 0.9, "pp-heart pp-h2")}${heart(182, 40, 0.75, "pp-heart pp-h3")}</g>
-    <g class="pp pp-stars">${star(20, 58, 11, "pp-star pp-s1")}${star(182, 50, 13, "pp-star pp-s2")}${star(186, 128, 8, "pp-star pp-s3")}${star(14, 132, 8, "pp-star pp-s4")}</g>
-    <g class="pp pp-notes">${note(14, 70, 1.2, "pp-note pp-n1", false)}${note(172, 50, 1.1, "pp-note pp-n2", true)}${note(182, 118, 0.9, "pp-note pp-n3", false)}</g>
-    <g class="pp pp-flies"><circle class="pp-fly pp-f1" cx="44" cy="120" r="3" fill="#FFF3A0"/><circle class="pp-fly pp-f2" cx="180" cy="96" r="2.6" fill="#FFF3A0"/><circle class="pp-fly pp-f3" cx="60" cy="40" r="2.2" fill="#FFF3A0"/></g>
+    <g class="pp pp-question"><text x="20" y="60" font-size="40" font-family="Fredoka, system-ui, sans-serif" font-weight="700" fill="#FFFDF4" stroke="#3B6B22" stroke-width="2">?</text></g>
+    <g class="pp pp-hearts">${heart(26, 96, 1.1, "pp-heart pp-h1")}${heart(182, 128, 0.9, "pp-heart pp-h2")}${heart(36, 54, 0.75, "pp-heart pp-h3")}</g>
+    <g class="pp pp-stars">${star(24, 62, 11, "pp-star pp-s1")}${star(186, 150, 10, "pp-star pp-s2")}${star(18, 140, 8, "pp-star pp-s3")}${star(110, 26, 8, "pp-star pp-s4")}</g>
+    <g class="pp pp-flies"><circle class="pp-fly pp-f1" cx="20" cy="120" r="3" fill="#FFF3A0"/><circle class="pp-fly pp-f2" cx="186" cy="150" r="2.6" fill="#FFF3A0"/><circle class="pp-fly pp-f3" cx="50" cy="60" r="2.2" fill="#FFF3A0"/></g>
     <g class="pp pp-sparkle" fill="#FFF6C8" stroke="#E8C65A" stroke-width=".6">
-      <path class="pp-sp pp-sp1" d="M24 98 l3 8 l8 3 l-8 3 l-3 8 l-3 -8 l-8 -3 l8 -3z"/>
-      <path class="pp-sp pp-sp2" d="M178 82 l2.4 6 l6 2.4 l-6 2.4 l-2.4 6 l-2.4 -6 l-6 -2.4 l6 -2.4z"/>
-      <path class="pp-sp pp-sp3" d="M170 150 l2 5 l5 2 l-5 2 l-2 5 l-2 -5 l-5 -2 l5 -2z"/>
+      <path class="pp-sp pp-sp1" d="M20 110 l3 8 l8 3 l-8 3 l-3 8 l-3 -8 l-8 -3 l8 -3z"/>
+      <path class="pp-sp pp-sp2" d="M184 150 l2.4 6 l6 2.4 l-6 2.4 l-2.4 6 l-2.4 -6 l-6 -2.4 l6 -2.4z"/>
+      <path class="pp-sp pp-sp3" d="M30 56 l2 5 l5 2 l-5 2 l-2 5 l-2 -5 l-5 -2 l5 -2z"/>
     </g>
   </svg>`;
 
-  function rigMarkup(rig) {
+  function img(key, cls) {
     const S = window.PerlSprites || {};
-    if (rig === "peek") {
-      return `<div class="pr-peek"><img class="pr-img" src="${S.peek || ""}" alt="" draggable="false"/></div>`;
-    }
-    return `<div class="pr-icon">
-      <img class="pr-img pr-ear pr-ear-l" src="${S["icon-ear-l"] || ""}" alt="" draggable="false"/>
-      <img class="pr-img pr-ear pr-ear-r" src="${S["icon-ear-r"] || ""}" alt="" draggable="false"/>
-      <img class="pr-img pr-body" src="${S["icon-body"] || ""}" alt="" draggable="false"/>
-      <i class="pr-blush pr-blush-l"></i><i class="pr-blush pr-blush-r"></i>
-      <img class="pr-img pr-paw" src="${S["icon-paw"] || ""}" alt="" draggable="false"/>
-    </div>`;
+    return `<img class="pr-img ${cls}" src="${S[key] || ""}" alt="" draggable="false"/>`;
   }
 
   function svg(pose, extraClass) {
-    const p = RIG[pose] ? pose : "idle";
-    const rig = RIG[p];
-    return `<div class="perl-svg perl-rig rig-${rig} pose-${p}${extraClass ? ` ${extraClass}` : ""}" aria-hidden="true">${BACK}<i class="pr-shadow"></i><div class="pr-all">${rigMarkup(rig)}</div>${FRONT}</div>`;
+    const p = POSES.includes(pose) ? pose : "idle";
+    return `<div class="perl-svg perl-rig pose-${p}${extraClass ? ` ${extraClass}` : ""}" aria-hidden="true">${BACK}
+      <div class="pr-all"><div class="pr-canvas">
+        <div class="pr-part pr-head">
+          <div class="pr-part pr-ear-l">${img("ear-l", "")}</div>
+          <div class="pr-part pr-ear-r">${img("ear-r", "")}</div>
+          ${img("head", "pr-face")}${img("eyes-closed", "pr-x pr-ec")}${img("eyes-happy", "pr-x pr-eh")}${img("mouth-closed", "pr-x pr-mc")}
+          <i class="pr-blush pr-blush-l"></i><i class="pr-blush pr-blush-r"></i>
+        </div>
+        <div class="pr-part pr-paw-l">${img("paw-l", "")}</div>
+        <div class="pr-part pr-paw-r">${img("paw-r", "")}${HOLD}</div>
+      </div></div>${LEDGE}${FRONT}</div>`;
   }
 
-  window.PerlArt = { svg, rig: (pose) => RIG[pose] || "peek" };
+  window.PerlArt = { svg, poses: POSES.slice() };
 })();

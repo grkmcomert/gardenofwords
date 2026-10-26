@@ -151,7 +151,7 @@
     document.getElementById("mound").setAttribute("class", `mound ${side}`);
     const perl = document.getElementById("perl");
     perl.className = `perl ${side}`;
-    perl.innerHTML = PerlArt.svg(q.get("pose") || "wave", "is-still");
+    perl.innerHTML = PerlArt.svg(q.get("pose") || "wave", "is-still no-ledge");
     perl.firstElementChild.style.setProperty("--perl-t", `${q.get("pt") || 0}s`);
     // Perl faces the phone: mirror him on the right-hand side.
     if (side === "right") perl.firstElementChild.style.transform = "scaleX(-1)";

@@ -1277,8 +1277,8 @@
     }, 22000);
   }
   // The home-card Perl idles (breathes, looks around, blinks) and answers a tap with a
-  // different trick each time: a big boing, floppy ears, a giggle fit or a little dance.
-  const TAP_TRICKS = [{ pose: "boing", ms: 1000 }, { pose: "earflop", ms: 1200 }, { pose: "giggle", ms: 1200 }, { pose: "dance", ms: 1600 }];
+  // different trick each time: a big boing, floppy ears, a giggle fit or peekaboo.
+  const TAP_TRICKS = [{ pose: "boing", ms: 1000 }, { pose: "earflop", ms: 1200 }, { pose: "giggle", ms: 1200 }, { pose: "peekaboo", ms: 1800 }];
   let tapTrick = Math.floor(Math.random() * TAP_TRICKS.length);
   let tapTimer = null;
   function setThumbPose(thumb, pose) {

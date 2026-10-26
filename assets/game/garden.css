@@ -1943,7 +1943,6 @@ body.game-active .app { padding-left: 6px; padding-right: 6px; width: min(640px,
 .chapter-thumb.perl-thumb::before { display: none; }
 .perl-thumb .perl-thumb-art { position: absolute; inset: 0; display: block; align-self: stretch; justify-self: stretch; margin: 0; font-size: inherit; filter: none; animation: none; }
 .perl-thumb .perl-thumb-art .perl-svg { position: absolute; left: 50%; top: auto; bottom: -3%; width: 106%; height: auto; aspect-ratio: 200 / 210; translate: -50% 0; }
-.perl-thumb .perl-thumb-art .rig-icon { bottom: auto; top: -24%; width: 122%; }
 .perl-thumb:active { transform: scale(.95); }
 .perl-thumb .perl-thumb-badge {
   position: absolute;
@@ -1977,7 +1976,6 @@ body.game-active .app { padding-left: 6px; padding-right: 6px; width: min(640px,
 .perl-peek.open { opacity: 1; transform: none; }
 .perl-peek .perl-avatar { flex: 0 0 auto; width: 64px; height: 64px; border-width: 3px; }
 .perl-peek .perl-avatar .perl-svg { position: absolute; left: 50%; top: auto; bottom: -4%; width: 112%; height: auto; aspect-ratio: 200 / 210; translate: -50% 0; }
-.perl-peek .perl-avatar .rig-icon { bottom: auto; top: -24%; width: 122%; }
 .perl-peek .perl-bubble { max-width: none; font-size: .95rem !important; }
 .perl-peek .perl-bubble::before { left: -6px; top: 50%; margin: -8px 0 0; }
 
@@ -2038,12 +2036,10 @@ body.game-active .app { padding-left: 6px; padding-right: 6px; width: min(640px,
 /* ============================ Vector Perl in avatars ============================ */
 /* Cropped (chest-up) by default; ".is-full" lets Perl stand in front of the disc
    with ears and paws popping out of it, so jumps and waves read clearly. */
-.perl-avatar .perl-svg { position: absolute; left: 50%; top: -24%; width: 122%; height: auto; aspect-ratio: 200 / 210; translate: -50% 0; }
-.perl-avatar .rig-peek { top: auto; bottom: -3%; width: 110%; }
+.perl-avatar .perl-svg { position: absolute; left: 50%; top: auto; bottom: -3%; width: 112%; height: auto; aspect-ratio: 200 / 210; translate: -50% 0; }
 .perl-avatar.is-full { overflow: visible; }
-/* Pop-out: Perl stands in front of the disc; the icon art's cut chest fades into it. */
-.perl-avatar.is-full .perl-svg { top: auto; bottom: 0; width: 120%; -webkit-mask-image: linear-gradient(to top, transparent 0, #000 16%); mask-image: linear-gradient(to top, transparent 0, #000 16%); }
-.perl-avatar.is-full .rig-peek { width: 112%; -webkit-mask-image: none; mask-image: none; }
+/* Pop-out: Perl peeks over his ledge in front of the disc; ears and raised paws break out of it. */
+.perl-avatar.is-full .perl-svg { bottom: 2%; width: 118%; }
 .perl-hello:has(.perl-avatar.is-full) { padding-top: 34px; }
 .nickname-modal { padding-top: 40px; }
 @media (max-height: 740px), (max-width: 380px) {

@@ -1,197 +1,225 @@
-/* ============================ Perl, the garden bunny (real artwork rig) ============================
-   perl.js stacks the official Perl art as layers (ears and paw cut out on the icon rig);
-   the pose class picks one animation set. Box is 200x210 units; props use that viewBox. */
+/* ============================ Perl, the garden bunny (logo artwork rig) ============================
+   perl.js stacks the logo Perl's parts (head with ears, paws with forearms, face overlays).
+   Box: 200x210 units. The canvas (434x546 px art) sits 36.7 units from the top, is 251.6 units
+   tall and is clipped at the bottom edge, where Perl peeks over a ledge, planter or grass. */
 
-.perl-rig { position: relative; display: block; width: 100%; height: 100%; overflow: visible; }
-.perl-rig .pr-back, .perl-rig .pr-front { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
-.perl-rig .pr-front { z-index: 2; }
+.perl-rig { position: relative; display: block; width: 100%; height: 100%; overflow: visible; clip-path: inset(-80% -80% 0 -80%); }
+.perl-rig .pr-back, .perl-rig .pr-front, .perl-rig .pr-ledge { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.perl-rig .pr-ledge { z-index: 2; }
+.perl-rig .pr-front { z-index: 3; }
+.perl-rig.no-ledge .pr-ledge { display: none; }
 .perl-rig .pr-all { position: absolute; inset: 0; z-index: 1; transform-origin: 50% 100%; }
-.perl-rig .pr-img { position: absolute; display: block; width: 100%; height: 100%; max-width: none; user-select: none; -webkit-user-select: none; -webkit-user-drag: none; }
-.perl-rig .pr-icon { position: absolute; left: 0; top: 4.76%; width: 100%; height: 95.24%; transform-origin: 50% 100%; }
-.perl-rig .pr-icon .pr-img { inset: 0; }
-.perl-rig .pr-peek { position: absolute; left: 0; bottom: 0; width: 100%; height: 82.5%; transform-origin: 50% 100%; }
-.perl-rig .pr-peek .pr-img { inset: 0; }
-.perl-rig .pr-ear-l { transform-origin: 33% 26.5%; }
-.perl-rig .pr-ear-r { transform-origin: 69.5% 26%; }
-.perl-rig .pr-paw { transform-origin: 82% 98.6%; }
-.perl-rig .pr-blush { position: absolute; top: 71.5%; width: 16%; height: 9%; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 110, 125, .75), rgba(255, 110, 125, 0)); opacity: 0; }
-.perl-rig .pr-blush-l { left: 24%; }
-.perl-rig .pr-blush-r { left: 60%; }
-.perl-rig .pr-shadow { display: none; position: absolute; left: 22%; right: 22%; bottom: -1%; height: 6%; border-radius: 50%; background: radial-gradient(closest-side, rgba(30, 45, 20, .35), rgba(30, 45, 20, 0)); transform-origin: 50% 50%; }
+.perl-rig .pr-canvas { position: absolute; left: 0; top: 17.48%; width: 100%; height: 119.8%; }
+.perl-rig .pr-part { position: absolute; inset: 0; }
+.perl-rig .pr-img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; max-width: none; user-select: none; -webkit-user-select: none; -webkit-user-drag: none; }
+.perl-rig .pr-hold { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.perl-rig .pr-x { opacity: 0; }
+.perl-rig .pr-head { transform-origin: 47.2% 64.1%; }
+.perl-rig .pr-ear-l { transform-origin: 49.5% 23.4%; }
+.perl-rig .pr-ear-r { transform-origin: 80.2% 36.6%; }
+.perl-rig .pr-paw-l { transform-origin: 23% 64.1%; }
+.perl-rig .pr-paw-r { transform-origin: 69.8% 66.8%; }
+.perl-rig .pr-blush { position: absolute; top: 45%; width: 15%; height: 6%; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 105, 120, .7), rgba(255, 105, 120, 0)); opacity: 0; }
+.perl-rig .pr-blush-l { left: 17%; }
+.perl-rig .pr-blush-r { left: 57%; top: 51%; }
 .perl-rig .pp { display: none; }
 .perl-rig svg * { transform-box: view-box; }
-.perl-rig .pp-sun, .perl-rig .pp-sun-rays { transform-origin: 30px 26px; }
-.perl-rig .pp-bulb { transform-origin: 170px 46px; }
-.perl-rig .pp-bulb-rays { transform-origin: 170px 26px; }
-.perl-rig .pp-question { transform-origin: 174px 30px; }
-.perl-rig .pp-can { transform-origin: 177px 37px; }
-.perl-rig .pp-sp-a { transform-origin: 31px 178px; }
-.perl-rig .pp-sp-b { transform-origin: 173px 178px; }
-.perl-rig .pp-heart, .perl-rig .pp-star, .perl-rig .pp-sp, .perl-rig .pp-fly, .perl-rig .pp-note, .perl-rig .pp-drop,
+.perl-rig .pp-sun, .perl-rig .pp-sun-rays { transform-origin: 30px 36px; }
+.perl-rig .pp-bulb { transform-origin: 34px 50px; }
+.perl-rig .pp-bulb-rays { transform-origin: 34px 30px; }
+.perl-rig .pp-question { transform-origin: 32px 46px; }
+.perl-rig .pp-lantern { transform-origin: 322px 336px; }
+.perl-rig .pp-can { transform-origin: 336px 288px; }
+.perl-rig .pp-sp-a { transform-origin: 41px 190px; }
+.perl-rig .pp-sp-b { transform-origin: 187px 190px; }
+.perl-rig .pp-heart, .perl-rig .pp-star, .perl-rig .pp-sp, .perl-rig .pp-fly, .perl-rig .pp-drop,
 .perl-rig .pp-zzz text { transform-box: fill-box; transform-origin: center; }
 
+/* Shared */
+@keyframes pBlink { 0%, 90%, 100% { opacity: 0; } 92%, 96% { opacity: 1; } }
 @keyframes pTwinkle { 0%, 100% { opacity: 0; transform: scale(.2) rotate(0); } 30%, 60% { opacity: 1; transform: scale(1) rotate(45deg); } }
 @keyframes pSpin { to { transform: rotate(360deg); } }
-@keyframes pEarSwayL { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(5deg); } }
-@keyframes pEarSwayR { 0%, 100% { transform: rotate(4deg); } 50% { transform: rotate(-5deg); } }
-@keyframes pNoteFloat { 0% { opacity: 0; transform: translate(0, 10px) scale(.6) rotate(-10deg); } 25% { opacity: 1; } 100% { opacity: 0; transform: translate(6px, -26px) scale(1.05) rotate(12deg); } }
+@keyframes pBreath { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-.8%); } }
+@keyframes pTwitchR { 0%, 82%, 100% { transform: rotate(0); } 86% { transform: rotate(-9deg); } 90% { transform: rotate(4deg); } 94% { transform: rotate(-2deg); } }
+@keyframes pTwitchL { 0%, 55%, 100% { transform: rotate(0); } 60% { transform: rotate(8deg); } 65% { transform: rotate(-3deg); } 70% { transform: rotate(0); } }
+@keyframes pHeadTilt { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(3deg); } }
 
-/* ---------- idle (home card): peeks over the edge, bobs, tilts, pops up now and then ---------- */
-.pose-idle .pr-peek { animation: pPeekIdle 6.5s ease-in-out infinite; }
-@keyframes pPeekIdle {
-  0%, 100% { transform: translateY(0) rotate(0); }
-  16% { transform: translateY(-2%) rotate(-2.5deg); }
-  32% { transform: translateY(0) rotate(0); }
-  46% { transform: translateY(-1%) rotate(3deg); }
-  58% { transform: translateY(0) rotate(0); }
-  68% { transform: translateY(-7%) rotate(0); }
-  72% { transform: translateY(-5.5%) rotate(0); }
-  80% { transform: translateY(-7%) rotate(0); }
-  90% { transform: translateY(0) rotate(0); }
-}
+/* ---------- idle (home card): breathes, blinks, ears twitch, small head tilts ---------- */
+.pose-idle .pr-head { animation: pIdleHead 7s ease-in-out infinite; }
+.pose-idle .pr-ec { animation: pBlink 4.2s linear infinite; }
+.pose-idle .pr-ear-r { animation: pTwitchR 5.2s ease-in-out infinite; }
+.pose-idle .pr-ear-l { animation: pTwitchL 6.6s ease-in-out infinite; }
+.pose-idle .pr-paw-l, .pose-idle .pr-paw-r { animation: pBreath 3.4s ease-in-out infinite; }
+@keyframes pIdleHead { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-3deg) translateY(-.6%); } 50% { transform: rotate(0); } 70% { transform: rotate(3.5deg) translateY(-.6%); } }
 
-/* ---------- think (profile edit): head tilted, wondering, question mark ---------- */
-.pose-think .pr-peek { animation: pThinkPeek 3.6s ease-in-out infinite; }
+/* ---------- wave (name prompt): one paw up beside the face, waving ---------- */
+.pose-wave .pr-paw-r { animation: pWaveR 1.3s ease-in-out infinite; }
+.pose-wave .pr-head { animation: pWaveHead 2.6s ease-in-out infinite; }
+.pose-wave .pr-ec { animation: pBlink 3.6s linear infinite; }
+.pose-wave .pr-ear-r { animation: pTwitchR 2.6s ease-in-out infinite; }
+@keyframes pWaveR { 0%, 100% { transform: translate(2%, -15%) rotate(-6deg); } 25% { transform: translate(3%, -16%) rotate(12deg); } 50% { transform: translate(2%, -15%) rotate(-8deg); } 75% { transform: translate(3%, -16%) rotate(12deg); } }
+@keyframes pWaveHead { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(-6deg) translateY(-.5%); } }
+
+/* ---------- think (profile edit): paw on the chin, head tilted, closed mouth, ? ---------- */
+.pose-think .pr-paw-l { animation: pChin 2.4s ease-in-out infinite; }
+.pose-think .pr-head { transform: rotate(-6deg); animation: pThinkHead 4s ease-in-out infinite; }
+.pose-think .pr-mc { opacity: 1; }
+.pose-think .pr-ec { animation: pBlink 5s linear infinite; }
 .pose-think .pp-question { display: inline; animation: pQuestion 2s ease-in-out infinite; }
-@keyframes pThinkPeek { 0%, 100% { transform: rotate(-9deg); } 50% { transform: translateY(-2%) rotate(-6deg); } }
+@keyframes pChin { 0%, 100% { transform: translate(16%, -1.5%) rotate(-18deg); } 50% { transform: translate(16%, -3%) rotate(-14deg); } }
+@keyframes pThinkHead { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(-8deg) translateY(-.5%); } }
 @keyframes pQuestion { 0%, 100% { transform: translateY(0) rotate(-8deg); } 50% { transform: translateY(-6px) rotate(10deg); } }
 
-/* ---------- idea (tip bubble): pops up from below, light bulb flicks on ---------- */
-.pose-idea .pr-peek { animation: pIdeaPeek 3.2s ease-out infinite; }
-.pose-idea .pp-bulb { display: inline; animation: pBulb 3.2s ease-out infinite; }
-.pose-idea .pp-bulb-rays { animation: pBulbRays 3.2s ease-in-out infinite; }
-@keyframes pIdeaPeek { 0% { transform: translateY(46%); } 14% { transform: translateY(-5%); } 20% { transform: translateY(0); } 28% { transform: translateY(-6%); } 34%, 100% { transform: translateY(0); } }
-@keyframes pBulb { 0%, 18% { opacity: 0; transform: scale(.2); } 24% { opacity: 1; transform: scale(1.25); } 30% { transform: scale(.95); } 36% { opacity: .55; transform: scale(1); } 40% { opacity: 1; } 44% { opacity: .7; } 48%, 88% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(.9); } }
-@keyframes pBulbRays { 0%, 100% { transform: scale(.8); opacity: .5; } 50% { transform: scale(1.15); opacity: 1; } }
-
-/* ---------- talk (tap bubble): chatty nods ---------- */
-.pose-talk .pr-peek { animation: pTalkPeek .9s ease-in-out infinite; }
-@keyframes pTalkPeek { 0%, 100% { transform: rotate(-2deg); } 25% { transform: translateY(-2.5%) rotate(0); } 50% { transform: rotate(2deg); } 75% { transform: translateY(-2.5%) rotate(0); } }
-
-/* ---------- boing (tap trick): squash, big hop, land ---------- */
-.pose-boing .pr-peek { animation: pBoing 1s cubic-bezier(.3, .7, .4, 1) both; }
-@keyframes pBoing { 0% { transform: none; } 14% { transform: scale(1.12, .86); } 40% { transform: translateY(-22%) scale(.92, 1.1); } 66% { transform: translateY(0) scale(1.1, .9); } 82% { transform: scale(.97, 1.03); } 100% { transform: none; } }
-
-/* ---------- water (store, greenhouse): peeks over a planter while sprouts grow ---------- */
-.pose-water .pr-peek { left: 6%; width: 88%; height: 72.6%; bottom: 11%; animation: pTalkPeek 2.6s ease-in-out infinite; }
-.pose-water .pp-planter, .pose-water .pp-can, .pose-water .pp-drops { display: inline; }
-.pose-water .pp-sprout { animation: pSprout 2.4s ease-in-out infinite; }
-.pose-water .pp-sp-b { animation-delay: -1.2s; }
-.pose-water .pp-can { animation: pPour 2.4s ease-in-out infinite; }
-.pose-water .pp-drop { animation: pDrop .9s ease-in infinite; }
-.pose-water .pp-d2 { animation-delay: .3s; }
-.pose-water .pp-d3 { animation-delay: .6s; }
-@keyframes pSprout { 0%, 100% { transform: scale(.9) rotate(-2deg); } 50% { transform: scale(1.08) rotate(3deg); } }
-@keyframes pPour { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(-16deg); } }
-@keyframes pDrop { 0% { opacity: 0; transform: translate(0, 0); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(-3px, 40px); } }
-
-/* ---------- wave (name prompt): the icon wave, ears swaying ---------- */
-.pose-wave .pr-paw { animation: pWavePaw 1.2s ease-in-out infinite; }
-.pose-wave .pr-icon { animation: pTilt 2.4s ease-in-out infinite; }
-.pose-wave .pr-ear-l { animation: pEarSwayL 2.4s ease-in-out infinite; }
-.pose-wave .pr-ear-r { animation: pEarSwayR 2.4s ease-in-out -1.2s infinite; }
-@keyframes pWavePaw { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-17deg); } 50% { transform: rotate(5deg); } 75% { transform: rotate(-17deg); } }
-@keyframes pTilt { 0%, 100% { transform: rotate(-2.5deg); } 50% { transform: rotate(2.5deg); } }
-
-/* ---------- stretch (morning hello): stretches tall, ears perk up, sun rises ---------- */
+/* ---------- stretch (morning hello): both paws up, eyes shut, big yawn, sun rising ---------- */
 .pose-stretch .pp-sun { display: inline; animation: pSunRise 4.4s ease-out infinite; }
 .pose-stretch .pp-sun-rays { animation: pSpin 6s linear infinite; }
-.pose-stretch .pr-icon { animation: pStretchBody 4.4s ease-in-out infinite; }
+.pose-stretch .pr-paw-l { animation: pStretchL 4.4s ease-in-out infinite; }
+.pose-stretch .pr-paw-r { animation: pStretchR 4.4s ease-in-out infinite; }
+.pose-stretch .pr-head { animation: pStretchHead 4.4s ease-in-out infinite; }
+.pose-stretch .pr-ec { animation: pYawnEyes 4.4s ease-in-out infinite; }
 .pose-stretch .pr-ear-l { animation: pPerkL 4.4s ease-in-out infinite; }
 .pose-stretch .pr-ear-r { animation: pPerkR 4.4s ease-in-out infinite; }
-.pose-stretch .pr-paw { animation: pStretchPaw 4.4s ease-in-out infinite; }
 @keyframes pSunRise { 0% { transform: translateY(14px) scale(.8); opacity: .4; } 40%, 100% { transform: none; opacity: 1; } }
-@keyframes pStretchBody { 0%, 12%, 78%, 100% { transform: scale(1, 1); } 32%, 60% { transform: scale(.97, 1.06); } }
-@keyframes pPerkL { 0%, 12%, 78%, 100% { transform: rotate(0); } 32%, 60% { transform: rotate(-5deg) scaleY(1.08); } }
-@keyframes pPerkR { 0%, 12%, 78%, 100% { transform: rotate(0); } 32%, 60% { transform: rotate(5deg) scaleY(1.08); } }
-@keyframes pStretchPaw { 0%, 12%, 78%, 100% { transform: rotate(0); } 32%, 60% { transform: rotate(-12deg) translateY(-3%); } }
+@keyframes pStretchL { 0%, 10%, 80%, 100% { transform: none; } 30%, 62% { transform: translate(-6%, -24%) rotate(16deg); } }
+@keyframes pStretchR { 0%, 10%, 80%, 100% { transform: none; } 30%, 62% { transform: translate(6%, -22%) rotate(-16deg); } }
+@keyframes pStretchHead { 0%, 10%, 80%, 100% { transform: none; } 30%, 62% { transform: rotate(-4deg) translateY(-2%); } }
+@keyframes pYawnEyes { 0%, 14%, 72%, 100% { opacity: 0; } 22%, 66% { opacity: 1; } }
+@keyframes pPerkL { 0%, 10%, 80%, 100% { transform: rotate(0); } 30%, 62% { transform: rotate(-6deg); } }
+@keyframes pPerkR { 0%, 10%, 80%, 100% { transform: rotate(0); } 30%, 62% { transform: rotate(-9deg); } }
 
-/* ---------- hearts (daytime hello): happy side-hop, flapping ears, floating hearts ---------- */
-.pose-hearts .pr-all { animation: pSideHop 1.2s ease-in-out infinite; }
-.pose-hearts .pr-ear-l { animation: pEarSwayL .6s ease-in-out infinite; }
-.pose-hearts .pr-ear-r { animation: pEarSwayR .6s ease-in-out infinite; }
-.pose-hearts .pr-paw { animation: pWavePaw .9s ease-in-out infinite; }
-.pose-hearts .pr-blush { opacity: .5; }
+/* ---------- hearts (daytime hello): ^^ eyes, blushing, patting paws, floating hearts ---------- */
+.pose-hearts .pr-eh { opacity: 1; }
+.pose-hearts .pr-blush { opacity: .55; }
+.pose-hearts .pr-head { animation: pHeadTilt 1.6s ease-in-out infinite; }
+.pose-hearts .pr-paw-l { animation: pPat .8s ease-in-out infinite; }
+.pose-hearts .pr-paw-r { animation: pPat .8s ease-in-out -.4s infinite; }
+.pose-hearts .pr-ear-r { animation: pTwitchR 1.6s ease-in-out infinite; }
 .pose-hearts .pp-hearts { display: inline; }
 .pose-hearts .pp-heart { animation: pHeartFloat 2.4s ease-out infinite; }
 .pose-hearts .pp-h2 { animation-delay: .8s; }
 .pose-hearts .pp-h3 { animation-delay: 1.6s; }
-@keyframes pSideHop { 0%, 100% { transform: translate(-3%, 0) rotate(-3deg); } 25% { transform: translate(0, -5%) rotate(0); } 50% { transform: translate(3%, 0) rotate(3deg); } 75% { transform: translate(0, -5%) rotate(0); } }
+@keyframes pPat { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-7%); } }
 @keyframes pHeartFloat { 0% { opacity: 0; transform: translateY(18px) scale(.3); } 20% { opacity: 1; transform: translateY(6px) scale(1.1); } 100% { opacity: 0; transform: translateY(-34px) scale(.9) rotate(12deg); } }
 
-/* ---------- lantern (evening hello): sways beside a glowing lantern, fireflies ---------- */
-.pose-lantern .pp-moon, .pose-lantern .pp-lantern, .pose-lantern .pp-flies { display: inline; }
-.pose-lantern .pr-icon { animation: pTilt 5s ease-in-out infinite; }
-.pose-lantern .pr-ear-l { animation: pEarSwayL 5s ease-in-out infinite; }
-.pose-lantern .pr-ear-r { animation: pEarSwayR 5s ease-in-out infinite; }
+/* ---------- lantern (evening hello): holds up a glowing lantern, moon and fireflies ---------- */
+.pose-lantern .pp-moon, .pose-lantern .pp-flies, .pose-lantern .pp-lantern { display: inline; }
+.pose-lantern .pr-paw-r { transform: translate(1%, -16%) rotate(-4deg); }
+.pose-lantern .pp-lantern { animation: pLanternSwing 2.6s ease-in-out infinite; }
 .pose-lantern .pp-glow { animation: pGlow 1.7s ease-in-out infinite; }
+.pose-lantern .pr-head { animation: pHeadTilt 5s ease-in-out infinite; }
+.pose-lantern .pr-ec { animation: pBlink 4.8s linear infinite; }
 .pose-lantern .pp-fly { animation: pFly 3.4s ease-in-out infinite; }
 .pose-lantern .pp-f2 { animation-delay: -1.2s; animation-duration: 4.1s; }
 .pose-lantern .pp-f3 { animation-delay: -2.3s; animation-duration: 2.9s; }
+@keyframes pLanternSwing { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
 @keyframes pGlow { 0%, 100% { opacity: .7; } 50% { opacity: 1; } }
 @keyframes pFly { 0%, 100% { opacity: .2; transform: translate(0, 0); } 30% { opacity: 1; transform: translate(6px, -8px); } 60% { opacity: .6; transform: translate(-5px, -14px); } }
 
-/* ---------- sleepy (late-night hello): dozes off, ears droop, startles awake ---------- */
+/* ---------- sleepy (late-night hello): head sinks onto the paws, Zzz, startles awake ---------- */
 .pose-sleepy .pp-moon, .pose-sleepy .pp-zzz { display: inline; }
-.pose-sleepy .pr-icon { animation: pNod 5s ease-in-out infinite; }
-.pose-sleepy .pr-ear-l { animation: pDroopL 5s ease-in-out infinite; }
+.pose-sleepy .pr-head { animation: pDoze 5s ease-in-out infinite; }
+.pose-sleepy .pr-ec, .pose-sleepy .pr-mc { animation: pDozeFace 5s ease-in-out infinite; }
 .pose-sleepy .pr-ear-r { animation: pDroopR 5s ease-in-out infinite; }
-.pose-sleepy .pr-paw { animation: pPawDroop 5s ease-in-out infinite; }
+.pose-sleepy .pr-ear-l { animation: pDroopL 5s ease-in-out infinite; }
 .pose-sleepy .pp-zzz text { animation: pZ 3s ease-out infinite; }
 .pose-sleepy .pp-z2 { animation-delay: 1s; }
 .pose-sleepy .pp-z3 { animation-delay: 2s; }
-@keyframes pNod { 0%, 100% { transform: rotate(0); } 70% { transform: rotate(6deg) translateY(2.5%); } 80% { transform: rotate(-2deg) translateY(-1.5%); } 88% { transform: rotate(0); } }
-@keyframes pDroopL { 0%, 100% { transform: rotate(-5deg); } 70% { transform: rotate(-17deg); } 80% { transform: rotate(3deg); } 90% { transform: rotate(-5deg); } }
-@keyframes pDroopR { 0%, 100% { transform: rotate(5deg); } 70% { transform: rotate(17deg); } 80% { transform: rotate(-3deg); } 90% { transform: rotate(5deg); } }
-@keyframes pPawDroop { 0%, 100% { transform: rotate(4deg); } 70% { transform: rotate(10deg) translateY(2%); } 80% { transform: rotate(-6deg); } }
-@keyframes pZ { 0% { opacity: 0; transform: translate(-8px, 10px) scale(.5); } 25% { opacity: 1; } 100% { opacity: 0; transform: translate(10px, -14px) scale(1.1); } }
+@keyframes pDoze { 0%, 100% { transform: translateY(4%) rotate(7deg); } 70% { transform: translateY(6%) rotate(10deg); } 80% { transform: translateY(0) rotate(-2deg); } 90% { transform: translateY(4%) rotate(7deg); } }
+@keyframes pDozeFace { 0%, 74%, 92%, 100% { opacity: 1; } 78%, 88% { opacity: 0; } }
+@keyframes pDroopR { 0%, 100% { transform: rotate(10deg); } 70% { transform: rotate(15deg); } 80% { transform: rotate(-3deg); } 90% { transform: rotate(10deg); } }
+@keyframes pDroopL { 0%, 100% { transform: rotate(-8deg); } 70% { transform: rotate(-12deg); } 80% { transform: rotate(3deg); } 90% { transform: rotate(-8deg); } }
+@keyframes pZ { 0% { opacity: 0; transform: translate(8px, 10px) scale(.5); } 25% { opacity: 1; } 100% { opacity: 0; transform: translate(-8px, -14px) scale(1.1); } }
 
-/* ---------- cheer (first finished bed): jumps for joy, waves fast, stars burst ---------- */
-.pose-cheer .pr-all { animation: pJump .9s cubic-bezier(.3, .7, .4, 1) infinite; }
-.pose-cheer .pr-paw { animation: pWavePaw .45s ease-in-out infinite; }
-.pose-cheer .pr-ear-l { animation: pEarSwayL .45s ease-in-out infinite; }
-.pose-cheer .pr-ear-r { animation: pEarSwayR .45s ease-in-out infinite; }
+/* ---------- cheer (first finished bed): both paws up, ^^ eyes, bouncing, stars ---------- */
+.pose-cheer .pr-all { animation: pBounce .9s ease-in-out infinite; }
+.pose-cheer .pr-eh { opacity: 1; }
 .pose-cheer .pr-blush { opacity: .45; }
+.pose-cheer .pr-paw-l { animation: pCheerL .45s ease-in-out infinite alternate; }
+.pose-cheer .pr-paw-r { animation: pCheerR .45s ease-in-out infinite alternate; }
+.pose-cheer .pr-ear-r { animation: pTwitchR .9s ease-in-out infinite; }
 .pose-cheer .pp-stars { display: inline; }
 .pose-cheer .pp-star { animation: pTwinkle 1.2s ease-in-out infinite; }
 .pose-cheer .pp-s2 { animation-delay: .3s; }
 .pose-cheer .pp-s3 { animation-delay: .6s; }
 .pose-cheer .pp-s4 { animation-delay: .9s; }
-@keyframes pJump { 0%, 100% { transform: translateY(0) scale(1.05, .95); } 15% { transform: translateY(-2%) scale(.96, 1.04); } 48% { transform: translateY(-13%) scale(1, 1); } 82% { transform: translateY(-1.5%) scale(.98, 1.02); } }
+@keyframes pBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4%); } }
+@keyframes pCheerL { from { transform: translate(-7%, -22%) rotate(10deg); } to { transform: translate(-8%, -25%) rotate(24deg); } }
+@keyframes pCheerR { from { transform: translate(7%, -20%) rotate(-10deg); } to { transform: translate(8%, -23%) rotate(-24deg); } }
 
-/* ---------- clap (bed finished, now and then): grooves to the music in the headphones ---------- */
-.pose-clap .pr-icon { animation: pGroove .5s ease-in-out infinite alternate; }
-.pose-clap .pr-ear-l { animation: pEarSwayL .5s ease-in-out infinite; }
-.pose-clap .pr-ear-r { animation: pEarSwayR .5s ease-in-out -.25s infinite; }
-.pose-clap .pr-paw { animation: pPawTap .5s ease-in-out infinite alternate; }
-.pose-clap .pp-notes { display: inline; }
-.pose-clap .pp-note { animation: pNoteFloat 1.8s ease-out infinite; }
-.pose-clap .pp-n2 { animation-delay: .6s; }
-.pose-clap .pp-n3 { animation-delay: 1.2s; }
-@keyframes pGroove { from { transform: rotate(-4deg) translateY(0); } to { transform: rotate(4deg) translateY(-2%); } }
-@keyframes pPawTap { from { transform: rotate(-8deg); } to { transform: rotate(6deg); } }
+/* ---------- idea (tip bubble): pops up, paw up "aha!", light bulb flicks on ---------- */
+.pose-idea .pr-all { animation: pIdeaRise 3.2s ease-out infinite; }
+.pose-idea .pr-paw-l { animation: pAha 3.2s ease-in-out infinite; }
+.pose-idea .pp-bulb { display: inline; animation: pBulb 3.2s ease-out infinite; }
+.pose-idea .pp-bulb-rays { animation: pBulbRays 3.2s ease-in-out infinite; }
+@keyframes pIdeaRise { 0% { transform: translateY(40%); } 14% { transform: translateY(-4%); } 20%, 100% { transform: translateY(0); } }
+@keyframes pAha { 0%, 16% { transform: none; } 26%, 82% { transform: translate(-4%, -18%) rotate(14deg); } 32%, 44% { transform: translate(-4%, -20%) rotate(20deg); } 38%, 50% { transform: translate(-4%, -18%) rotate(10deg); } 94%, 100% { transform: none; } }
+@keyframes pBulb { 0%, 18% { opacity: 0; transform: scale(.2); } 24% { opacity: 1; transform: scale(1.25); } 30% { transform: scale(.95); } 36% { opacity: .55; transform: scale(1); } 40% { opacity: 1; } 44% { opacity: .7; } 48%, 88% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(.9); } }
+@keyframes pBulbRays { 0%, 100% { transform: scale(.8); opacity: .5; } 50% { transform: scale(1.15); opacity: 1; } }
+
+/* ---------- clap (bed finished, now and then): ^^ eyes, clapping paws, sparkles ---------- */
+.pose-clap .pr-eh { opacity: 1; }
+.pose-clap .pr-paw-l { animation: pClapL .34s ease-in-out infinite alternate; }
+.pose-clap .pr-paw-r { animation: pClapR .34s ease-in-out infinite alternate; }
+.pose-clap .pr-head { animation: pBreath .68s ease-in-out infinite; }
+.pose-clap .pp-sparkle { display: inline; }
+.pose-clap .pp-sp { animation: pTwinkle 1s ease-in-out infinite; }
+.pose-clap .pp-sp2 { animation-delay: .33s; }
+.pose-clap .pp-sp3 { animation-delay: .66s; }
+@keyframes pClapL { from { transform: translate(8%, -1%) rotate(-6deg); } to { transform: translate(17%, -2%) rotate(-14deg); } }
+@keyframes pClapR { from { transform: translate(-8%, -4%) rotate(6deg); } to { transform: translate(-17%, -5%) rotate(14deg); } }
+
+/* ---------- talk (tap bubble): chatty mouth, nodding head, small paw gesture ---------- */
+.pose-talk .pr-mc { animation: pTalk .32s steps(1) infinite; }
+.pose-talk .pr-head { animation: pTalkHead 1s ease-in-out infinite; }
+.pose-talk .pr-paw-r { animation: pGesture 1s ease-in-out infinite; }
+.pose-talk .pr-ec { animation: pBlink 3s linear infinite; }
+@keyframes pTalk { 0% { opacity: 0; } 50% { opacity: 1; } }
+@keyframes pTalkHead { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg) translateY(-.6%); } }
+@keyframes pGesture { 0%, 100% { transform: translateY(-4%) rotate(0); } 50% { transform: translateY(-8%) rotate(8deg); } }
+
+/* ---------- water (store, greenhouse): peeks over a planter, waters the sprouts ---------- */
+.pose-water .pp-planter, .pose-water .pp-can { display: inline; }
+.pose-water .pr-ledge { display: none; }
+.pose-water .pr-paw-r { transform: translate(6%, -11%) rotate(8deg); }
+.pose-water .pp-can { animation: pPour 2.4s ease-in-out infinite; }
+.pose-water .pr-head { transform: rotate(-4deg); animation: pWaterHead 2.4s ease-in-out infinite; }
+.pose-water .pr-eh { opacity: 1; }
+.pose-water .pp-sprout { animation: pSprout 2.4s ease-in-out infinite; }
+.pose-water .pp-sp-b { animation-delay: -1.2s; }
+.pose-water .pp-drop { animation: pDrop .9s ease-in infinite; }
+.pose-water .pp-d2 { animation-delay: .3s; }
+.pose-water .pp-d3 { animation-delay: .6s; }
+@keyframes pPour { 0%, 100% { transform: rotate(4deg); } 50% { transform: rotate(-12deg); } }
+@keyframes pWaterHead { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(-6deg) translateY(.5%); } }
+@keyframes pSprout { 0%, 100% { transform: scale(.9) rotate(-2deg); } 50% { transform: scale(1.08) rotate(3deg); } }
+@keyframes pDrop { 0% { opacity: 0; transform: translate(0, 0); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(-4px, 70px); } }
 
 /* ---------- tap tricks on the home card (play once, then back to idle) ---------- */
+.pose-boing .pr-all { animation: pBoing 1s cubic-bezier(.3, .7, .4, 1) both; }
+.pose-boing .pr-eh { animation: pFlash 1s ease both; }
+@keyframes pBoing { 0% { transform: none; } 14% { transform: scale(1.08, .9); } 40% { transform: translateY(-16%) scale(.94, 1.06); } 66% { transform: translateY(0) scale(1.06, .94); } 82% { transform: scale(.98, 1.02); } 100% { transform: none; } }
+@keyframes pFlash { 0%, 100% { opacity: 0; } 15%, 80% { opacity: 1; } }
+
 .pose-earflop .pr-ear-l { animation: pFlopL 1.2s cubic-bezier(.3, 1.6, .5, 1) both; }
 .pose-earflop .pr-ear-r { animation: pFlopR 1.2s cubic-bezier(.3, 1.6, .5, 1) both; }
-.pose-earflop .pr-icon { animation: pTilt .6s ease-in-out 2; }
-@keyframes pFlopL { 0% { transform: none; } 25%, 50% { transform: rotate(-34deg); } 72% { transform: rotate(8deg); } 86% { transform: rotate(-3deg); } 100% { transform: none; } }
-@keyframes pFlopR { 0% { transform: none; } 25%, 50% { transform: rotate(34deg); } 72% { transform: rotate(-8deg); } 86% { transform: rotate(3deg); } 100% { transform: none; } }
+.pose-earflop .pr-ec { animation: pFlash 1.2s ease both; }
+@keyframes pFlopL { 0% { transform: none; } 25%, 50% { transform: rotate(-18deg); } 72% { transform: rotate(5deg); } 86% { transform: rotate(-2deg); } 100% { transform: none; } }
+@keyframes pFlopR { 0% { transform: none; } 25%, 50% { transform: rotate(18deg); } 72% { transform: rotate(-5deg); } 86% { transform: rotate(2deg); } 100% { transform: none; } }
 
-.pose-giggle .pr-icon { animation: pShake 1.2s ease-in-out both; }
-.pose-giggle .pr-blush { animation: pBlush 1.2s ease-in-out both; }
-.pose-giggle .pr-ear-l { animation: pEarSwayL .2s ease-in-out 6; }
-.pose-giggle .pr-ear-r { animation: pEarSwayR .2s ease-in-out 6; }
+.pose-giggle .pr-head { animation: pShake 1.2s ease-in-out both; }
+.pose-giggle .pr-eh { animation: pFlash 1.2s ease both; }
+.pose-giggle .pr-blush { animation: pBlushIn 1.2s ease-in-out both; }
+.pose-giggle .pr-mc { animation: pTalk .2s steps(1) 6; }
+.pose-giggle .pr-paw-l { animation: pPat .3s ease-in-out 4; }
 @keyframes pShake { 0%, 100% { transform: rotate(0); } 10%, 30%, 50%, 70% { transform: rotate(-4deg); } 20%, 40%, 60%, 80% { transform: rotate(4deg); } }
-@keyframes pBlush { 0%, 100% { opacity: 0; transform: scale(.8); } 30%, 70% { opacity: .95; transform: scale(1.2); } }
+@keyframes pBlushIn { 0%, 100% { opacity: 0; transform: scale(.8); } 30%, 70% { opacity: .95; transform: scale(1.2); } }
 
-.pose-dance .pr-all { animation: pDance 1.6s ease-in-out both; }
-.pose-dance .pr-paw { animation: pPawTap .4s ease-in-out 4 alternate; }
-.pose-dance .pp-notes { display: inline; }
-.pose-dance .pp-note { animation: pNoteFloat 1.6s ease-out both; }
-.pose-dance .pp-n2 { animation-delay: .3s; }
-.pose-dance .pp-n3 { animation-delay: .6s; }
-@keyframes pDance { 0%, 100% { transform: none; } 20% { transform: translateX(-4%) rotate(-5deg); } 40% { transform: translateX(4%) translateY(-3%) rotate(5deg); } 60% { transform: translateX(-4%) rotate(-5deg); } 80% { transform: translateX(4%) translateY(-3%) rotate(5deg); } }
+.pose-peekaboo .pr-paw-l { animation: pBooL 1.8s ease-in-out both; }
+.pose-peekaboo .pr-paw-r { animation: pBooR 1.8s ease-in-out both; }
+.pose-peekaboo .pr-eh { animation: pBooEyes 1.8s ease both; }
+@keyframes pBooL { 0%, 100% { transform: none; } 18%, 58% { transform: translate(9%, -13%) rotate(-12deg); } 72% { transform: translate(-4%, -16%) rotate(14deg); } 86% { transform: translate(-2%, -10%) rotate(8deg); } }
+@keyframes pBooR { 0%, 100% { transform: none; } 18%, 58% { transform: translate(-10%, -14%) rotate(12deg); } 72% { transform: translate(5%, -15%) rotate(-14deg); } 86% { transform: translate(2%, -9%) rotate(-8deg); } }
+@keyframes pBooEyes { 0%, 60% { opacity: 0; } 66%, 92% { opacity: 1; } 100% { opacity: 0; } }
 
 /* Frozen pose for store art: animations paused at --perl-t. */
 .perl-rig.is-still, .perl-rig.is-still * { animation-play-state: paused !important; animation-delay: calc(var(--perl-t, 0s) * -1) !important; }
