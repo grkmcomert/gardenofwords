@@ -62,7 +62,7 @@ COPY = {
         "3-complete": ("Beete fertig, *Belohnung* sichern", "EP, Blütenblätter und Aufgaben in jedem Beet", "Bravo!"),
         "4-leaderboard": ("Klettere in der *EP-Bestenliste*", "Halte deine Tagesserie am Leben", "Ganz nach oben!"),
         "5-greenhouse": ("Ernte im *Gewächshaus*", "Säe Samen, ernte Tipps und Blütenblätter", "Mmh, Karotten!"),
-        "6-themes": ("Wähle die *Stimmung* deines Gartens", "Gemütliche Themen vom Rosenhäuschen bis zur Mondnacht", "Das liebe ich!"),
+        "6-themes": ("Wähle deine *Gartenstimmung*", "Vom Rosenhäuschen bis zur Mondnacht", "Das liebe ich!"),
     },
 }
 
