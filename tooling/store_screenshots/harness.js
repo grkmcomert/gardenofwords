@@ -20,6 +20,7 @@
     }));
     localStorage.setItem("kelimeler-bahcesi-retention-v1", JSON.stringify({
       streak: Number(p.get("streak") || 4), best: 6, lastPlayDay: dayKey(Date.now() - 864e5), lastGiftDay: dayKey(Date.now()), giftDay: 3,
+      perlGreetDay: p.get("greet") ? "" : dayKey(Date.now()), perlBravo: 1, reviewAsked: true, beds: n,
       petals: Number(p.get("petals") || 132), petalsEarned: 310, playDays: [],
       xp: Number(p.get("xp") || 0), xpVersion: p.get("xp") ? 1 : 0,
       pots: [{ seed: "tulip", plantedAt: Date.now() - 3e6, readyAt: Date.now() + 4e6 }, { seed: "daisy", plantedAt: Date.now() - 2e6, readyAt: Date.now() - 1 }, null, null]
@@ -60,6 +61,21 @@
         if (badge) badge.textContent = String(window.Meta.level().level);
       }
     }
+    if (view === "leaderboard") {
+      // Demo rows for the global XP board (the real one needs Firebase).
+      const me = sanitizeNickname(getNickname());
+      const rows = (p.get("rows") || "Mia:🌷:4820:14:21,Jonas:🦔:4365:13:9,ME:🌻:3910:12:6,Elif:🦋:3540:12:15,Noah:🍄:3105:11:4,Zeynep:🌸:2760:10:12,Emma:🐝:2410:9:3,Kerem:🌵:2075:9:7")
+        .split(",").map(r => r.split(":")).map(([name, avatar, xp, level, streak]) => ({
+          id: name, uid: name, name: name === "ME" ? me : name, avatar, xp: Number(xp), level: Number(level), streak: Number(streak), isYou: name === "ME"
+        }));
+      Leaderboard.getXpTop = async () => ({ remote: true, entries: rows, me: null });
+      openLeaderboardModal();
+    }
+    if (view === "themes") document.getElementById("homeThemesButton").click();
+    if (p.get("clean")) {
+      document.querySelectorAll(".levelup, .perl-cheer, .perl-peek").forEach(el => el.remove());
+      still.textContent += ".levelup,.perl-cheer,.perl-peek{display:none!important}";
+    }
     if (view === "quests") document.getElementById("tileQuests").click();
     if (view === "greenhouse") document.getElementById("tileGreenhouse").click();
     if (view === "streak") document.getElementById("tileStreak").click();
@@ -69,7 +85,7 @@
     if (view === "nudge") window.Meta.showPerlNudge();
     if (view === "streak0") document.getElementById("tileStreak").click();
     if (view === "nohint") openHintMoreModal();
-    if (shownScreenId === "homeScreen") { window.Meta.wakePerl(); fitHomeScreen(); }
+    if (shownScreenId === "homeScreen") { window.Meta.wakePerl(); if (p.get("greet")) window.Meta.onHome(); if (p.get("say")) document.getElementById("homePerl").click(); fitHomeScreen(); }
   } catch (e) {
     document.body.insertAdjacentHTML("beforeend", `<pre style="position:fixed;top:0;left:0;z-index:99;background:#fff;color:red;font-size:10px">${e.stack || e}</pre>`);
   }

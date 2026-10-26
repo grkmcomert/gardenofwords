@@ -64,6 +64,35 @@ service cloud.firestore {
       && (!('isPremium' in data) || data.isPremium is bool);
     }
 
+    function validXpEntry(uid) {
+      let data = request.resource.data;
+      return data.keys().hasOnly([
+        'uid', 'name', 'avatar', 'xp', 'level', 'streak', 'streakDay',
+        'premium', 'leaderboardVisible', 'updatedAt'
+      ])
+      && uid == request.auth.uid
+      && data.uid == request.auth.uid
+      && data.name is string
+      && data.name.size() >= 2
+      && data.name.size() <= 24
+      && data.avatar is string
+      && data.avatar.size() <= 8
+      && data.xp is int
+      && data.xp >= 0
+      && data.xp <= 10000000
+      && data.level is int
+      && data.level >= 1
+      && data.level <= 100000
+      && data.streak is int
+      && data.streak >= 0
+      && data.streak <= 100000
+      && data.streakDay is string
+      && data.streakDay.size() <= 10
+      && data.premium is bool
+      && data.leaderboardVisible is bool
+      && data.updatedAt == request.time;
+    }
+
     function identityChanged() {
       return request.resource.data.name != resource.data.name
         || request.resource.data.avatar != resource.data.avatar;
@@ -144,6 +173,13 @@ service cloud.firestore {
         && request.resource.data.get('manualPremium', false) == resource.data.get('manualPremium', false)
         && profileIdentityEditAllowed();
       allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+
+    // Global XP leaderboard: one row per Firebase account.
+    match /xp_leaderboard/{uid} {
+      allow read: if signedIn();
+      allow create, update: if signedIn() && validXpEntry(uid);
+      allow delete: if signedIn() && uid == request.auth.uid;
     }
 
     match /ad_debug_logs/{logId} {

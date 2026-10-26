@@ -101,12 +101,12 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
   // interstitial), not a standard rewarded ad. Loading it through RewardedAd
   // produces "Ad unit doesn't match format" on iOS.
   RewardedInterstitialAd? _rewardedInterstitialAd;
-  // The WebView starts on the moonlit default theme before its first JS theme
+  // The WebView starts on the Rose Cottage default theme before its first JS theme
   // message reaches Flutter. Keep the native banner frame on that same surface
   // from the very first frame, otherwise the ad gets a garden-coloured surround.
   static const _darkSurface = Color(0xFF0E1A15);
   Color _themeSurfaceColor = _darkSurface;
-  String _themeBackgroundAsset = 'assets/game/images/themes/moonlit.webp';
+  String _themeBackgroundAsset = 'assets/game/images/themes/rose-cottage.webp';
   bool _bannerVisible = false;
   bool _bannerLoading = false;
   bool _bannerRequested = false;
@@ -180,7 +180,7 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
     _controller = WebViewController.fromPlatformCreationParams(webViewParams)
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       // An opaque WebView avoids an extra transparent platform-view
-      // composition pass on Android. Match the moonlit default before the
+      // composition pass on Android. Match the Rose Cottage default before the
       // first theme message arrives from the page.
       ..setBackgroundColor(_darkSurface)
       ..addJavaScriptChannel(
@@ -1837,12 +1837,14 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
                     curve: Curves.easeOut,
                     child: Container(
                       alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: _darkSurface,
-                        image: DecorationImage(
-                          image: AssetImage(_themeBackgroundAsset),
-                          fit: BoxFit.cover,
-                          colorFilter: const ColorFilter.mode(Color(0x99060C09), BlendMode.darken),
+                      // Theme-neutral night garden: the player's own theme is not known
+                      // yet, so showing any theme photo here would flash the wrong one.
+                      decoration: const BoxDecoration(
+                        gradient: RadialGradient(
+                          center: Alignment(0, -0.2),
+                          radius: 1.1,
+                          colors: [Color(0xFF24402E), Color(0xFF12241B), Color(0xFF0B1612)],
+                          stops: [0, 0.55, 1],
                         ),
                       ),
                       child: Column(

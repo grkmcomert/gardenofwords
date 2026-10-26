@@ -382,8 +382,8 @@
       <p id="homeHeroCopy" class="sr-only"></p>
 
       <article id="heroJournalCard" class="chapter-card glass" aria-label="Garden Collection Journal">
-        <div id="homePerl" class="home-perl" role="button" tabindex="0" aria-label="Perl"><span class="home-perl-figure"></span><button id="homePerlBubble" class="perl-say" type="button"></button></div>
-        <span class="chapter-thumb" aria-hidden="true"><span id="chapterThumbEmoji">🌱</span></span>
+        <div id="homePerl" class="chapter-thumb perl-thumb home-perl" role="button" tabindex="0" aria-label="Perl"><span class="home-perl-figure"></span><span id="chapterThumbEmoji" class="perl-thumb-badge" aria-hidden="true">🌱</span></div>
+        <button id="homePerlBubble" class="perl-say home-perl-say" type="button"></button>
         <span class="chapter-card-body">
           <span id="journeyChapterKicker" class="chapter-pill">Chapter 1</span>
           <strong id="journeyChapterName" class="chapter-card-title">Seed Bed</strong>
@@ -543,7 +543,7 @@
         <p id="perlGreeting" class="perl-bubble">Hi! I am Perl.</p>
       </div>
       <h2 id="nicknameModalTitle">Name your garden</h2>
-      <p id="nicknameModalText">Pick a nickname and an avatar for your garden journal. Shown on every bed's leaderboard.</p>
+      <p id="nicknameModalText">Pick a nickname and an avatar for your garden journal. Shown on the leaderboard.</p>
       <input id="nicknameInput" class="pin-field nickname-field" type="text" maxlength="18" placeholder="e.g. Wildflower Wren" autocomplete="off" enterkeyhint="done" aria-label="Nickname" />
       <p id="avatarPickerLabel" class="avatar-picker-label">Choose an avatar</p>
       <div id="avatarPickerGrid" class="avatar-picker-grid" role="radiogroup" aria-label="Choose an avatar"></div>
@@ -557,7 +557,7 @@
   </div>
 
   <div id="leaderboardModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="leaderboardModalTitle" aria-hidden="true">
-    <div class="modal leaderboard-modal">
+    <div class="modal leaderboard-modal is-xp-board">
       <div class="celebration"><svg class="icon"><use href="#icon-trophy"></use></svg></div>
       <div class="leaderboard-nav">
         <button id="leaderboardPrev" class="soft-button" type="button" aria-label="Previous bed's leaderboard">←</button>
@@ -575,6 +575,7 @@
       <p id="leaderboardHint" class="onboarding-lock-note">Select a player to see their time, ID, and emoji.</p>
       <p id="leaderboardStatus" class="pin-status">Loading…</p>
       <ol id="leaderboardList" class="leaderboard-list" aria-label="Best times for this bed"></ol>
+      <div id="leaderboardMe" class="leaderboard-me" hidden></div>
       <div class="modal-actions">
         <button id="leaderboardCloseButton" class="primary-button" type="button">Close</button>
       </div>
@@ -700,8 +701,13 @@
       <h2 id="themesModalTitle">Themes</h2>
       <p id="themesModalSubtitle" class="theme-modal-subtitle">Give your garden a different mood.</p>
       <div id="themeChoiceGrid" class="theme-choice-grid" role="group" aria-label="Themes">
-        <button class="game-theme-card" type="button" data-game-theme="moonlit" aria-pressed="false">
+        <button class="game-theme-card" type="button" data-game-theme="rose" aria-pressed="false">
+          <span class="game-theme-art rose" aria-hidden="true"></span>
+          <span id="themeChoiceRose" class="game-theme-name">Rose Cottage</span>
+        </button>
+        <button class="game-theme-card" type="button" data-game-theme="moonlit" data-theme-premium="true" aria-pressed="false">
           <span class="game-theme-art moonlit" aria-hidden="true"></span>
+          <span class="theme-premium-badge" aria-hidden="true">Premium</span>
           <span id="themeChoiceMoonlit" class="game-theme-name">Moonlit</span>
         </button>
         <button class="game-theme-card" type="button" data-game-theme="garden" data-theme-premium="true" aria-pressed="false">
@@ -718,11 +724,6 @@
           <span class="game-theme-art autumn" aria-hidden="true"></span>
           <span class="theme-premium-badge" aria-hidden="true">Premium</span>
           <span id="themeChoiceAutumn" class="game-theme-name">Autumn Nook</span>
-        </button>
-        <button class="game-theme-card" type="button" data-game-theme="rose" data-theme-premium="true" aria-pressed="false">
-          <span class="game-theme-art rose" aria-hidden="true"></span>
-          <span class="theme-premium-badge" aria-hidden="true">Premium</span>
-          <span id="themeChoiceRose" class="game-theme-name">Rose Cottage</span>
         </button>
         <button class="game-theme-card" type="button" data-game-theme="forest" data-theme-premium="true" aria-pressed="false">
           <span class="game-theme-art forest" aria-hidden="true"></span>
@@ -962,7 +963,7 @@
     const MAX_BOARD_SIZE = 13;
     const INITIAL_HINTS = 1;
     const HINT_REWARD_INTERVAL = 6; // Premium: +1 hint every 6 new beds
-    const FREE_HINT_REWARD_INTERVAL = 10; // free players earn it more slowly
+    const FREE_HINT_REWARD_INTERVAL = 15; // free players earn it much more slowly (Premium incentive)
     const SUPPORTED_LANGUAGES = ["en", "de", "tr"];
     const LANGUAGE_LOCALES = { en: "en-US", de: "de-DE", tr: "tr-TR" };
 
@@ -986,7 +987,7 @@
 
     let currentLanguage = detectLanguage();
     const GAME_THEME_KEY = "kelimeler-bahcesi-game-theme-v1";
-    const DEFAULT_GAME_THEME = "moonlit";
+    const DEFAULT_GAME_THEME = "rose"; // Rose Cottage is the free default theme
     const GAME_THEMES = ["moonlit", "garden", "autumn", "seaside", "rose", "forest", "lavender", "winter", "dawn-garden", "rainy-greenhouse", "meadowlight", "orchard-walk", "tropical-grove", "sunset-terrace", "desert-bloom", "misty-lake"];
     let currentGameTheme = DEFAULT_GAME_THEME;
     let pendingPremiumGameTheme = null;
@@ -1030,16 +1031,32 @@
       if (changed) window.dispatchEvent(new CustomEvent("revenueCatCustomerInfoChanged"));
     }
 
+    const PREMIUM_CACHE_KEY = "kelimeler-bahcesi-premium-cache-v1";
+    function hasCachedPremium() {
+      try { return localStorage.getItem(PREMIUM_CACHE_KEY) === "1"; } catch (_) { return false; }
+    }
+    function rememberPremiumState() {
+      if (!isRevenueCatStateResolved() && !isPremiumOverrideEnabled()) return;
+      try { localStorage.setItem(PREMIUM_CACHE_KEY, isPremiumUser() ? "1" : "0"); } catch (_) {}
+    }
+    // May a Premium theme show right now? Once RevenueCat has answered (or the
+    // PIN override is on) this is the real entitlement; before that, the
+    // state remembered from the last session.
+    function themePremiumAllowed() {
+      if (isRevenueCatStateResolved() || isPremiumOverrideEnabled()) return isPremiumUser();
+      return isPremiumUser() || hasCachedPremium();
+    }
+
     function loadGameTheme() {
       try {
         const saved = localStorage.getItem(GAME_THEME_KEY);
         if (!GAME_THEMES.includes(saved)) return DEFAULT_GAME_THEME;
         pendingPremiumGameTheme = saved === DEFAULT_GAME_THEME ? null : saved;
-        // Do not overwrite a saved Premium theme before RevenueCat has
-        // answered. Start safely on the default theme and restore the saved
-        // choice when the entitlement state is known.
-        if (!isRevenueCatStateResolved() && !isPremiumOverrideEnabled()) return DEFAULT_GAME_THEME;
-        return saved !== DEFAULT_GAME_THEME && !isPremiumUser() ? DEFAULT_GAME_THEME : saved;
+        // Before RevenueCat answers, trust the Premium state remembered from the
+        // last session, so a Premium player's theme shows from the first frame
+        // instead of flashing the default theme. syncGameThemeEntitlement()
+        // switches back if Premium has ended.
+        return saved !== DEFAULT_GAME_THEME && !themePremiumAllowed() ? DEFAULT_GAME_THEME : saved;
       } catch (_) {
         return DEFAULT_GAME_THEME;
       }
@@ -1050,8 +1067,7 @@
       const persist = options.persist !== false;
       const clearPending = options.clearPending !== false;
       const hasLocalPremium = isPremiumOverrideEnabled();
-      if (nextTheme !== DEFAULT_GAME_THEME && !isRevenueCatStateResolved() && !hasLocalPremium) return false;
-      if (nextTheme !== DEFAULT_GAME_THEME && !isPremiumUser()) return false;
+      if (nextTheme !== DEFAULT_GAME_THEME && !themePremiumAllowed()) return false;
       currentGameTheme = nextTheme;
       if (nextTheme === DEFAULT_GAME_THEME && clearPending) pendingPremiumGameTheme = null;
       document.body.dataset.gameTheme = nextTheme;
@@ -1071,7 +1087,10 @@
     }
 
     function syncGameThemeEntitlement() {
+      rememberPremiumState();
       if (!isRevenueCatStateResolved() && !isPremiumOverrideEnabled()) {
+        // Last session was Premium: keep the saved theme until RevenueCat answers.
+        if (hasCachedPremium()) return;
         applyGameTheme(DEFAULT_GAME_THEME, { persist: false, clearPending: false });
         return;
       }
@@ -1107,7 +1126,7 @@
         completedBed: "You've completed the bed.", leaderboard: "Leaderboard", wholeGardenBloom: "The whole garden's in bloom!", finalCompletion: "You tended all {count} beds in <strong>{time}</strong>. Replay any bed whenever you like.",
         bedCompletion: "Bed {id} is fully bloomed. Time: <strong>{time}</strong>", newBest: "New best time!", hintEarned: "+1 Hint earned!", hintRewardTitle: "A new hint bloomed!", hintRewardMessage: "Garden milestone · +1 hint",
         enterPin: "Enter PIN", pinDescription: "Type the 4-digit code to toggle Premium test mode and remove ads.", pinCode: "PIN code", cancel: "Cancel", confirm: "Confirm",
-        nameGarden: "Name your garden", nicknameDescription: "Pick a nickname and an avatar for your garden journal. Shown on every bed's leaderboard.",
+        nameGarden: "Name your garden", nicknameDescription: "Pick a nickname and an avatar for your garden journal. Shown on the leaderboard.",
         nicknamePlaceholder: "e.g. Wildflower Wren", nickname: "Nickname", avatar: "Avatar", chooseAvatar: "Choose an avatar", nicknameLock: "You can update your name and avatar from the edit button once every 24 hours.", plantName: "Plant my name", editProfile: "Edit profile", editProfileDescription: "Update your garden name and avatar. You can edit once every 24 hours.", profileEditCooldown: "You can edit again in {time}.", profileSaved: "Profile updated.", profileSaveFailed: "Profile could not be updated.", profileEditOffline: "Connect to the internet to edit your profile.", saveProfile: "Save changes",
         previousLeaderboard: "Previous bed's leaderboard", nextLeaderboard: "Next bed's leaderboard", jumpToBed: "Jump to bed", bedNumber: "Bed number", go: "Go", loading: "Loading...", noBlooms: "No blooms yet. Be the first to finish this bed!", close: "Close", bestTimes: "Best times for this bed", leaderboardHint: "Names and completion times for this bed.", playerDetails: "Player details", level: "Level", username: "Username", entryId: "ID", emoji: "Emoji", viewLeaderboardEntry: "View {name}'s details", usersHint: "Select a username to view the full profile.", userDetails: "User details", device: "Device", country: "Country", deviceLocale: "device locale", appLanguage: "App language", platform: "Platform", completedLevels: "Completed levels", unlockedLevels: "Unlocked levels", hints: "Hints", lastSeen: "Last seen", createdAt: "Created", changeUsername: "Change username", saveName: "Save name", nameSaved: "Name updated.", nameSaveFailed: "Name could not be updated.", editOnlyOwn: "You can change your own username here.", noUsers: "No users yet.", viewUser: "View {name}'s profile",
         settingsIntro: "Tune how the garden looks and sounds on this device. Your choices are remembered.", language: "Language", languageDescription: "Choose the language used throughout the game.", soundEffects: "Sound Effects", soundDescription: "Chimes for found words and finished beds.", leaderboardOptOut: "I don't want to appear on leaderboards", done: "Done",
@@ -1133,7 +1152,7 @@
         completedBed: "Du hast das Beet abgeschlossen.", leaderboard: "Bestenliste", wholeGardenBloom: "Der ganze Garten blüht!", finalCompletion: "Du hast alle {count} Beete in <strong>{time}</strong> gepflegt. Du kannst jedes Beet jederzeit erneut spielen.",
         bedCompletion: "Beet {id} ist vollständig erblüht. Zeit: <strong>{time}</strong>", newBest: "Neue Bestzeit!", hintEarned: "+1 Tipp erhalten!", hintRewardTitle: "Ein neuer Tipp blüht!", hintRewardMessage: "Garten-Meilenstein · +1 Tipp",
         enterPin: "PIN eingeben", pinDescription: "Gib den vierstelligen Code ein, um den Premium-Testmodus und werbefreies Spielen zu aktivieren.", pinCode: "PIN-Code", cancel: "Abbrechen", confirm: "Bestätigen",
-        nameGarden: "Gib deinem Garten einen Namen", nicknameDescription: "Wähle einen Namen und einen Avatar für dein Gartenjournal. Beides erscheint in der Bestenliste jedes Beets.",
+        nameGarden: "Gib deinem Garten einen Namen", nicknameDescription: "Wähle einen Namen und einen Avatar für dein Gartenjournal. Beides erscheint in der Bestenliste.",
         nicknamePlaceholder: "z. B. Wildblumenfink", nickname: "Spitzname", avatar: "Avatar", chooseAvatar: "Avatar auswählen", nicknameLock: "Du kannst Name und Avatar über die Bearbeiten-Schaltfläche alle 24 Stunden ändern.", plantName: "Namen pflanzen", editProfile: "Profil bearbeiten", editProfileDescription: "Ändere deinen Gartennamen und Avatar. Bearbeiten ist alle 24 Stunden möglich.", profileEditCooldown: "Du kannst in {time} wieder bearbeiten.", profileSaved: "Profil aktualisiert.", profileSaveFailed: "Profil konnte nicht aktualisiert werden.", profileEditOffline: "Verbinde dich mit dem Internet, um dein Profil zu bearbeiten.", saveProfile: "Änderungen speichern",
         previousLeaderboard: "Bestenliste des vorherigen Beets", nextLeaderboard: "Bestenliste des nächsten Beets", jumpToBed: "Zu einem Beet springen", bedNumber: "Beetnummer", go: "Los", loading: "Wird geladen...", noBlooms: "Noch keine Blüten. Schließe dieses Beet als Erste oder Erster ab!", close: "Schließen", bestTimes: "Beste Zeiten für dieses Beet", leaderboardHint: "Wähle einen Spieler aus, um Zeit, ID und Emoji zu sehen.", playerDetails: "Spielerdetails", level: "Beet", username: "Spitzname", entryId: "ID", emoji: "Emoji", viewLeaderboardEntry: "Details von {name} ansehen", usersHint: "Wähle einen Spitznamen aus, um das vollständige Profil zu sehen.", userDetails: "Spielerdetails", device: "Gerät", country: "Land", deviceLocale: "Gerätesprache", appLanguage: "App-Sprache", platform: "Plattform", completedLevels: "Abgeschlossene Beete", unlockedLevels: "Freigeschaltete Beete", hints: "Tipps", lastSeen: "Zuletzt gesehen", createdAt: "Erstellt", changeUsername: "Spitznamen ändern", saveName: "Namen speichern", nameSaved: "Name aktualisiert.", nameSaveFailed: "Name konnte nicht aktualisiert werden.", editOnlyOwn: "Du kannst hier deinen eigenen Spitznamen ändern.", noUsers: "Noch keine Spieler.", viewUser: "Profil von {name} ansehen",
         settingsIntro: "Lege fest, wie der Garten auf diesem Gerät aussieht und klingt. Deine Auswahl wird gespeichert.", language: "Sprache", languageDescription: "Wähle die Sprache für das gesamte Spiel.", soundEffects: "Soundeffekte", soundDescription: "Klänge für gefundene Wörter und abgeschlossene Beete.", leaderboardOptOut: "Ich möchte nicht in Bestenlisten erscheinen", done: "Fertig",
@@ -1158,7 +1177,7 @@
         completedBed: "Bu bölümü tamamladın.", leaderboard: "Skor tablosu", wholeGardenBloom: "Bütün bahçe çiçek açtı!", finalCompletion: "Tüm {count} bölümü <strong>{time}</strong> sürede tamamladın. Dilediğin bölümü yeniden oynayabilirsin.",
         bedCompletion: "Bölüm {id} tamamen çiçek açtı. Süre: <strong>{time}</strong>", newBest: "Yeni en iyi süre!", hintEarned: "+1 ipucu kazandın!", hintRewardTitle: "Yeni bir ipucu filizlendi!", hintRewardMessage: "Bahçe kilometre taşı · +1 ipucu",
         enterPin: "PIN gir", pinDescription: "Premium test modunu ve reklamsız oynamayı açmak için 4 haneli kodu yaz.", pinCode: "PIN kodu", cancel: "İptal", confirm: "Onayla",
-        nameGarden: "Bahçene bir isim ver", nicknameDescription: "Bahçe günlüğün için bir kullanıcı adı ve avatar seç. İkisi de her bölümün skor tablosunda görünür.",
+        nameGarden: "Bahçene bir isim ver", nicknameDescription: "Bahçe günlüğün için bir kullanıcı adı ve avatar seç. İkisi de skor tablosunda görünür.",
         nicknamePlaceholder: "ör. Çiçekçi Arı", nickname: "Kullanıcı adı", avatar: "Avatar", chooseAvatar: "Avatar seç", nicknameLock: "İsim ve avatarını düzenle butonundan 24 saatte bir değiştirebilirsin.", plantName: "Adımı dik", editProfile: "Profili düzenle", editProfileDescription: "Bahçe ismini ve avatarını güncelle. 24 saatte bir düzenleyebilirsin.", profileEditCooldown: "Tekrar düzenleyebilmen için {time} kaldı.", profileSaved: "Profil güncellendi.", profileSaveFailed: "Profil güncellenemedi.", profileEditOffline: "Profilini düzenlemek için internete bağlan.", saveProfile: "Değişiklikleri kaydet",
         previousLeaderboard: "Önceki bölümün skor tablosu", nextLeaderboard: "Sonraki bölümün skor tablosu", jumpToBed: "Bölüme git", bedNumber: "Bölüm numarası", go: "Git", loading: "Yükleniyor...", noBlooms: "Henüz çiçeklenen yok. Bu bölümü ilk sen tamamla!", close: "Kapat", bestTimes: "Bu bölümün en iyi süreleri", leaderboardHint: "Bu bölümdeki isimler ve tamamlanma süreleri.", playerDetails: "Kullanıcı detayları", level: "Bölüm", username: "Kullanıcı adı", entryId: "ID", emoji: "Emoji", viewLeaderboardEntry: "{name} detaylarını gör", usersHint: "Tam profili görmek için bir kullanıcı adına dokun.", userDetails: "Kullanıcı bilgileri", device: "Cihaz", country: "Ülke", deviceLocale: "cihaz dili", appLanguage: "Uygulama dili", platform: "Platform", completedLevels: "Tamamlanan bölümler", unlockedLevels: "Açılan bölümler", hints: "İpuçları", lastSeen: "Son görülme", createdAt: "Oluşturulma", changeUsername: "Kullanıcı adını değiştir", saveName: "İsmi kaydet", nameSaved: "İsim güncellendi.", nameSaveFailed: "İsim güncellenemedi.", editOnlyOwn: "Buradan yalnızca kendi kullanıcı adını değiştirebilirsin.", noUsers: "Henüz kullanıcı yok.", viewUser: "{name} profilini gör",
         settingsIntro: "Bu cihazda bahçenin görünümünü ve seslerini ayarla. Seçimin hatırlanır.", language: "Dil", languageDescription: "Oyunun tamamında kullanılacak dili seç.", soundEffects: "Ses efektleri", soundDescription: "Bulunan kelimeler ve tamamlanan bölümler için sesler.", leaderboardOptOut: "Skor tablolarında görünmek istemiyorum", done: "Bitti",
@@ -1201,7 +1220,7 @@
       completedBed: "Du hast das Beet abgeschlossen.", leaderboard: "Bestenliste", wholeGardenBloom: "Der ganze Garten steht in Blüte!", finalCompletion: "Du hast alle {count} Beete in <strong>{time}</strong> gepflegt. Spiele jederzeit ein Beet erneut.",
       bedCompletion: "Beet {id} steht vollständig in Blüte. Zeit: <strong>{time}</strong>", newBest: "Neue Bestzeit!", hintEarned: "+1 Tipp erhalten!", hintRewardTitle: "Ein neuer Tipp ist verfügbar!", hintRewardMessage: "Garten-Meilenstein · +1 Tipp",
       enterPin: "PIN eingeben", pinDescription: "Gib den vierstelligen Code ein, um den Premium-Testmodus zu aktivieren und Werbung zu entfernen.", pinCode: "PIN-Code", cancel: "Abbrechen", confirm: "Bestätigen",
-      nameGarden: "Deinen Garten benennen", nicknameDescription: "Wähle einen Spitznamen und einen Avatar für dein Gartenjournal. Beides wird in der Bestenliste jedes Beets angezeigt.",
+      nameGarden: "Deinen Garten benennen", nicknameDescription: "Wähle einen Spitznamen und einen Avatar für dein Gartenjournal. Beides wird in der Bestenliste angezeigt.",
       nicknamePlaceholder: "z. B. Wildblumenfink", nickname: "Spitzname", avatar: "Avatar", chooseAvatar: "Avatar auswählen", nicknameLock: "Du kannst deinen Namen und Avatar über die Bearbeiten-Schaltfläche einmal alle 24 Stunden aktualisieren.", plantName: "Namen pflanzen", editProfile: "Profil bearbeiten", editProfileDescription: "Aktualisiere deinen Gartennamen und Avatar. Du kannst sie einmal alle 24 Stunden ändern.", profileEditCooldown: "Du kannst dein Profil in {time} wieder bearbeiten.", profileSaved: "Profil aktualisiert.", profileSaveFailed: "Profil konnte nicht aktualisiert werden.", profileEditOffline: "Verbinde dich mit dem Internet, um dein Profil zu bearbeiten.", saveProfile: "Änderungen speichern",
       previousLeaderboard: "Bestenliste des vorherigen Beets", nextLeaderboard: "Bestenliste des nächsten Beets", jumpToBed: "Zu einem Beet springen", bedNumber: "Beetnummer", go: "Los", loading: "Wird geladen …", noBlooms: "Noch keine Blüten. Sei die erste Person, die dieses Beet abschließt!", close: "Schließen", bestTimes: "Beste Zeiten für dieses Beet", leaderboardHint: "Namen und Abschlusszeiten für dieses Beet.", playerDetails: "Spielerdetails", level: "Beet", username: "Spitzname", entryId: "ID", emoji: "Emoji", viewLeaderboardEntry: "Details von {name} anzeigen", usersHint: "Wähle einen Spitznamen aus, um das vollständige Profil anzuzeigen.", userDetails: "Spielerdetails", device: "Gerät", country: "Land", deviceLocale: "Geräteeinstellung", appLanguage: "App-Sprache", platform: "Plattform", completedLevels: "Abgeschlossene Beete", unlockedLevels: "Freigeschaltete Beete", hints: "Tipps", lastSeen: "Zuletzt gesehen", createdAt: "Erstellt am", changeUsername: "Spitznamen ändern", saveName: "Namen speichern", nameSaved: "Name aktualisiert.", nameSaveFailed: "Name konnte nicht aktualisiert werden.", editOnlyOwn: "Hier kannst du nur deinen eigenen Spitznamen ändern.", noUsers: "Noch keine Spieler.", viewUser: "Profil von {name} anzeigen",
       settingsIntro: "Lege fest, wie der Garten auf diesem Gerät aussieht und klingt. Deine Auswahl wird gespeichert.", language: "Sprache", languageDescription: "Wähle die Sprache für das gesamte Spiel.", soundEffects: "Soundeffekte", soundDescription: "Klänge für gefundene Wörter und abgeschlossene Beete.", done: "Fertig",
@@ -1228,7 +1247,7 @@
       completedBed: "Bu bölümü tamamladın.", leaderboard: "Skor tablosu", wholeGardenBloom: "Bütün bahçe çiçek açtı!", finalCompletion: "Tüm {count} bölümü <strong>{time}</strong> sürede tamamladın. İstediğin bölümü dilediğin zaman yeniden oynayabilirsin.",
       bedCompletion: "{id}. bölüm tamamen tamamlandı. Süre: <strong>{time}</strong>", newBest: "Yeni en iyi süre!", hintEarned: "+1 ipucu kazandın!", hintRewardTitle: "Yeni bir ipucu hazır!", hintRewardMessage: "Bahçe kilometre taşı · +1 ipucu",
       enterPin: "PIN'i gir", pinDescription: "Premium test modunu etkinleştirmek ve reklamları kaldırmak için 4 haneli kodu gir.", pinCode: "PIN kodu", cancel: "İptal", confirm: "Onayla",
-      nameGarden: "Bahçene bir isim ver", nicknameDescription: "Bahçe günlüğün için bir kullanıcı adı ve avatar seç. İkisi de her bölümün skor tablosunda gösterilir.",
+      nameGarden: "Bahçene bir isim ver", nicknameDescription: "Bahçe günlüğün için bir kullanıcı adı ve avatar seç. İkisi de skor tablosunda gösterilir.",
       nicknamePlaceholder: "örn. Çiçekçi Arı", nickname: "Kullanıcı adı", avatar: "Avatar", chooseAvatar: "Avatar seç", nicknameLock: "İsim ve avatarını düzenleme düğmesinden 24 saatte bir güncelleyebilirsin.", plantName: "Adımı bahçeye ekle", editProfile: "Profili düzenle", editProfileDescription: "Bahçe adını ve avatarını güncelle. 24 saatte bir düzenleyebilirsin.", profileEditCooldown: "Profilini {time} sonra yeniden düzenleyebilirsin.", profileSaved: "Profil güncellendi.", profileSaveFailed: "Profil güncellenemedi.", profileEditOffline: "Profilini düzenlemek için internete bağlan.", saveProfile: "Değişiklikleri kaydet",
       previousLeaderboard: "Önceki bölümün skor tablosu", nextLeaderboard: "Sonraki bölümün skor tablosu", jumpToBed: "Bölüme git", bedNumber: "Bölüm numarası", go: "Git", loading: "Yükleniyor …", noBlooms: "Henüz tamamlayan yok. Bu bölümü ilk tamamlayan sen ol!", close: "Kapat", bestTimes: "Bu bölümün en iyi süreleri", leaderboardHint: "Bu bölümdeki isimler ve tamamlanma süreleri.", playerDetails: "Oyuncu detayları", level: "Bölüm", username: "Kullanıcı adı", entryId: "ID", emoji: "Emoji", viewLeaderboardEntry: "{name} detaylarını gör", usersHint: "Tam profili görmek için bir kullanıcı adına dokun.", userDetails: "Kullanıcı bilgileri", device: "Cihaz", country: "Ülke", deviceLocale: "Cihaz dili", appLanguage: "Uygulama dili", platform: "Platform", completedLevels: "Tamamlanan bölümler", unlockedLevels: "Açılan bölümler", hints: "İpuçları", lastSeen: "Son görülme", createdAt: "Oluşturulma tarihi", changeUsername: "Kullanıcı adını değiştir", saveName: "İsmi kaydet", nameSaved: "İsim güncellendi.", nameSaveFailed: "İsim güncellenemedi.", editOnlyOwn: "Burada yalnızca kendi kullanıcı adını değiştirebilirsin.", noUsers: "Henüz oyuncu yok.", viewUser: "{name} profilini gör",
       settingsIntro: "Bu cihazda bahçenin görünümünü ve seslerini ayarla. Seçimlerin hatırlanır.", language: "Dil", languageDescription: "Oyunda kullanılacak dili seç.", soundEffects: "Ses efektleri", soundDescription: "Bulunan kelimeler ve tamamlanan bölümler için sesler.", done: "Bitti",
@@ -1688,6 +1707,22 @@
       "music": "Musik",
       "musicDescription": "Lass dich von ruhiger Musik durch den Garten begleiten.",
       "welcome": "Willkommen"
+    });
+
+    Object.assign(TRANSLATIONS.en, {
+      xpBoardTitle: "Leaderboard", xpBoardSubtitle: "Ranked by XP", xpBoardHint: "Gardeners ranked by total XP. 🔥 shows their daily streak.",
+      xpBoardYourRank: "Your rank", xpBoardEmpty: "No gardeners yet. Be the first!", xpStreakLabel: "{n}-day streak",
+      xpBoardLevel: "Lv {n}"
+    });
+    Object.assign(TRANSLATIONS.de, {
+      xpBoardTitle: "Bestenliste", xpBoardSubtitle: "Nach EP sortiert", xpBoardHint: "Gärtner nach gesamten EP sortiert. 🔥 zeigt ihre Tagesserie.",
+      xpBoardYourRank: "Dein Rang", xpBoardEmpty: "Noch keine Gärtner. Sei der Erste!", xpStreakLabel: "{n} Tage in Folge",
+      xpBoardLevel: "Lv {n}"
+    });
+    Object.assign(TRANSLATIONS.tr, {
+      xpBoardTitle: "Skor Tablosu", xpBoardSubtitle: "XP sıralaması", xpBoardHint: "Bahçıvanlar toplam XP'ye göre sıralanır. 🔥 günlük seriyi gösterir.",
+      xpBoardYourRank: "Senin sıran", xpBoardEmpty: "Henüz kimse yok. İlk sen ol!", xpStreakLabel: "{n} günlük seri",
+      xpBoardLevel: "Sv {n}"
     });
 
     Object.assign(TRANSLATIONS.en, {
@@ -6136,6 +6171,10 @@
           client.db.collectionGroup("entries").where("uid", "==", client.user.uid).get(),
         ]);
         snapshots.flatMap(snapshot => snapshot.docs).forEach(doc => refs.set(doc.ref.path, doc.ref));
+        // Separate from the batch: if the XP rules are not deployed yet, a
+        // rejected delete here must not abort the rest of the cleanup.
+        await client.db.collection("xp_leaderboard").doc(client.user.uid).delete()
+          .catch(error => console.warn("XP leaderboard row cleanup skipped:", error));
         const documents = [...refs.values()];
         for (let start = 0; start < documents.length; start += 450) {
           const batch = client.db.batch();
@@ -6725,6 +6764,7 @@
       }
 
       async function syncLeaderboardVisibility() {
+        try { queueXpSync(); } catch (_) {}
         try {
           return await withLeaderboardRequestTimeout(async () => {
             const client = await getRemoteClient();
@@ -7502,6 +7542,7 @@
         setAvatar(cleanAvatar);
         rememberFormerNickname(oldName);
         renameLocalScores(oldName, cleanName, cleanAvatar);
+        queueXpSync();
         // The profile itself is now saved and the local leaderboard is
         // updated. Remote score cleanup must never hold the save spinner;
         // it is bounded and the remote mapper shows the new local identity
@@ -7517,6 +7558,149 @@
         return updateCurrentUserProfile(rawName, getAvatar());
       }
 
+      /* ---------- XP leaderboard ----------
+         One global ranking by gardener XP (replaces the per-bed time boards
+         in the UI). One document per Firebase account:
+           xp_leaderboard/{uid}
+         XP and streak come from meta.js (window.Meta.leaderboardSnapshot).
+         Writes are debounced and skipped when nothing changed. */
+      const XP_COLLECTION = "xp_leaderboard";
+      const XP_SYNC_DEBOUNCE_MS = 1500;
+      let xpSyncTimer = null;
+      let lastXpPayloadKey = "";
+
+      function localXpSnapshot() {
+        try {
+          const snap = window.Meta?.leaderboardSnapshot?.();
+          if (!snap) return null;
+          return {
+            xp: Math.max(0, Math.min(10000000, Math.floor(Number(snap.xp) || 0))),
+            level: Math.max(1, Math.min(100000, Math.floor(Number(snap.level) || 1))),
+            streak: Math.max(0, Math.min(100000, Math.floor(Number(snap.streak) || 0))),
+            streakDay: typeof snap.streakDay === "string" ? snap.streakDay.slice(0, 10) : "",
+            premium: Boolean(snap.premium)
+          };
+        } catch (_) { return null; }
+      }
+
+      function todayKey() {
+        return new Intl.DateTimeFormat("en-CA").format(new Date());
+      }
+
+      // A stored streak is only "live" if the player played yesterday or today
+      // (Premium forgives one missed day), same rule as meta.js liveStreak().
+      function liveStreakFrom(data) {
+        const streak = Math.max(0, Math.floor(Number(data?.streak) || 0));
+        const day = String(data?.streakDay || "");
+        if (!streak || !/^\d{4}-\d{2}-\d{2}$/.test(day)) return 0;
+        const [ay, am, ad] = day.split("-").map(Number);
+        const [by, bm, bd] = todayKey().split("-").map(Number);
+        const gap = Math.round((Date.UTC(by, bm - 1, bd) - Date.UTC(ay, am - 1, ad)) / 86400000);
+        if (gap <= 1) return streak;
+        if (gap === 2 && data?.premium === true) return streak;
+        return 0;
+      }
+
+      async function syncXpEntryNow() {
+        const snap = localXpSnapshot();
+        const name = sanitizeNickname(getNickname());
+        if (!snap || name.length < 2) return false;
+        const client = await getRemoteClient();
+        if (!client) return false;
+        const avatar = AVATARS.includes(getAvatar()) ? getAvatar() : DEFAULT_AVATAR;
+        const visible = !Boolean(progress.leaderboardOptOut);
+        const key = JSON.stringify([client.user.uid, name, avatar, visible, snap.xp, snap.level, snap.streak, snap.streakDay, snap.premium]);
+        if (key === lastXpPayloadKey) return true;
+        await withLeaderboardRequestTimeout(() => client.db.collection(XP_COLLECTION).doc(client.user.uid).set({
+          uid: client.user.uid,
+          name,
+          avatar,
+          xp: snap.xp,
+          level: snap.level,
+          streak: snap.streak,
+          streakDay: snap.streakDay,
+          premium: snap.premium,
+          leaderboardVisible: visible,
+          updatedAt: sdkFieldValue()
+        }));
+        lastXpPayloadKey = key;
+        return true;
+      }
+
+      function syncXpEntry() {
+        return syncXpEntryNow().catch(error => {
+          console.warn("XP leaderboard sync failed:", error);
+          return false;
+        });
+      }
+
+      function queueXpSync() {
+        window.clearTimeout(xpSyncTimer);
+        xpSyncTimer = window.setTimeout(() => { void syncXpEntry(); }, XP_SYNC_DEBOUNCE_MS);
+      }
+      window.__gowXpChanged = queueXpSync;
+
+      function ownXpEntry(uid) {
+        const snap = localXpSnapshot();
+        const name = sanitizeNickname(getNickname());
+        if (!snap || name.length < 2) return null;
+        return {
+          id: uid || "me",
+          uid: uid || "me",
+          name,
+          avatar: AVATARS.includes(getAvatar()) ? getAvatar() : DEFAULT_AVATAR,
+          xp: snap.xp,
+          level: snap.level,
+          streak: liveStreakFrom(snap),
+          isYou: true
+        };
+      }
+
+      // Returns { remote, entries, me } where `me` is the player's own row
+      // (with rank when they are inside the fetched top list).
+      async function getXpTop(limit = 100) {
+        let client = null;
+        try { client = await getRemoteClient(); } catch (_) { client = null; }
+        const uid = client?.user?.uid || null;
+        const myName = sanitizeNickname(getNickname());
+        if (!client) {
+          const me = ownXpEntry(uid);
+          return { remote: false, entries: me ? [me] : [], me: me ? { ...me, rank: null } : null };
+        }
+        await syncXpEntry();
+        const snapshot = await withLeaderboardRequestTimeout(
+          () => client.db.collection(XP_COLLECTION).orderBy("xp", "desc").limit(limit).get()
+        );
+        const entries = [];
+        snapshot.docs.forEach(doc => {
+          const data = doc.data() || {};
+          const isYou = String(data.uid || doc.id) === String(uid);
+          if (isYou ? Boolean(progress.leaderboardOptOut) : data.leaderboardVisible === false) return;
+          const name = isYou ? (myName || sanitizeNickname(data.name)) : sanitizeNickname(data.name);
+          if (name.length < 2) return;
+          entries.push({
+            id: String(data.uid || doc.id),
+            uid: String(data.uid || doc.id),
+            name,
+            avatar: isYou && AVATARS.includes(getAvatar()) ? getAvatar() : (AVATARS.includes(data.avatar) ? data.avatar : DEFAULT_AVATAR),
+            xp: Math.max(0, Math.floor(Number(data.xp) || 0)),
+            level: Math.max(1, Math.floor(Number(data.level) || 1)),
+            streak: liveStreakFrom(data),
+            isYou
+          });
+        });
+        // Our own row always shows fresh local numbers.
+        const local = ownXpEntry(uid);
+        const mineIndex = entries.findIndex(entry => entry.isYou);
+        if (mineIndex >= 0 && local) entries[mineIndex] = { ...entries[mineIndex], ...local };
+        entries.sort((a, b) => b.xp - a.xp);
+        const rankIndex = entries.findIndex(entry => entry.isYou);
+        const me = local && !progress.leaderboardOptOut
+          ? { ...local, rank: rankIndex >= 0 ? rankIndex + 1 : null }
+          : null;
+        return { remote: true, entries, me };
+      }
+
       async function getCurrentUserId() {
         try {
           const client = await withLeaderboardRequestTimeout(() => getRemoteClient(), 3000);
@@ -7527,7 +7711,7 @@
         }
       }
 
-      return { submitScore, getTop, getPage, getLocalTop: localTop, getLocalRank, syncCurrentUser, restoreHintBalance, syncHistoricalScores, syncLeaderboardVisibility, getUsers, getCurrentUserId, getProfileEditStatus, updateCurrentUserProfile, updateCurrentUserName, isNameAvailable, warmRemoteClient, restoreRemoteState, isOnline: () => remoteOnline };
+      return { submitScore, getTop, getPage, getLocalTop: localTop, getLocalRank, syncCurrentUser, restoreHintBalance, syncHistoricalScores, syncLeaderboardVisibility, getUsers, getCurrentUserId, getProfileEditStatus, updateCurrentUserProfile, updateCurrentUserName, isNameAvailable, warmRemoteClient, restoreRemoteState, getXpTop, syncXpEntry, getLocalXpEntry: () => ownXpEntry(null), isOnline: () => remoteOnline };
     })();
 
     function syncHintBalance() {
@@ -8011,13 +8195,24 @@
       // both the header and the word list.
       gameScreenElement.style.height = "auto";
       gameScreenElement.style.transform = "none";
+      board?.style.setProperty("--board-stretch", "1");
       const appRect = appElement.getBoundingClientRect();
       const appStyles = getComputedStyle(appElement);
       const availableHeight = Math.max(1,
         appRect.height - parseFloat(appStyles.paddingTop || 0) - parseFloat(appStyles.paddingBottom || 0));
       const availableWidth = Math.max(1,
         appRect.width - parseFloat(appStyles.paddingLeft || 0) - parseFloat(appStyles.paddingRight || 0));
-      const naturalHeight = Math.max(gameScreenElement.scrollHeight, gameScreenElement.offsetHeight, 1);
+      let naturalHeight = Math.max(gameScreenElement.scrollHeight, gameScreenElement.offsetHeight, 1);
+      // Spend any spare vertical room on a taller board: rows get taller
+      // (bigger letters and touch targets) instead of leaving empty space.
+      // Capped so cells never become more than 1.5x as tall as they are wide.
+      const boardWidth = board?.getBoundingClientRect?.().width || 0;
+      const spareHeight = availableHeight - naturalHeight - 12;
+      if (board && boardWidth > 0 && spareHeight > 0) {
+        const stretch = Math.min(1.5, 1 + spareHeight / boardWidth);
+        board.style.setProperty("--board-stretch", stretch.toFixed(3));
+        naturalHeight = Math.max(gameScreenElement.scrollHeight, gameScreenElement.offsetHeight, 1);
+      }
       const naturalWidth = Math.max(gameScreenElement.scrollWidth, gameScreenElement.offsetWidth, 1);
       const scale = Math.min(1, availableHeight / naturalHeight, availableWidth / naturalWidth);
       // The transformed surface itself must still cover the full viewport;
@@ -8687,7 +8882,7 @@
       const ay = a.offsetTop + a.offsetHeight / 2;
       const bx = b.offsetLeft + b.offsetWidth / 2;
       const by = b.offsetTop + b.offsetHeight / 2;
-      const thickness = a.offsetWidth * .84;
+      const thickness = Math.min(a.offsetWidth, a.offsetHeight) * .84;
       element.style.left = `${(ax + bx) / 2}px`;
       element.style.top = `${(ay + by) / 2}px`;
       element.style.width = `${Math.hypot(bx - ax, by - ay) + thickness}px`;
@@ -9483,7 +9678,7 @@
       let earnedHint = false;
       if (wasNewCompletion) {
         progress.hintStreak = getCompletedBedCount() % (isPremiumUser() ? HINT_REWARD_INTERVAL : FREE_HINT_REWARD_INTERVAL);
-        // +1 hint every 6 new beds for Premium, every 10 for free players.
+        // +1 hint every 6 new beds for Premium, every 15 for free players.
         if (progress.hintStreak === 0) {
           progress.hints = (progress.hints || 0) + 1;
           earnedHint = true;
@@ -10312,10 +10507,87 @@
       });
     }
 
-    function openLeaderboardModal(levelId) {
+    /* ---------- Global XP leaderboard (replaces per-bed boards in the UI) ---------- */
+    const leaderboardMe = document.getElementById("leaderboardMe");
+    const XP_BOARD_LIMIT = 100;
+    const XP_BOARD_UI_TIMEOUT_MS = 9000;
+    let xpBoardCache = null;
+
+    function xpBoardRowHtml(entry, rank) {
+      const medals = ["🥇", "🥈", "🥉"];
+      const rankLabel = rank ? (medals[rank - 1] || String(rank)) : "–";
+      const streak = Math.max(0, Number(entry.streak) || 0);
+      const streakHtml = streak > 0
+        ? `<span class="xp-streak" title="${escapeHtml(t("xpStreakLabel", { n: streak }))}" aria-label="${escapeHtml(t("xpStreakLabel", { n: streak }))}">🔥${streak}</span>`
+        : "";
+      return `<div class="leaderboard-row xp-row ${rank && rank <= 3 ? `top-${rank}` : ""}">
+            <span class="rank">${rankLabel}</span>
+            <span class="leaderboard-row-avatar" aria-hidden="true">${entry.avatar || DEFAULT_AVATAR}</span>
+            <span class="xp-name-wrap"><span class="name" data-you-label="${entry.isYou ? ` (${escapeHtml(t("you"))})` : ""}">${escapeHtml(entry.name)}</span>${streakHtml}</span>
+            <span class="entry-time xp-value">${Number(entry.xp || 0).toLocaleString()} XP<small>${escapeHtml(t("xpBoardLevel", { n: entry.level || 1 }))}</small></span>
+          </div>`;
+    }
+
+    function paintXpBoard(result) {
+      const entries = Array.isArray(result?.entries) ? result.entries : [];
+      leaderboardList.innerHTML = entries.map((entry, index) =>
+        `<li class="leaderboard-item ${entry.isYou ? "is-you" : ""}">${xpBoardRowHtml(entry, index + 1)}</li>`
+      ).join("");
+      const me = result?.me;
+      const meVisibleInList = entries.some(entry => entry.isYou);
+      if (me && !meVisibleInList) {
+        leaderboardMe.innerHTML = `<span class="leaderboard-me-label">${escapeHtml(t("xpBoardYourRank"))}</span>${xpBoardRowHtml(me, me.rank)}`;
+        leaderboardMe.hidden = false;
+      } else {
+        leaderboardMe.innerHTML = "";
+        leaderboardMe.hidden = true;
+      }
+    }
+
+    async function renderXpLeaderboard() {
+      const token = ++leaderboardRequestToken;
+      clearLeaderboardUiWatchdog();
+      clearLeaderboardRetry();
+      leaderboardHasMore = false; // one fetch, no per-bed pagination
+      leaderboardModalTitle.textContent = t("xpBoardTitle");
+      leaderboardModalSubtitle.textContent = t("xpBoardSubtitle");
+      leaderboardModalSubtitle.className = "difficulty-tag medium";
+      setText("leaderboardHint", t("xpBoardHint"));
+      leaderboardList.setAttribute("aria-label", t("xpBoardTitle"));
+      leaderboardStatus.classList.remove("error");
+      if (xpBoardCache) {
+        paintXpBoard(xpBoardCache);
+        leaderboardStatus.textContent = "";
+      } else {
+        // Show the player's own row right away while the live list loads.
+        const own = Leaderboard.getLocalXpEntry?.();
+        paintXpBoard({ entries: [], me: own && !progress.leaderboardOptOut ? { ...own, rank: null } : null });
+        leaderboardStatus.textContent = t("loading");
+      }
+      try {
+        const result = await withLeaderboardUiTimeout(() => Leaderboard.getXpTop(XP_BOARD_LIMIT), XP_BOARD_UI_TIMEOUT_MS);
+        if (token !== leaderboardRequestToken) return;
+        if (result.remote) xpBoardCache = result;
+        paintXpBoard(result);
+        if (!result.remote) {
+          leaderboardStatus.textContent = t("leaderboardOffline");
+          leaderboardStatus.classList.add("error");
+        } else {
+          leaderboardStatus.textContent = result.entries.length ? "" : t("xpBoardEmpty");
+        }
+      } catch (error) {
+        if (token !== leaderboardRequestToken) return;
+        console.warn("XP leaderboard load failed:", error);
+        if (!xpBoardCache) paintXpBoard({ entries: [], me: null });
+        leaderboardStatus.textContent = t("leaderboardOffline");
+        leaderboardStatus.classList.add("error");
+      }
+    }
+
+    function openLeaderboardModal() {
       leaderboardModalBackdrop.classList.add("open");
       leaderboardModalBackdrop.setAttribute("aria-hidden", "false");
-      void safeRenderLeaderboard(levelId);
+      void renderXpLeaderboard();
     }
 
     function closeLeaderboardModal() {
