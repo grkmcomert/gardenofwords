@@ -43,8 +43,10 @@
   const XP_VERSION = 1;
   const SEEDS = [
     { id: "daisy", emoji: "🌼", cost: 10, minutes: 20, petals: 20, hints: [0, 0] },
-    { id: "tulip", emoji: "🌷", cost: 35, minutes: 120, petals: 15, hints: [0, 1] },
-    { id: "sunflower", emoji: "🌻", cost: 70, minutes: 360, petals: 25, hints: [0, 2] },
+    // Tulip and sunflower give free players no hint, so they must at least
+    // return a little more than they cost or planting them is a plain loss.
+    { id: "tulip", emoji: "🌷", cost: 35, minutes: 120, petals: 50, hints: [0, 1] },
+    { id: "sunflower", emoji: "🌻", cost: 70, minutes: 360, petals: 100, hints: [0, 2] },
     { id: "rose", emoji: "🌹", cost: 140, minutes: 720, petals: 50, hints: [1, 4] }
   ];
   // [target, petal reward]. "fast" and "combo" targets are thresholds, the rest are counts.
@@ -65,7 +67,7 @@
       levelTitle: "Gardener level", levelIntro: "Earn XP by finding words, finishing beds and completing quests.",
       levelNext: "{n} XP to level {l}", levelRewards: "Every level: +1 hint\nEvery 5th level: +3 hints and +50 🌸", levelRewardsFree: "Every 5th level: +1 hint and +50 🌸\nPremium: +1 hint every level, +3 every 5th",
       xpEarned: "Experience", mapSub: "{n} beds open", leaderboardSub: "Ranked by XP", marketSub: "Hints & Premium",
-      themesSub: "Change the scenery", helpSub: "Privacy & contact", questsSub: "{n}/3 done", questsSubAll: "All done ✓",
+      themesSub: "New scenery", helpSub: "Privacy & contact", questsSub: "{n}/3 done", questsSubAll: "All done ✓",
       ghSubReady: "Ready to harvest!", ghSubEmpty: "Plant a seed", ghSubGrowing: "Blooms in {t}",
       streakSub: "{n} days in a row", streakSubZero: "Start today", achievementsSub: "{n} badges",
       streakLabel: "Daily streak", questsLabel: "Quests", greenhouseLabel: "Greenhouse",
@@ -86,7 +88,7 @@
       ghTitle: "Greenhouse", ghSubtitle: "Plant seeds with petals and come back when they bloom.",
       harvest: "Harvest", growNow: "▶ Grow now", growNowFree: "⚡ Grow now", emptyPot: "Empty pot", premiumPot: "Premium",
       seedsTitle: "Seeds", seedInfo: "{time} · gives {reward}", notEnough: "Not enough petals", potsFull: "All pots are busy",
-      exchangeTitle: "Trade petals", exchangeDesc: "{n} 🌸 → 1 hint", trade: "Trade", harvested: "+{reward} harvested!", traded: "+1 hint 🌿",
+      exchangeTitle: "Trade petals", tradeForHint: "Trade {n} 🌸 for 1 hint", tradeHave: "you have {n} 🌸", exchangeDesc: "{n} 🌸 → 1 hint", trade: "Trade", harvested: "+{reward} harvested!", traded: "+1 hint 🌿",
       seed_daisy: "Daisy", seed_tulip: "Tulip", seed_sunflower: "Sunflower", seed_rose: "Rose",
       rewardPetals: "Petals earned", rewardQuest: "Quest done: {q}",
       gardenComplete: "Garden complete!", nextGarden: "Next garden: {name}", awesome: "Wonderful!", flowerBloomed: "A new flower bloomed in your garden",
@@ -118,7 +120,7 @@
       levelTitle: "Gärtnerlevel", levelIntro: "Sammle EP, indem du Wörter findest, Beete abschließt und Aufgaben erledigst.",
       levelNext: "{n} EP bis Level {l}", levelRewards: "Jedes Level: +1 Tipp\nJedes 5. Level: +3 Tipps und +50 🌸", levelRewardsFree: "Jedes 5. Level: +1 Tipp und +50 🌸\nPremium: +1 Tipp pro Level, +3 jedes 5. Level",
       xpEarned: "Erfahrung", mapSub: "{n} Beete offen", leaderboardSub: "Nach EP sortiert", marketSub: "Tipps & Premium",
-      themesSub: "Szenerie wechseln", helpSub: "Datenschutz & Kontakt", questsSub: "{n}/3 erledigt", questsSubAll: "Alles erledigt ✓",
+      themesSub: "Neue Szenerie", helpSub: "Datenschutz & Kontakt", questsSub: "{n}/3 erledigt", questsSubAll: "Alles erledigt ✓",
       ghSubReady: "Erntebereit!", ghSubEmpty: "Pflanze einen Samen", ghSubGrowing: "Blüht in {t}",
       streakSub: "{n} Tage in Folge", streakSubZero: "Heute starten", achievementsSub: "{n} Abzeichen",
       streakLabel: "Tägliche Serie", questsLabel: "Aufgaben", greenhouseLabel: "Gewächshaus",
@@ -139,7 +141,7 @@
       ghTitle: "Gewächshaus", ghSubtitle: "Pflanze Samen mit Blütenblättern und komm wieder, wenn sie blühen.",
       harvest: "Ernten", growNow: "▶ Sofort wachsen", growNowFree: "⚡ Sofort wachsen", emptyPot: "Leerer Topf", premiumPot: "Premium",
       seedsTitle: "Samen", seedInfo: "{time} · bringt {reward}", notEnough: "Nicht genug Blütenblätter", potsFull: "Alle Töpfe sind belegt",
-      exchangeTitle: "Blütenblätter tauschen", exchangeDesc: "{n} 🌸 → 1 Tipp", trade: "Tauschen", harvested: "+{reward} geerntet!", traded: "+1 Tipp 🌿",
+      exchangeTitle: "Blütenblätter tauschen", tradeForHint: "{n} 🌸 gegen 1 Tipp tauschen", tradeHave: "du hast {n} 🌸", exchangeDesc: "{n} 🌸 → 1 Tipp", trade: "Tauschen", harvested: "+{reward} geerntet!", traded: "+1 Tipp 🌿",
       seed_daisy: "Gänseblümchen", seed_tulip: "Tulpe", seed_sunflower: "Sonnenblume", seed_rose: "Rose",
       rewardPetals: "Blütenblätter verdient", rewardQuest: "Aufgabe erledigt: {q}",
       gardenComplete: "Garten vollendet!", nextGarden: "Nächster Garten: {name}", awesome: "Wunderbar!", flowerBloomed: "Eine neue Blume blüht in deinem Garten",
@@ -170,8 +172,8 @@
       levelUp: "Seviye atladın", levelUpTitle: "{n}. seviyeye ulaştın!", continue: "Devam et",
       levelTitle: "Bahçıvan seviyesi", levelIntro: "Kelime bularak, bölüm bitirerek ve görev tamamlayarak XP kazan.",
       levelNext: "{l}. seviyeye {n} XP", levelRewards: "Her seviye: +1 ipucu\nHer 5. seviye: +3 ipucu ve +50 🌸", levelRewardsFree: "Her 5. seviye: +1 ipucu ve +50 🌸\nPremium: Her seviye +1 ipucu, her 5. seviye +3",
-      xpEarned: "Deneyim", mapSub: "{n} bölüm açık", leaderboardSub: "XP sıralaması", marketSub: "İpucu ve Premium",
-      themesSub: "Manzarayı değiştir", helpSub: "Gizlilik ve iletişim", questsSub: "{n}/3 tamam", questsSubAll: "Hepsi tamam ✓",
+      xpEarned: "Deneyim", mapSub: "{n} bölüm açık", leaderboardSub: "XP sıralaması", marketSub: "İpucu & Premium",
+      themesSub: "Manzara seç", helpSub: "Gizlilik ve iletişim", questsSub: "{n}/3 tamam", questsSubAll: "Hepsi tamam ✓",
       ghSubReady: "Toplamaya hazır!", ghSubEmpty: "Bir tohum ek", ghSubGrowing: "{t} sonra açar",
       streakSub: "{n} gün üst üste", streakSubZero: "Bugün başla", achievementsSub: "{n} rozet",
       streakLabel: "Günlük seri", questsLabel: "Görevler", greenhouseLabel: "Sera",
@@ -192,7 +194,7 @@
       ghTitle: "Sera", ghSubtitle: "Yapraklarla tohum ek, çiçek açınca gelip topla.",
       harvest: "Topla", growNow: "▶ Hemen büyüt", growNowFree: "⚡ Hemen büyüt", emptyPot: "Boş saksı", premiumPot: "Premium",
       seedsTitle: "Tohumlar", seedInfo: "{time} · {reward} verir", notEnough: "Yeterli yaprak yok", potsFull: "Tüm saksılar dolu",
-      exchangeTitle: "Yaprak takası", exchangeDesc: "{n} 🌸 → 1 ipucu", trade: "Takas", harvested: "+{reward} toplandı!", traded: "+1 ipucu 🌿",
+      exchangeTitle: "Yaprak takası", tradeForHint: "{n} 🌸 ver, 1 ipucu al", tradeHave: "sende {n} 🌸 var", exchangeDesc: "{n} 🌸 → 1 ipucu", trade: "Takas", harvested: "+{reward} toplandı!", traded: "+1 ipucu 🌿",
       seed_daisy: "Papatya", seed_tulip: "Lale", seed_sunflower: "Ayçiçeği", seed_rose: "Gül",
       rewardPetals: "Kazanılan yaprak", rewardQuest: "Görev tamam: {q}",
       gardenComplete: "Bahçe tamamlandı!", nextGarden: "Sıradaki bahçe: {name}", awesome: "Harika!", flowerBloomed: "Bahçende yeni bir çiçek açtı",
@@ -303,6 +305,17 @@
       xp += (Number(progress.stats?.wordsFoundTotal) || 0) * XP.word;
       return xp;
     } catch (_) { return 0; }
+  }
+  // historicXp() for someone we only know by completed-bed count (a Firebase
+  // profile from before the XP board): beds 1..n in order, two stars each.
+  function estimatedXp(beds) {
+    let xp = 0;
+    for (let id = 1; id <= beds; id += 1) {
+      let words = 5;
+      try { words = levelById(id)?.words?.length || words; } catch (_) {}
+      xp += XP.bed + XP.newBed + 2 * XP.star + words * XP.word;
+    }
+    return xp;
   }
   if (state.xpVersion !== XP_VERSION) {
     state.xp = Math.max(state.xp || 0, historicXp());
@@ -418,6 +431,24 @@
     renderHud();
     if (n > 0) bump("hudPetals");
   }
+  // The "out of hints" window offers the greenhouse petal trade too; before,
+  // players with plenty of petals were only shown a video and Premium.
+  function syncHintTrade() {
+    const btn = $("hintTradePetalsButton");
+    if (!btn) return;
+    const cost = petalsPerHint();
+    btn.hidden = state.petals <= 0;
+    btn.disabled = state.petals < cost;
+    setText("hintTradePetalsLabel", L("tradeForHint", { n: cost }));
+    setText("hintTradePetalsHave", L("tradeHave", { n: state.petals }));
+  }
+  $("hintTradePetalsButton")?.addEventListener("click", () => {
+    if (state.petals < petalsPerHint()) return;
+    addPetals(-petalsPerHint());
+    addHints(1);
+    try { closeHintMoreModal(); } catch (_) {}
+    toast("💡", L("exchangeTitle"), L("traded"), "");
+  });
   function rewardText(hints, petals) {
     const parts = [];
     if (hints) parts.push(`${hints} 💡`);
@@ -678,13 +709,18 @@
     if (tick) return;
     const n = liveStreak();
     const locale = { en: "en-US", de: "de-DE", tr: "tr-TR" }[lang()];
-    const weekday = new Intl.DateTimeFormat(locale, { weekday: "narrow" });
+    // "short", not "narrow": narrow repeats letters (T/T, S/S; Turkish C/C, P/P).
+    const weekday = new Intl.DateTimeFormat(locale, { weekday: "short" });
     const days = [];
+    // Saves older than playDays only know the streak, so the live run ending
+    // on lastPlayDay also counts; otherwise "4 days" showed seven empty days.
+    const runEnd = n > 0 ? new Date(`${state.lastPlayDay}T12:00:00`) : null;
     for (let i = 6; i >= 0; i -= 1) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      const played = state.playDays.includes(dayKey(d));
-      days.push(`<span class="${played ? "on" : ""} ${i === 0 ? "today" : ""}"><i>${played ? "🔥" : ""}</i>${esc(weekday.format(d))}</span>`);
+      const daysBeforeEnd = runEnd ? Math.round((runEnd - new Date(`${dayKey(d)}T12:00:00`)) / 864e5) : -1;
+      const played = state.playDays.includes(dayKey(d)) || (daysBeforeEnd >= 0 && daysBeforeEnd < n);
+      days.push(`<span class="${played ? "on" : ""} ${i === 0 ? "today" : ""}"><i>${played ? "🔥" : ""}</i>${esc(weekday.format(d).replace(/\.$/, ""))}</span>`);
     }
     const nextMilestone = Object.keys(MILESTONES).map(Number).find(m => m > n);
     modal.innerHTML = `
@@ -1204,7 +1240,8 @@
 
   // Full-screen Perl card: the first-bed bravo and the daily hello.
   let perlEl = null;
-  function showPerlCard(text, buttonLabel, withConfetti, done, pose) {
+  // onButton runs only for the button, not for a tap on the backdrop.
+  function showPerlCard(text, buttonLabel, withConfetti, done, pose, onButton) {
     if (!perlEl) {
       perlEl = document.createElement("div");
       perlEl.className = "perl-cheer";
@@ -1231,7 +1268,10 @@
     };
     const onBackdrop = (event) => { if (event.target === perlEl) close(); };
     perlEl.addEventListener("click", onBackdrop);
-    perlEl.querySelector(".primary-button").addEventListener("click", close);
+    perlEl.querySelector(".primary-button").addEventListener("click", () => {
+      close();
+      if (onButton) window.setTimeout(onButton, 320);
+    });
   }
   function showPerlCheer(done) {
     showPerlCard(perlText(L("perlBravo")), L("letsGo"), true, done, "celebrate");
@@ -1271,7 +1311,11 @@
     save();
     // First launch: Perl already says hello on the name prompt.
     if (!named) return;
-    celebrations.unshift((done) => showPerlCard(greetingLine(), L("perlGreetButton"), false, done, greetingSlot().pose));
+    // "Let's play!" starts the bed, unless a gift or streak card is still queued after it.
+    celebrations.unshift((done) => showPerlCard(greetingLine(), L("perlGreetButton"), false, done, greetingSlot().pose, () => {
+      const onHomeNow = typeof shownScreenId === "undefined" || shownScreenId === "homeScreen";
+      if (!celebrations.length && !celebrating && onHomeNow) $("mainPlayButton")?.click();
+    }));
   }
 
   /* Perl peeks in from the top with a speech bubble (never blocks taps). */
@@ -1454,11 +1498,16 @@
     void nudge.offsetWidth;
     nudge.classList.add("is-shown");
     window.clearTimeout(nudgeHideTimer);
-    if (!keep) nudgeHideTimer = window.setTimeout(hideNudge, 8000);
+    // Short: the bubble sits over the word list while it is up.
+    if (!keep) nudgeHideTimer = window.setTimeout(hideNudge, 6000);
   }
-  nudge?.addEventListener("click", () => {
+  // Only the bubble (the one with the "›") spends a hint; tapping Perl just
+  // sends it away, so shooing it off never costs a hint by surprise.
+  nudge?.addEventListener("click", (event) => {
     hideNudge();
-    try { showHint(); } catch (_) {}
+    if (event.target.closest?.("#perlNudgeBubble")) {
+      try { showHint(); } catch (_) {}
+    }
   });
   window.setInterval(() => {
     let inBed = false;
@@ -1492,6 +1541,8 @@
     chestClaimed: (index) => Boolean(state.chests[index]),
     chapterInfo: (index) => ({ name: L("chapters")[index] || null, emoji: CHAPTER_EMOJI[index] || "🌱" }),
     level: () => levelInfo(state.xp),
+    syncHintTrade,
+    estimateXp: (beds) => { const xp = estimatedXp(beds); return { xp, level: levelInfo(xp).level }; },
     flushCelebrations: playCelebrations,
     wakePerl: () => { perlAwake = true; greetHome(true); },
     showPerlNudge: () => { try { nudgePuzzle = puzzle; } catch (_) {} nudgeShown = true; showNudge(true); },

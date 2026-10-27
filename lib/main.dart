@@ -226,6 +226,11 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
         onMessageReceived: (message) =>
             unawaited(RetentionService.instance.handle(message.message)),
       )
+      // WKWebView has no navigator.vibrate, so the page asks for haptics here.
+      ..addJavaScriptChannel(
+        'FlutterHaptics',
+        onMessageReceived: (message) => _handleHapticMessage(message.message),
+      )
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (_) {
@@ -646,6 +651,17 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
       debugPrintStack(stackTrace: stackTrace);
     } finally {
       _trackingAuthorizationRequestInFlight = false;
+    }
+  }
+
+  void _handleHapticMessage(String kind) {
+    switch (kind.trim()) {
+      case 'select':
+        unawaited(HapticFeedback.selectionClick());
+      case 'word':
+        unawaited(HapticFeedback.lightImpact());
+      case 'success':
+        unawaited(HapticFeedback.mediumImpact());
     }
   }
 

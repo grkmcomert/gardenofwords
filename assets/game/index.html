@@ -487,6 +487,8 @@
         <div class="board-frame">
           <div class="board-ivy" aria-hidden="true"></div>
           <div id="planterBlooms" class="planter-blooms" aria-hidden="true"></div>
+          <div id="selectionPreview" class="selection-preview" aria-hidden="true"></div>
+          <div id="boardCoach" class="board-coach" role="status"></div>
           <div id="board" class="board" role="grid" aria-label="Letter grid"></div>
           <div id="feedbackLayer" class="feedback-layer" aria-live="polite"></div>
           <div id="boardLoading" class="board-loading" hidden><span class="board-loading-spinner" aria-hidden="true"></span><span id="boardLoadingText"></span><button id="boardLoadingRetry" class="ghost-button" type="button" hidden>Try again</button></div>
@@ -513,7 +515,7 @@
       <p id="modalText">You've completed the bed.</p>
       <div id="completeRewards" class="complete-rewards"></div>
       <div class="modal-actions complete-actions">
-        <button id="nextLevelButton" class="primary-button" type="button">Next bed →</button>
+        <button id="nextLevelButton" class="primary-button" type="button">Next bed →<span id="nextLevelAdChip" class="next-ad-chip" hidden>🎬 +1 💡</span></button>
         <div class="complete-actions-row">
           <button id="modalLevels" class="ghost-button" type="button">The Garden</button>
           <button id="modalLeaderboardButton" class="ghost-button" type="button"><svg class="icon"><use href="#icon-trophy"></use></svg> Leaderboard</button>
@@ -542,7 +544,7 @@
         <span id="perlGreetingFigure" class="perl-greeting-figure"><span class="perl perl-wave"><img class="perl-pose" src="images/perl/wave.webp" alt="" draggable="false"></span></span>
         <p id="perlGreeting" class="perl-bubble">Hi! I am Perl.</p>
       </div>
-      <h2 id="nicknameModalTitle">Name your garden</h2>
+      <h2 id="nicknameModalTitle">Pick your gardener name</h2>
       <p id="nicknameModalText">Pick a nickname and an avatar for your garden journal. Shown on the leaderboard.</p>
       <input id="nicknameInput" class="pin-field nickname-field" type="text" maxlength="18" placeholder="e.g. Wildflower Wren" autocomplete="off" enterkeyhint="done" aria-label="Nickname" />
       <p id="avatarPickerLabel" class="avatar-picker-label">Choose an avatar</p>
@@ -684,7 +686,7 @@
         </label>
         <label class="settings-row">
           <div class="settings-row-text">
-            <strong id="leaderboardOptOutSettingLabel">I don't want to appear on leaderboards</strong>
+            <strong id="leaderboardOptOutSettingLabel">Show me on the leaderboard</strong>
           </div>
           <span class="switch"><input id="settingLeaderboardOptOut" type="checkbox" /><span class="switch-track"><span class="switch-thumb"></span></span></span>
         </label>
@@ -817,7 +819,6 @@
         <div class="premium-feature"><span class="premium-feature-icon"><svg class="icon"><use href="#icon-leaf"></use></svg></span><strong id="premiumFeatureThemes">Special Themes</strong></div>
       </div>
       <p id="marketPremiumActive" class="market-premium-active">Premium is active on this account.</p>
-      <p id="marketSubscriptionTerms" class="market-subscription-terms">Subscriptions renew automatically unless canceled at least 24 hours before the current period ends. After purchase, manage or cancel them in your Apple Account settings under Subscriptions. Payment is charged to your Apple Account when you confirm the purchase; renewal is charged within 24 hours before the current period ends.</p>
       <div id="marketPlanList" class="market-plan-list" aria-live="polite">
         <article class="market-plan-card" data-market-plan="weekly">
           <div><strong id="marketWeeklyName" class="market-plan-name">Weekly</strong><span id="marketWeeklyDescription" class="market-plan-description">Flexible garden access</span><span id="marketWeeklyPrice" class="market-plan-price">—</span></div>
@@ -833,6 +834,8 @@
           <button id="marketYearlyButton" class="primary-button market-plan-action" type="button" data-market-plan="yearly">Choose</button>
         </article>
       </div>
+      <!-- Below the plans, so prices come first; still on screen next to the buy buttons. -->
+      <p id="marketSubscriptionTerms" class="market-subscription-terms">Subscriptions renew automatically unless canceled at least 24 hours before the current period ends. After purchase, manage or cancel them in your Apple Account settings under Subscriptions. Payment is charged to your Apple Account when you confirm the purchase; renewal is charged within 24 hours before the current period ends.</p>
       <section class="hint-pack-section" aria-live="polite">
         <h3 id="marketHintPackTitle" class="hint-pack-title">Extra hints</h3>
         <p id="marketHintPackSubtitle" class="hint-pack-subtitle">Add hints instantly whenever you need a boost.</p>
@@ -872,6 +875,7 @@
       <h2 id="hintMoreTitle" class="hint-more-title">Need More?</h2>
       <p id="hintMoreSubtitle" class="hint-more-subtitle">Watch a short video to get +1 hint.</p>
       <button id="hintWatchVideoButton" class="primary-button hint-video-button" type="button"><svg class="icon"><use href="#icon-play"></use></svg><span id="hintWatchVideoLabel">Watch video for +1 hint</span></button>
+      <button id="hintTradePetalsButton" class="ghost-button hint-trade-button" type="button" hidden><strong id="hintTradePetalsLabel"></strong><small id="hintTradePetalsHave"></small></button>
       <p id="hintMoreStatus" class="hint-more-status" role="status"></p>
       <h3 id="hintPremiumTitle" class="hint-premium-title">Get Premium</h3>
       <div id="hintMorePremiumFeatures" class="premium-feature-grid" aria-label="Premium benefits">
@@ -1118,7 +1122,7 @@
         homeHeroCopy: "Uncover hidden words tucked beneath the leaves and guide your garden from sprout to canopy. A serene word journey through lush botanical trails.",
         gardenHerbarium: "Garden Herbarium", todayInGarden: "Today in the Garden", bedsBloomed: "Beds Bloomed", gardenGrowth: "Garden Growth",
         achievements: "Achievements", leaderboards: "Leaderboards", users: "Users", market: "Market", settings: "Settings", help: "Help", play: "Play", seeGarden: "See the garden", levelList: "Level list",
-        gardenIdentity: "Your garden identity", guest: "Guest", levelsTitle: "The Garden", levelsDescription: "Pick any bed you've unlocked, or carry on from where you left off.",
+        gardenIdentity: "Your garden identity", guest: "Guest", levelsTitle: "The Garden", levelsDescription: "Tap any open bed to play",
         progress: "Progress", open: "open", continue: "Continue", whereLeftOff: "Where you left off", chooseBed: "Choose a bed",
         bed: "Bed", words: "words", word: "word", best: "Best", row: "Row", column: "column", time: "Time", hint: "Hint", hintLimitReached: "You have no hints left in your balance.", watchAd: "Watch Ad", needMore: "Need More?", watchVideoHint: "Watch video for +1 hint", hintMoreSubtitle: "Watch a short video to get +1 hint.", hintVideoLoading: "Loading video...", hintVideoSuccess: "+1 hint added to your garden.", hintVideoUnavailable: "The video is not available right now. Try again shortly.", toFind: "To find", found: "Found",
         wordsToFind: "Words to find", wordProgress: "Word-finding progress", letterGrid: "Letter grid", backHome: "Back to home", backGarden: "Back to the garden",
@@ -1126,10 +1130,10 @@
         completedBed: "You've completed the bed.", leaderboard: "Leaderboard", wholeGardenBloom: "The whole garden's in bloom!", finalCompletion: "You tended all {count} beds in <strong>{time}</strong>. Replay any bed whenever you like.",
         bedCompletion: "Bed {id} is fully bloomed. Time: <strong>{time}</strong>", newBest: "New best time!", hintEarned: "+1 Hint earned!", hintRewardTitle: "A new hint bloomed!", hintRewardMessage: "Garden milestone · +1 hint",
         enterPin: "Enter PIN", pinDescription: "Type the 4-digit code to toggle Premium test mode and remove ads.", pinCode: "PIN code", cancel: "Cancel", confirm: "Confirm",
-        nameGarden: "Name your garden", nicknameDescription: "Pick a nickname and an avatar for your garden journal. Shown on the leaderboard.",
+        nameGarden: "Pick your gardener name", nicknameDescription: "Pick a nickname and an avatar for your garden journal. Shown on the leaderboard.",
         nicknamePlaceholder: "e.g. Wildflower Wren", nickname: "Nickname", avatar: "Avatar", chooseAvatar: "Choose an avatar", nicknameLock: "You can update your name and avatar from the edit button once every 24 hours.", plantName: "Plant my name", editProfile: "Edit profile", editProfileDescription: "Update your garden name and avatar. You can edit once every 24 hours.", profileEditCooldown: "You can edit again in {time}.", profileSaved: "Profile updated.", profileSaveFailed: "Profile could not be updated.", profileEditOffline: "Connect to the internet to edit your profile.", saveProfile: "Save changes",
         previousLeaderboard: "Previous bed's leaderboard", nextLeaderboard: "Next bed's leaderboard", jumpToBed: "Jump to bed", bedNumber: "Bed number", go: "Go", loading: "Loading...", noBlooms: "No blooms yet. Be the first to finish this bed!", close: "Close", bestTimes: "Best times for this bed", leaderboardHint: "Names and completion times for this bed.", playerDetails: "Player details", level: "Level", username: "Username", entryId: "ID", emoji: "Emoji", viewLeaderboardEntry: "View {name}'s details", usersHint: "Select a username to view the full profile.", userDetails: "User details", device: "Device", country: "Country", deviceLocale: "device locale", appLanguage: "App language", platform: "Platform", completedLevels: "Completed levels", unlockedLevels: "Unlocked levels", hints: "Hints", lastSeen: "Last seen", createdAt: "Created", changeUsername: "Change username", saveName: "Save name", nameSaved: "Name updated.", nameSaveFailed: "Name could not be updated.", editOnlyOwn: "You can change your own username here.", noUsers: "No users yet.", viewUser: "View {name}'s profile",
-        settingsIntro: "Tune how the garden looks and sounds on this device. Your choices are remembered.", language: "Language", languageDescription: "Choose the language used throughout the game.", soundEffects: "Sound Effects", soundDescription: "Chimes for found words and finished beds.", leaderboardOptOut: "I don't want to appear on leaderboards", done: "Done",
+        settingsIntro: "Tune how the garden looks and sounds on this device. Your choices are remembered.", language: "Language", languageDescription: "Choose the language used throughout the game.", soundEffects: "Sound Effects", soundDescription: "Chimes for found words and finished beds.", leaderboardOptOut: "Show me on the leaderboard", done: "Done",
         helpTitle: "Help", helpDescription: "Find the information and support links for Garden of Words.", privacyPolicy: "Privacy Policy", privacyChoices: "Privacy Choices", eula: "EULA", contactUs: "Contact us", premiumSpecialThemes: "Special Themes", getPremium: "Get Premium",
         marketKicker: "Garden of Words Pro", marketTitle: "Let your garden bloom", marketSubtitle: "A calmer, more generous word garden with no interruptions.", premiumNoAds: "No ads", premiumDailyHint: "+2 hints every day", premiumNameChange: "Change your username", marketChoose: "Choose", marketPopular: "Popular", marketWeekly: "Weekly", marketMonthly: "Monthly", marketYearly: "Yearly", marketWeeklyDescription: "Flexible garden access", marketMonthlyDescription: "A steady rhythm for your garden", marketYearlyDescription: "Best value for a full year", marketActive: "Premium is active on this account.", marketLoading: "Loading plans...", marketUnavailable: "Plans are temporarily unavailable. Try again shortly.", marketPurchaseSuccess: "Premium is active. Welcome to the greener side of the garden!", marketPurchaseCancelled: "Purchase cancelled.", marketRestore: "Restore purchases", marketManage: "Manage subscription", marketPaywall: "Open full paywall", marketEula: "Apple Standard EULA", hintPacksTitle: "Extra hints", hintPacksSubtitle: "Add hints instantly whenever you need a boost.", hintPackName: "{amount} hints", hintPack10Description: "Instant hint refill", hintPack25Description: "A bigger hint garden", hintPack50Description: "The full hint harvest", hintPackBuy: "Get hints", hintPackSuccess: "{amount} hints added to your garden.", hintPackUnavailable: "Hint packs are temporarily unavailable. Try again shortly.", premiumNameRequired: "Changing your username is a Premium feature.", premiumHintWaiting: "Your daily Premium hint has already been used. Come back tomorrow for another one.",
         achievementsEarned: "{unlocked} of {total} badges earned", achievementUnlocked: "Achievement Unlocked", earned: "Earned",
@@ -1144,7 +1148,7 @@
         homeHeroCopy: "Finde verborgene Wörter zwischen den Blättern und führe deinen Garten vom ersten Spross bis zum Blätterdach. Eine ruhige Wortreise durch üppige Pflanzenpfade.",
         gardenHerbarium: "Gartenherbarium", todayInGarden: "Heute im Garten", bedsBloomed: "Beete erblüht", gardenGrowth: "Gartenwachstum",
         achievements: "Erfolge", leaderboards: "Bestenlisten", users: "Spieler", market: "Markt", settings: "Einstellungen", help: "Hilfe", play: "Spielen", seeGarden: "Garten ansehen", levelList: "Beetliste",
-        gardenIdentity: "Deine Gartenidentität", guest: "Gast", levelsTitle: "Der Garten", levelsDescription: "Wähle ein freigeschaltetes Beet oder setze dort fort, wo du aufgehört hast.",
+        gardenIdentity: "Deine Gartenidentität", guest: "Gast", levelsTitle: "Der Garten", levelsDescription: "Tippe auf ein offenes Beet",
         progress: "Fortschritt", open: "offen", continue: "Weiter", whereLeftOff: "Zuletzt gespielt", chooseBed: "Beet auswählen",
         bed: "Beet", words: "Wörter", word: "Wort", best: "Beste", row: "Zeile", column: "Spalte", time: "Zeit", hint: "Tipp", hintLimitReached: "Dein Tippvorrat ist leer.", watchAd: "Werbung ansehen", needMore: "Need More?", watchVideoHint: "Video für +1 Tipp ansehen", hintMoreSubtitle: "Sieh dir ein kurzes Video an und erhalte +1 Tipp.", hintVideoLoading: "Video wird geladen...", hintVideoSuccess: "+1 Tipp wurde deinem Garten hinzugefügt.", hintVideoUnavailable: "Das Video ist gerade nicht verfügbar. Bitte versuche es später erneut.", toFind: "Zu finden", found: "Gefunden",
         wordsToFind: "Zu findende Wörter", wordProgress: "Wortsuche-Fortschritt", letterGrid: "Buchstabengitter", backHome: "Zurück zum Start", backGarden: "Zurück zum Garten",
@@ -1152,10 +1156,10 @@
         completedBed: "Du hast das Beet abgeschlossen.", leaderboard: "Bestenliste", wholeGardenBloom: "Der ganze Garten blüht!", finalCompletion: "Du hast alle {count} Beete in <strong>{time}</strong> gepflegt. Du kannst jedes Beet jederzeit erneut spielen.",
         bedCompletion: "Beet {id} ist vollständig erblüht. Zeit: <strong>{time}</strong>", newBest: "Neue Bestzeit!", hintEarned: "+1 Tipp erhalten!", hintRewardTitle: "Ein neuer Tipp blüht!", hintRewardMessage: "Garten-Meilenstein · +1 Tipp",
         enterPin: "PIN eingeben", pinDescription: "Gib den vierstelligen Code ein, um den Premium-Testmodus und werbefreies Spielen zu aktivieren.", pinCode: "PIN-Code", cancel: "Abbrechen", confirm: "Bestätigen",
-        nameGarden: "Gib deinem Garten einen Namen", nicknameDescription: "Wähle einen Namen und einen Avatar für dein Gartenjournal. Beides erscheint in der Bestenliste.",
+        nameGarden: "Wähle deinen Gärtnernamen", nicknameDescription: "Wähle einen Namen und einen Avatar für dein Gartenjournal. Beides erscheint in der Bestenliste.",
         nicknamePlaceholder: "z. B. Wildblumenfink", nickname: "Spitzname", avatar: "Avatar", chooseAvatar: "Avatar auswählen", nicknameLock: "Du kannst Name und Avatar über die Bearbeiten-Schaltfläche alle 24 Stunden ändern.", plantName: "Namen pflanzen", editProfile: "Profil bearbeiten", editProfileDescription: "Ändere deinen Gartennamen und Avatar. Bearbeiten ist alle 24 Stunden möglich.", profileEditCooldown: "Du kannst in {time} wieder bearbeiten.", profileSaved: "Profil aktualisiert.", profileSaveFailed: "Profil konnte nicht aktualisiert werden.", profileEditOffline: "Verbinde dich mit dem Internet, um dein Profil zu bearbeiten.", saveProfile: "Änderungen speichern",
         previousLeaderboard: "Bestenliste des vorherigen Beets", nextLeaderboard: "Bestenliste des nächsten Beets", jumpToBed: "Zu einem Beet springen", bedNumber: "Beetnummer", go: "Los", loading: "Wird geladen...", noBlooms: "Noch keine Blüten. Schließe dieses Beet als Erste oder Erster ab!", close: "Schließen", bestTimes: "Beste Zeiten für dieses Beet", leaderboardHint: "Wähle einen Spieler aus, um Zeit, ID und Emoji zu sehen.", playerDetails: "Spielerdetails", level: "Beet", username: "Spitzname", entryId: "ID", emoji: "Emoji", viewLeaderboardEntry: "Details von {name} ansehen", usersHint: "Wähle einen Spitznamen aus, um das vollständige Profil zu sehen.", userDetails: "Spielerdetails", device: "Gerät", country: "Land", deviceLocale: "Gerätesprache", appLanguage: "App-Sprache", platform: "Plattform", completedLevels: "Abgeschlossene Beete", unlockedLevels: "Freigeschaltete Beete", hints: "Tipps", lastSeen: "Zuletzt gesehen", createdAt: "Erstellt", changeUsername: "Spitznamen ändern", saveName: "Namen speichern", nameSaved: "Name aktualisiert.", nameSaveFailed: "Name konnte nicht aktualisiert werden.", editOnlyOwn: "Du kannst hier deinen eigenen Spitznamen ändern.", noUsers: "Noch keine Spieler.", viewUser: "Profil von {name} ansehen",
-        settingsIntro: "Lege fest, wie der Garten auf diesem Gerät aussieht und klingt. Deine Auswahl wird gespeichert.", language: "Sprache", languageDescription: "Wähle die Sprache für das gesamte Spiel.", soundEffects: "Soundeffekte", soundDescription: "Klänge für gefundene Wörter und abgeschlossene Beete.", leaderboardOptOut: "Ich möchte nicht in Bestenlisten erscheinen", done: "Fertig",
+        settingsIntro: "Lege fest, wie der Garten auf diesem Gerät aussieht und klingt. Deine Auswahl wird gespeichert.", language: "Sprache", languageDescription: "Wähle die Sprache für das gesamte Spiel.", soundEffects: "Soundeffekte", soundDescription: "Klänge für gefundene Wörter und abgeschlossene Beete.", leaderboardOptOut: "In der Bestenliste erscheinen", done: "Fertig",
         marketKicker: "Garden of Words Pro", marketTitle: "Lass deinen Garten blühen", marketSubtitle: "Ein ruhigerer, großzügigerer Wortgarten ohne Unterbrechungen.", premiumNoAds: "Keine Werbung", premiumDailyHint: "+2 Tipps jeden Tag", premiumNameChange: "Spitznamen ändern", marketChoose: "Auswählen", marketPopular: "Beliebt", marketWeekly: "Wöchentlich", marketMonthly: "Monatlich", marketYearly: "Jährlich", marketWeeklyDescription: "Flexibler Gartenzugang", marketMonthlyDescription: "Ein ruhiger Rhythmus für deinen Garten", marketYearlyDescription: "Der beste Wert für ein ganzes Jahr", marketActive: "Premium ist für dieses Konto aktiv.", marketLoading: "Tarife werden geladen...", marketUnavailable: "Tarife sind vorübergehend nicht verfügbar. Bitte versuche es später erneut.", marketPurchaseSuccess: "Premium ist aktiv. Willkommen auf der grüneren Seite des Gartens!", marketPurchaseCancelled: "Kauf abgebrochen.", marketRestore: "Käufe wiederherstellen", marketManage: "Abo verwalten", marketPaywall: "Vollständiges Paywall öffnen", marketEula: "Apple Standard EULA", hintPacksTitle: "Zusätzliche Tipps", hintPacksSubtitle: "Fülle deine Tipps jederzeit sofort auf.", hintPackName: "{amount} Tipps", hintPack10Description: "Sofortige Tipp-Auffüllung", hintPack25Description: "Ein größerer Tipp-Garten", hintPack50Description: "Die volle Tipp-Ernte", hintPackBuy: "Tipps holen", hintPackSuccess: "{amount} Tipps wurden deinem Garten hinzugefügt.", hintPackUnavailable: "Tipp-Pakete sind gerade nicht verfügbar. Bitte versuche es später erneut.", premiumNameRequired: "Das Ändern des Spitznamens ist eine Premium-Funktion.", premiumHintWaiting: "Dein täglicher Premium-Tipp wurde bereits verwendet. Morgen wartet ein neuer auf dich.",
         achievementsEarned: "{unlocked} von {total} Abzeichen erreicht", achievementUnlocked: "Erfolg freigeschaltet", earned: "Erreicht am",
         continueBed: "Weiter · Beet {id}", opening: "Wird geöffnet...", wrongPin: "Diese PIN ist nicht richtig.", useTwoChars: "Bitte gib mindestens 2 Zeichen ein.", usernameTaken: "Dieser Benutzername ist bereits vergeben. Bitte wähle einen anderen.", usernameCheckFailed: "Der Benutzername konnte gerade nicht geprüft werden. Bitte versuche es erneut.",
@@ -1169,7 +1173,7 @@
         homeHeroCopy: "Yaprakların arasına saklanan kelimeleri bul ve bahçeni filizlerden gür bir örtüye taşı. Yemyeşil patikalarda sakin bir kelime yolculuğu yap.",
         gardenHerbarium: "Bahçe Herbaryumu", todayInGarden: "Bugünün Bahçesi", bedsBloomed: "Tamamlanan bölümler", gardenGrowth: "Bahçe gelişimi",
         achievements: "Başarımlar", leaderboards: "Skor tabloları", users: "Kullanıcılar", market: "Market", settings: "Ayarlar", help: "Yardım", play: "Oyna", seeGarden: "Bahçeye göz at", levelList: "Bölüm listesi",
-        gardenIdentity: "Bahçe kimliğin", guest: "Misafir", levelsTitle: "Bahçe", levelsDescription: "Açtığın bir bölümü seç veya kaldığın yerden devam et.",
+        gardenIdentity: "Bahçe kimliğin", guest: "Misafir", levelsTitle: "Bahçe", levelsDescription: "Oynamak için bir bölüme dokun",
         progress: "İlerleme", open: "açık", continue: "Devam et", whereLeftOff: "Kaldığın yer", chooseBed: "Bölüm seç",
         bed: "Bölüm", words: "kelime", word: "kelime", best: "En iyi", row: "Satır", column: "sütun", time: "Süre", hint: "İpucu", hintLimitReached: "İpucu bakiyende ipucu kalmadı.", watchAd: "Reklam izle", needMore: "Need More?", watchVideoHint: "+1 ipucu için video izle", hintMoreSubtitle: "+1 ipucu kazanmak için kısa bir video izle.", hintVideoLoading: "Video yükleniyor...", hintVideoSuccess: "Bahçene +1 ipucu eklendi.", hintVideoUnavailable: "Video şu anda kullanılamıyor. Biraz sonra tekrar dene.", toFind: "Bulunacaklar", found: "Bulundu",
         wordsToFind: "Bulunacak kelimeler", wordProgress: "Kelime bulma ilerlemesi", letterGrid: "Harf ızgarası", backHome: "Ana sayfaya dön", backGarden: "Bahçeye dön",
@@ -1177,10 +1181,10 @@
         completedBed: "Bu bölümü tamamladın.", leaderboard: "Skor tablosu", wholeGardenBloom: "Bütün bahçe çiçek açtı!", finalCompletion: "Tüm {count} bölümü <strong>{time}</strong> sürede tamamladın. Dilediğin bölümü yeniden oynayabilirsin.",
         bedCompletion: "Bölüm {id} tamamen çiçek açtı. Süre: <strong>{time}</strong>", newBest: "Yeni en iyi süre!", hintEarned: "+1 ipucu kazandın!", hintRewardTitle: "Yeni bir ipucu filizlendi!", hintRewardMessage: "Bahçe kilometre taşı · +1 ipucu",
         enterPin: "PIN gir", pinDescription: "Premium test modunu ve reklamsız oynamayı açmak için 4 haneli kodu yaz.", pinCode: "PIN kodu", cancel: "İptal", confirm: "Onayla",
-        nameGarden: "Bahçene bir isim ver", nicknameDescription: "Bahçe günlüğün için bir kullanıcı adı ve avatar seç. İkisi de skor tablosunda görünür.",
+        nameGarden: "Bahçıvan adını seç", nicknameDescription: "Bahçe günlüğün için bir kullanıcı adı ve avatar seç. İkisi de skor tablosunda görünür.",
         nicknamePlaceholder: "ör. Çiçekçi Arı", nickname: "Kullanıcı adı", avatar: "Avatar", chooseAvatar: "Avatar seç", nicknameLock: "İsim ve avatarını düzenle butonundan 24 saatte bir değiştirebilirsin.", plantName: "Adımı dik", editProfile: "Profili düzenle", editProfileDescription: "Bahçe ismini ve avatarını güncelle. 24 saatte bir düzenleyebilirsin.", profileEditCooldown: "Tekrar düzenleyebilmen için {time} kaldı.", profileSaved: "Profil güncellendi.", profileSaveFailed: "Profil güncellenemedi.", profileEditOffline: "Profilini düzenlemek için internete bağlan.", saveProfile: "Değişiklikleri kaydet",
         previousLeaderboard: "Önceki bölümün skor tablosu", nextLeaderboard: "Sonraki bölümün skor tablosu", jumpToBed: "Bölüme git", bedNumber: "Bölüm numarası", go: "Git", loading: "Yükleniyor...", noBlooms: "Henüz çiçeklenen yok. Bu bölümü ilk sen tamamla!", close: "Kapat", bestTimes: "Bu bölümün en iyi süreleri", leaderboardHint: "Bu bölümdeki isimler ve tamamlanma süreleri.", playerDetails: "Kullanıcı detayları", level: "Bölüm", username: "Kullanıcı adı", entryId: "ID", emoji: "Emoji", viewLeaderboardEntry: "{name} detaylarını gör", usersHint: "Tam profili görmek için bir kullanıcı adına dokun.", userDetails: "Kullanıcı bilgileri", device: "Cihaz", country: "Ülke", deviceLocale: "cihaz dili", appLanguage: "Uygulama dili", platform: "Platform", completedLevels: "Tamamlanan bölümler", unlockedLevels: "Açılan bölümler", hints: "İpuçları", lastSeen: "Son görülme", createdAt: "Oluşturulma", changeUsername: "Kullanıcı adını değiştir", saveName: "İsmi kaydet", nameSaved: "İsim güncellendi.", nameSaveFailed: "İsim güncellenemedi.", editOnlyOwn: "Buradan yalnızca kendi kullanıcı adını değiştirebilirsin.", noUsers: "Henüz kullanıcı yok.", viewUser: "{name} profilini gör",
-        settingsIntro: "Bu cihazda bahçenin görünümünü ve seslerini ayarla. Seçimin hatırlanır.", language: "Dil", languageDescription: "Oyunun tamamında kullanılacak dili seç.", soundEffects: "Ses efektleri", soundDescription: "Bulunan kelimeler ve tamamlanan bölümler için sesler.", leaderboardOptOut: "Skor tablolarında görünmek istemiyorum", done: "Bitti",
+        settingsIntro: "Bu cihazda bahçenin görünümünü ve seslerini ayarla. Seçimin hatırlanır.", language: "Dil", languageDescription: "Oyunun tamamında kullanılacak dili seç.", soundEffects: "Ses efektleri", soundDescription: "Bulunan kelimeler ve tamamlanan bölümler için sesler.", leaderboardOptOut: "Skor tablosunda görün", done: "Bitti",
         marketKicker: "Garden of Words Pro", marketTitle: "Bahçen çiçek açsın", marketSubtitle: "Reklamsız, daha sakin ve daha cömert bir kelime bahçesi.", premiumNoAds: "Reklam yok", premiumDailyHint: "Her gün +2 ipucu", premiumNameChange: "Kullanıcı adını değiştir", marketChoose: "Seç", marketPopular: "Popüler", marketWeekly: "Haftalık", marketMonthly: "Aylık", marketYearly: "Yıllık", marketWeeklyDescription: "Esnek bahçe erişimi", marketMonthlyDescription: "Bahçen için düzenli bir ritim", marketYearlyDescription: "Bir yıl için en avantajlı seçenek", marketActive: "Premium bu hesapta aktif.", marketLoading: "Paketler yükleniyor...", marketUnavailable: "Paketler şu anda kullanılamıyor. Biraz sonra tekrar dene.", marketPurchaseSuccess: "Premium aktif. Bahçenin daha yeşil tarafına hoş geldin!", marketPurchaseCancelled: "Satın alma iptal edildi.", marketRestore: "Satın alımları geri yükle", marketManage: "Aboneliği yönet", marketPaywall: "Tam ödeme ekranını aç", marketEula: "Apple Standard EULA", hintPacksTitle: "Ekstra ipuçları", hintPacksSubtitle: "İhtiyacın olduğunda ipuçlarını anında artır.", hintPackName: "{amount} ipucu", hintPack10Description: "Anında ipucu takviyesi", hintPack25Description: "Daha büyük ipucu bahçesi", hintPack50Description: "Tam ipucu hasadı", hintPackBuy: "İpucu al", hintPackSuccess: "Bahçene {amount} ipucu eklendi.", hintPackUnavailable: "İpucu paketleri şu anda kullanılamıyor. Biraz sonra tekrar dene.", premiumNameRequired: "Kullanıcı adı değiştirmek Premium özelliğidir.", premiumHintWaiting: "Bugünkü Premium ipucunu zaten kullandın. Yarın yeni bir ipucu alabilirsin.",
         achievementsEarned: "{total} başarımın {unlocked} tanesi kazanıldı", achievementUnlocked: "Başarım açıldı", earned: "Kazanıldı",
         continueBed: "Devam et · Bölüm {id}", opening: "Açılıyor...", wrongPin: "Bu PIN doğru değil.", useTwoChars: "Lütfen en az 2 karakter kullan.", usernameTaken: "Bu kullanıcı adı zaten alınmış. Lütfen başka bir isim seç.", usernameCheckFailed: "Kullanıcı adı şu anda kontrol edilemedi. Lütfen tekrar dene.",
@@ -1212,7 +1216,7 @@
       homeHeroCopy: "Entdecke verborgene Wörter zwischen den Blättern und führe deinen Garten vom ersten Spross bis zum Blätterdach. Eine ruhige Wortreise durch üppige Gartenpfade.",
       gardenHerbarium: "Garten-Herbarium", todayInGarden: "Heute im Garten", bedsBloomed: "Erblühte Beete", gardenGrowth: "Gartenfortschritt",
       achievements: "Erfolge", leaderboards: "Bestenlisten", users: "Spieler", market: "Markt", settings: "Einstellungen", help: "Hilfe", play: "Spielen", seeGarden: "Garten entdecken", levelList: "Beetliste",
-      gardenIdentity: "Deine Gartenidentität", guest: "Gast", levelsTitle: "Der Garten", levelsDescription: "Wähle ein freigeschaltetes Beet oder spiele dort weiter, wo du aufgehört hast.",
+      gardenIdentity: "Deine Gartenidentität", guest: "Gast", levelsTitle: "Der Garten", levelsDescription: "Tippe auf ein offenes Beet",
       progress: "Fortschritt", open: "offen", continue: "Fortsetzen", whereLeftOff: "Zuletzt gespielt", chooseBed: "Beet auswählen",
       bed: "Beet", words: "Wörter", word: "Wort", best: "Beste", row: "Zeile", column: "Spalte", time: "Zeit", hint: "Tipp", watchAd: "Werbung ansehen", needMore: "Mehr Tipps?", watchVideoHint: "Video ansehen und +1 Tipp erhalten", hintMoreSubtitle: "Sieh dir ein kurzes Video an und erhalte +1 Tipp.", hintVideoLoading: "Video wird geladen …", hintVideoSuccess: "+1 Tipp wurde deinem Garten hinzugefügt.", hintVideoUnavailable: "Das Video ist gerade nicht verfügbar. Bitte versuche es später erneut.", toFind: "Zu finden", found: "Gefunden",
       wordsToFind: "Zu findende Wörter", wordProgress: "Fortschritt bei der Wortsuche", letterGrid: "Buchstabengitter", backHome: "Zurück zum Start", backGarden: "Zurück zum Garten",
@@ -1220,7 +1224,7 @@
       completedBed: "Du hast das Beet abgeschlossen.", leaderboard: "Bestenliste", wholeGardenBloom: "Der ganze Garten steht in Blüte!", finalCompletion: "Du hast alle {count} Beete in <strong>{time}</strong> gepflegt. Spiele jederzeit ein Beet erneut.",
       bedCompletion: "Beet {id} steht vollständig in Blüte. Zeit: <strong>{time}</strong>", newBest: "Neue Bestzeit!", hintEarned: "+1 Tipp erhalten!", hintRewardTitle: "Ein neuer Tipp ist verfügbar!", hintRewardMessage: "Garten-Meilenstein · +1 Tipp",
       enterPin: "PIN eingeben", pinDescription: "Gib den vierstelligen Code ein, um den Premium-Testmodus zu aktivieren und Werbung zu entfernen.", pinCode: "PIN-Code", cancel: "Abbrechen", confirm: "Bestätigen",
-      nameGarden: "Deinen Garten benennen", nicknameDescription: "Wähle einen Spitznamen und einen Avatar für dein Gartenjournal. Beides wird in der Bestenliste angezeigt.",
+      nameGarden: "Wähle deinen Gärtnernamen", nicknameDescription: "Wähle einen Spitznamen und einen Avatar für dein Gartenjournal. Beides wird in der Bestenliste angezeigt.",
       nicknamePlaceholder: "z. B. Wildblumenfink", nickname: "Spitzname", avatar: "Avatar", chooseAvatar: "Avatar auswählen", nicknameLock: "Du kannst deinen Namen und Avatar über die Bearbeiten-Schaltfläche einmal alle 24 Stunden aktualisieren.", plantName: "Namen pflanzen", editProfile: "Profil bearbeiten", editProfileDescription: "Aktualisiere deinen Gartennamen und Avatar. Du kannst sie einmal alle 24 Stunden ändern.", profileEditCooldown: "Du kannst dein Profil in {time} wieder bearbeiten.", profileSaved: "Profil aktualisiert.", profileSaveFailed: "Profil konnte nicht aktualisiert werden.", profileEditOffline: "Verbinde dich mit dem Internet, um dein Profil zu bearbeiten.", saveProfile: "Änderungen speichern",
       previousLeaderboard: "Bestenliste des vorherigen Beets", nextLeaderboard: "Bestenliste des nächsten Beets", jumpToBed: "Zu einem Beet springen", bedNumber: "Beetnummer", go: "Los", loading: "Wird geladen …", noBlooms: "Noch keine Blüten. Sei die erste Person, die dieses Beet abschließt!", close: "Schließen", bestTimes: "Beste Zeiten für dieses Beet", leaderboardHint: "Namen und Abschlusszeiten für dieses Beet.", playerDetails: "Spielerdetails", level: "Beet", username: "Spitzname", entryId: "ID", emoji: "Emoji", viewLeaderboardEntry: "Details von {name} anzeigen", usersHint: "Wähle einen Spitznamen aus, um das vollständige Profil anzuzeigen.", userDetails: "Spielerdetails", device: "Gerät", country: "Land", deviceLocale: "Geräteeinstellung", appLanguage: "App-Sprache", platform: "Plattform", completedLevels: "Abgeschlossene Beete", unlockedLevels: "Freigeschaltete Beete", hints: "Tipps", lastSeen: "Zuletzt gesehen", createdAt: "Erstellt am", changeUsername: "Spitznamen ändern", saveName: "Namen speichern", nameSaved: "Name aktualisiert.", nameSaveFailed: "Name konnte nicht aktualisiert werden.", editOnlyOwn: "Hier kannst du nur deinen eigenen Spitznamen ändern.", noUsers: "Noch keine Spieler.", viewUser: "Profil von {name} anzeigen",
       settingsIntro: "Lege fest, wie der Garten auf diesem Gerät aussieht und klingt. Deine Auswahl wird gespeichert.", language: "Sprache", languageDescription: "Wähle die Sprache für das gesamte Spiel.", soundEffects: "Soundeffekte", soundDescription: "Klänge für gefundene Wörter und abgeschlossene Beete.", done: "Fertig",
@@ -1239,7 +1243,7 @@
       homeHeroCopy: "Yaprakların arasına gizlenmiş kelimeleri bul ve bahçeni ilk filizden gür bir yaprak örtüsüne dönüştür. Yemyeşil patikalarda sakin bir kelime yolculuğuna çık.",
       gardenHerbarium: "Bahçe Herbaryumu", todayInGarden: "Bahçede bugün", bedsBloomed: "Tamamlanan bölümler", gardenGrowth: "Bahçe gelişimi",
       achievements: "Başarımlar", leaderboards: "Skor tabloları", users: "Oyuncular", market: "Market", settings: "Ayarlar", help: "Yardım", play: "Oyna", seeGarden: "Bahçeyi keşfet", levelList: "Bölüm listesi",
-      gardenIdentity: "Bahçe kimliğin", guest: "Misafir", levelsTitle: "Bahçe", levelsDescription: "Açtığın bir bölümü seç veya kaldığın yerden devam et.",
+      gardenIdentity: "Bahçe kimliğin", guest: "Misafir", levelsTitle: "Bahçe", levelsDescription: "Oynamak için bir bölüme dokun",
       progress: "İlerleme", open: "açık", continue: "Devam et", whereLeftOff: "Kaldığın yer", chooseBed: "Bölüm seç",
       bed: "Bölüm", words: "kelimeler", word: "kelime", best: "En iyi", row: "Satır", column: "Sütun", time: "Süre", hint: "İpucu", watchAd: "Reklam izle", needMore: "Daha fazla ipucu?", watchVideoHint: "Kısa bir video izle, +1 ipucu kazan", hintMoreSubtitle: "+1 ipucu kazanmak için kısa bir video izle.", hintVideoLoading: "Video yükleniyor …", hintVideoSuccess: "Bahçene +1 ipucu eklendi.", hintVideoUnavailable: "Video şu anda kullanılamıyor. Lütfen biraz sonra tekrar dene.", toFind: "Bulunacak kelimeler", found: "Bulundu",
       wordsToFind: "Bulunacak kelimeler", wordProgress: "Kelime bulma ilerlemesi", letterGrid: "Harf ızgarası", backHome: "Ana sayfaya dön", backGarden: "Bahçeye dön",
@@ -1247,7 +1251,7 @@
       completedBed: "Bu bölümü tamamladın.", leaderboard: "Skor tablosu", wholeGardenBloom: "Bütün bahçe çiçek açtı!", finalCompletion: "Tüm {count} bölümü <strong>{time}</strong> sürede tamamladın. İstediğin bölümü dilediğin zaman yeniden oynayabilirsin.",
       bedCompletion: "{id}. bölüm tamamen tamamlandı. Süre: <strong>{time}</strong>", newBest: "Yeni en iyi süre!", hintEarned: "+1 ipucu kazandın!", hintRewardTitle: "Yeni bir ipucu hazır!", hintRewardMessage: "Bahçe kilometre taşı · +1 ipucu",
       enterPin: "PIN'i gir", pinDescription: "Premium test modunu etkinleştirmek ve reklamları kaldırmak için 4 haneli kodu gir.", pinCode: "PIN kodu", cancel: "İptal", confirm: "Onayla",
-      nameGarden: "Bahçene bir isim ver", nicknameDescription: "Bahçe günlüğün için bir kullanıcı adı ve avatar seç. İkisi de skor tablosunda gösterilir.",
+      nameGarden: "Bahçıvan adını seç", nicknameDescription: "Bahçe günlüğün için bir kullanıcı adı ve avatar seç. İkisi de skor tablosunda gösterilir.",
       nicknamePlaceholder: "örn. Çiçekçi Arı", nickname: "Kullanıcı adı", avatar: "Avatar", chooseAvatar: "Avatar seç", nicknameLock: "İsim ve avatarını düzenleme düğmesinden 24 saatte bir güncelleyebilirsin.", plantName: "Adımı bahçeye ekle", editProfile: "Profili düzenle", editProfileDescription: "Bahçe adını ve avatarını güncelle. 24 saatte bir düzenleyebilirsin.", profileEditCooldown: "Profilini {time} sonra yeniden düzenleyebilirsin.", profileSaved: "Profil güncellendi.", profileSaveFailed: "Profil güncellenemedi.", profileEditOffline: "Profilini düzenlemek için internete bağlan.", saveProfile: "Değişiklikleri kaydet",
       previousLeaderboard: "Önceki bölümün skor tablosu", nextLeaderboard: "Sonraki bölümün skor tablosu", jumpToBed: "Bölüme git", bedNumber: "Bölüm numarası", go: "Git", loading: "Yükleniyor …", noBlooms: "Henüz tamamlayan yok. Bu bölümü ilk tamamlayan sen ol!", close: "Kapat", bestTimes: "Bu bölümün en iyi süreleri", leaderboardHint: "Bu bölümdeki isimler ve tamamlanma süreleri.", playerDetails: "Oyuncu detayları", level: "Bölüm", username: "Kullanıcı adı", entryId: "ID", emoji: "Emoji", viewLeaderboardEntry: "{name} detaylarını gör", usersHint: "Tam profili görmek için bir kullanıcı adına dokun.", userDetails: "Kullanıcı bilgileri", device: "Cihaz", country: "Ülke", deviceLocale: "Cihaz dili", appLanguage: "Uygulama dili", platform: "Platform", completedLevels: "Tamamlanan bölümler", unlockedLevels: "Açılan bölümler", hints: "İpuçları", lastSeen: "Son görülme", createdAt: "Oluşturulma tarihi", changeUsername: "Kullanıcı adını değiştir", saveName: "İsmi kaydet", nameSaved: "İsim güncellendi.", nameSaveFailed: "İsim güncellenemedi.", editOnlyOwn: "Burada yalnızca kendi kullanıcı adını değiştirebilirsin.", noUsers: "Henüz oyuncu yok.", viewUser: "{name} profilini gör",
       settingsIntro: "Bu cihazda bahçenin görünümünü ve seslerini ayarla. Seçimlerin hatırlanır.", language: "Dil", languageDescription: "Oyunda kullanılacak dili seç.", soundEffects: "Ses efektleri", soundDescription: "Bulunan kelimeler ve tamamlanan bölümler için sesler.", done: "Bitti",
@@ -1297,7 +1301,7 @@
       "gardenIdentity": "Bahçe Profilin",
       "guest": "Misafir",
       "levelsTitle": "Bahçe",
-      "levelsDescription": "Açtığın bir bölümü seç veya macerana kaldığın yerden devam et.",
+      "levelsDescription": "Oynamak için bir bölüme dokun",
       "progress": "İlerleme",
       "open": "Açık",
       "continue": "Devam Et",
@@ -1343,7 +1347,7 @@
       "pinCode": "PIN kodu",
       "cancel": "İptal",
       "confirm": "Onayla",
-      "nameGarden": "Bahçeni isimlendir",
+      "nameGarden": "Bahçıvan adını seç",
       "nicknameDescription": "Bahçe günlüğün için bir isim ve avatar seç. Bunlar skor tablolarında görünecek.",
       "nicknamePlaceholder": "örn. Yaban Çiçeği",
       "nickname": "Kullanıcı Adı",
@@ -1399,13 +1403,13 @@
       "soundDescription": "Bulunan kelimeler ve biten bölümler için tatlı sesler.",
       "done": "Tamam",
       "helpTitle": "Yardım",
-      "helpDescription": "Kelimeler Bahçesi ile ilgili bilgi ve destek bağlantılarını burada bulabilirsin.",
+      "helpDescription": "Garden of Words ile ilgili bilgi ve destek bağlantılarını burada bulabilirsin.",
       "privacyPolicy": "Gizlilik Politikası",
       "eula": "Kullanıcı Sözleşmesi (EULA)",
       "contactUs": "Bize Ulaş",
       "premiumSpecialThemes": "Özel Temalar",
       "getPremium": "Premium Al",
-      "marketKicker": "Kelimeler Bahçesi Pro",
+      "marketKicker": "Garden of Words Pro",
       "marketTitle": "Bahçen Çiçek Açsın",
       "marketSubtitle": "Hiçbir bölünme olmadan, daha sakin ve cömert bir kelime bahçesi deneyimi.",
       "premiumNoAds": "Reklamsız",
@@ -1513,7 +1517,7 @@
       "gardenIdentity": "Dein Gartenprofil",
       "guest": "Gast",
       "levelsTitle": "Der Garten",
-      "levelsDescription": "Wähle ein freigeschaltetes Beet oder setze dein Abenteuer dort fort, wo du aufgehört hast.",
+      "levelsDescription": "Tippe auf ein offenes Beet",
       "progress": "Fortschritt",
       "open": "Offen",
       "continue": "Weiter",
@@ -1559,7 +1563,7 @@
       "pinCode": "PIN-Code",
       "cancel": "Abbrechen",
       "confirm": "Bestätigen",
-      "nameGarden": "Gib deinem Garten einen Namen",
+      "nameGarden": "Wähle deinen Gärtnernamen",
       "nicknameDescription": "Wähle einen Spitznamen und Avatar für dein Gartentagebuch. Beides erscheint auf den Bestenlisten.",
       "nicknamePlaceholder": "z.B. Wildblume",
       "nickname": "Spitzname",
@@ -7656,6 +7660,54 @@
         };
       }
 
+      // Players who have not opened an XP-aware version yet have no
+      // xp_leaderboard row. Rank them from their Firebase profile's
+      // completed-bed count until their own app writes the real row, which
+      // then replaces the estimate because its uid is in `knownUids`.
+      async function estimatedXpEntries(client, knownUids, knownNames, limit) {
+        if (typeof window.Meta?.estimateXp !== "function") return [];
+        try {
+          const [profiles, hidden] = await Promise.all([
+            withLeaderboardRequestTimeout(
+              () => client.db.collection(PLAYER_COLLECTION).orderBy("completedLevels", "desc").limit(limit).get()
+            ),
+            // Players who opted out on the per-bed boards stay hidden here too.
+            withLeaderboardRequestTimeout(
+              () => client.db.collectionGroup(PLAYER_COLLECTION).where("leaderboardVisible", "==", false).get()
+            ).catch(() => ({ docs: [] }))
+          ]);
+          const hiddenUids = new Set(hidden.docs.map(doc => String((doc.data() || {}).uid || "")));
+          const best = new Map();
+          profiles.docs.forEach(doc => {
+            const data = doc.data() || {};
+            const profileUid = String(data.uid || "").trim();
+            const name = sanitizeNickname(data.name);
+            const beds = Math.min(TOTAL_LEVELS, Math.floor(Number(data.completedLevels) || 0));
+            if (!profileUid || knownUids.has(profileUid) || hiddenUids.has(profileUid) || beds < 1) return;
+            if (name.length < 2 || knownNames.has(name.toLowerCase()) || name.toLowerCase() === "guest" || name.toLowerCase() === profileUid.toLowerCase()) return;
+            // Renamed players can leave an older profile document behind; keep their furthest one.
+            if ((best.get(profileUid)?.beds || 0) >= beds) return;
+            best.set(profileUid, { name, avatar: data.avatar, beds });
+          });
+          return [...best].map(([profileUid, { name, avatar, beds }]) => {
+            const { xp, level } = window.Meta.estimateXp(beds);
+            return {
+              id: profileUid,
+              uid: profileUid,
+              name,
+              avatar: AVATARS.includes(avatar) ? avatar : DEFAULT_AVATAR,
+              xp,
+              level,
+              streak: 0,
+              isYou: false
+            };
+          });
+        } catch (error) {
+          console.warn("XP estimates from profiles skipped:", error);
+          return [];
+        }
+      }
+
       // Returns { remote, entries, me } where `me` is the player's own row
       // (with rank when they are inside the fetched top list).
       async function getXpTop(limit = 100) {
@@ -7668,10 +7720,23 @@
           return { remote: false, entries: me ? [me] : [], me: me ? { ...me, rank: null } : null };
         }
         await syncXpEntry();
+        // Still show the estimated board if the XP collection cannot be read
+        // (for example before its Firestore rules are deployed).
         const snapshot = await withLeaderboardRequestTimeout(
           () => client.db.collection(XP_COLLECTION).orderBy("xp", "desc").limit(limit).get()
-        );
+        ).catch(error => {
+          console.warn("XP leaderboard read failed; using profile estimates only:", error);
+          return { docs: [] };
+        });
         const entries = [];
+        // Names too: a reinstall can leave an old profile under a different uid.
+        const knownUids = new Set([String(uid)]);
+        const knownNames = new Set([myName.toLowerCase()]);
+        snapshot.docs.forEach(doc => {
+          const data = doc.data() || {};
+          knownUids.add(String(data.uid || doc.id));
+          knownNames.add(sanitizeNickname(data.name).toLowerCase());
+        });
         snapshot.docs.forEach(doc => {
           const data = doc.data() || {};
           const isYou = String(data.uid || doc.id) === String(uid);
@@ -7689,11 +7754,15 @@
             isYou
           });
         });
-        // Our own row always shows fresh local numbers.
+        entries.push(...await estimatedXpEntries(client, knownUids, knownNames, limit));
+        // Our own row always shows fresh local numbers, even if our own write
+        // has not reached the server yet.
         const local = ownXpEntry(uid);
         const mineIndex = entries.findIndex(entry => entry.isYou);
         if (mineIndex >= 0 && local) entries[mineIndex] = { ...entries[mineIndex], ...local };
+        else if (local && !progress.leaderboardOptOut) entries.push(local);
         entries.sort((a, b) => b.xp - a.xp);
+        entries.splice(limit);
         const rankIndex = entries.findIndex(entry => entry.isYou);
         const me = local && !progress.leaderboardOptOut
           ? { ...local, rank: rankIndex >= 0 ? rankIndex + 1 : null }
@@ -8863,7 +8932,38 @@
       liveCapsule.className = "capsule live-capsule is-idle";
       capsuleLayer.appendChild(liveCapsule);
       board.appendChild(capsuleLayer);
+      // After the caller has restored any found words.
+      window.setTimeout(maybeShowFirstBedCoach, 0);
     }
+
+    // First bed of a brand-new player: the first word's letters light up in
+    // order and a line above the board explains the swipe, until a word is found.
+    const boardCoach = document.getElementById("boardCoach");
+    const FIRST_BED_COACH = {
+      en: "Swipe across the letters 👆",
+      de: "Wische über die Buchstaben 👆",
+      tr: "Harflerin üstünden parmağını kaydır 👆"
+    };
+    function clearFirstBedCoach() {
+      board.querySelectorAll(".cell.coach-cell").forEach(cell => cell.classList.remove("coach-cell"));
+      boardCoach?.classList.remove("is-visible");
+    }
+    function maybeShowFirstBedCoach() {
+      clearFirstBedCoach();
+      if (!activeLevel || activeLevel.id !== 1 || !puzzle || foundWords.size > 0 || getCompletedBedCount() > 0) return;
+      const placement = puzzle.placements.find(entry => entry.word === puzzle.words[0]) || puzzle.placements[0];
+      if (!placement) return;
+      for (let index = 0; index < placement.word.length; index += 1) {
+        const cell = cells[placement.row + placement.dr * index]?.[placement.col + placement.dc * index];
+        cell?.classList.add("coach-cell");
+        cell?.style.setProperty("--coach-i", index);
+      }
+      if (boardCoach) {
+        boardCoach.textContent = FIRST_BED_COACH[currentLanguage] || FIRST_BED_COACH.en;
+        boardCoach.classList.add("is-visible");
+      }
+    }
+    board.addEventListener("pointerdown", () => boardCoach?.classList.remove("is-visible"), { passive: true });
 
     // Found words are wrapped in a capsule drawn under the letters; the live
     // capsule follows the finger while dragging. Geometry uses offset* values,
@@ -8965,7 +9065,8 @@
       const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
       const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
       const seconds = String(totalSeconds % 60).padStart(2, "0");
-      return full ? `${hours}:${minutes}:${seconds}` : `${String(Math.floor(totalSeconds / 60)).padStart(2, "0")}:${seconds}`;
+      // Hours only appear once a bed (or cooldown) actually runs past an hour.
+      return full && totalSeconds >= 3600 ? `${hours}:${minutes}:${seconds}` : `${String(Math.floor(totalSeconds / 60)).padStart(2, "0")}:${seconds}`;
     }
 
     function updateTimer() { timerElement.textContent = formatTime(secondsElapsed); timerElement.dateTime = `PT${secondsElapsed}S`; }
@@ -9250,7 +9351,41 @@
       if (activeLevel) startLevel(activeLevel.id);
     });
 
+    // Native haptics through Flutter (iOS WebViews have no navigator.vibrate);
+    // a plain browser falls back to vibrate where it exists.
+    const HAPTIC_FALLBACK_MS = { select: 0, word: 8, success: 20 };
+    function haptic(kind) {
+      try {
+        if (window.FlutterHaptics?.postMessage) window.FlutterHaptics.postMessage(kind);
+        else if (HAPTIC_FALLBACK_MS[kind] && "vibrate" in navigator) navigator.vibrate(HAPTIC_FALLBACK_MS[kind]);
+      } catch (_) {}
+    }
+
+    // The letters under the finger, shown above the board: a thumb covers
+    // the very cells being dragged on a phone.
+    const selectionPreview = document.getElementById("selectionPreview");
+    let selectionPreviewTimer = 0;
+    function updateSelectionPreview(selection) {
+      if (!selectionPreview) return;
+      window.clearTimeout(selectionPreviewTimer);
+      selectionPreview.textContent = selection.map(({ row, col }) => cells[row]?.[col]?.textContent || "").join("");
+      selectionPreview.classList.remove("is-found");
+      selectionPreview.classList.toggle("is-visible", selection.length > 1);
+    }
+    function hideSelectionPreview(found = false) {
+      if (!selectionPreview) return;
+      if (found) {
+        selectionPreview.classList.add("is-found", "is-visible");
+        window.clearTimeout(selectionPreviewTimer);
+        selectionPreviewTimer = window.setTimeout(() => selectionPreview.classList.remove("is-visible", "is-found"), 700);
+      } else if (!selectionPreview.classList.contains("is-found")) {
+        // A just-found word keeps its green flash; the pointerup cleanup runs right after.
+        selectionPreview.classList.remove("is-visible");
+      }
+    }
+
     function clearLiveSelection() {
+      hideSelectionPreview();
       currentSelection.forEach(({ row, col }) => cells[row]?.[col]?.classList.remove("selecting"));
       // Keep the DOM as the final source of truth too. A WebView can lose a
       // terminal pointer event after the state array was reset, leaving an
@@ -9420,7 +9555,10 @@
           cells[next.row][next.col].classList.add("selecting");
         }
       }
+      // A soft tick for every letter added, like a real word game.
+      if (nextSelection.length > currentSelection.length) haptic("select");
       currentSelection = nextSelection;
+      updateSelectionPreview(nextSelection);
       if (liveCapsule && nextSelection.length) {
         positionCapsule(liveCapsule, nextSelection[0], nextSelection[nextSelection.length - 1]);
         liveCapsule.classList.remove("is-idle");
@@ -9548,9 +9686,7 @@
       // One restrained feedback style keeps the board readable and prevents
       // screen shake, rings, confetti and haptics from racing each other.
       const effectVariant = "burst";
-      if ("vibrate" in navigator) {
-        try { navigator.vibrate(8); } catch (_) {}
-      }
+      haptic("word");
 
       const layerRect = feedbackLayer.getBoundingClientRect();
       const centers = selection.map(({ row, col }) => {
@@ -9629,6 +9765,8 @@
         : null;
       if (!placement || foundWords.has(placement.word) || !placementMatchesSelection(placement)) { clearLiveSelection(); return; }
       const selection = [...currentSelection];
+      hideSelectionPreview(true);
+      clearFirstBedCoach();
       foundWords.add(placement.word);
       const tint = wordTint(puzzle.words.indexOf(placement.word));
       selection.forEach(({ row, col }) => { cells[row][col].classList.remove("selecting"); cells[row][col].classList.add("found"); cells[row][col].style.setProperty("--word-tint", tint); });
@@ -9657,6 +9795,7 @@
     function finishLevel() {
       if (shownScreenId !== "gameScreen" || !activeLevel || !puzzle
         || foundWords.size !== puzzle.words.length) return;
+      haptic("success");
       clearInterval(timerId);
       const isFinal = activeLevel.id === TOTAL_LEVELS;
       const previousBest = Number(progress.bestTimes[activeLevel.id]);
@@ -9745,6 +9884,9 @@
         : `${t("bedCompletion", { id: activeLevel.id, time: formatTime(secondsElapsed, false) })}${recordText}${hintText}`;
       document.getElementById("nextLevelButton").hidden = isFinal;
       document.getElementById("nextLevelButton").disabled = isFinal;
+      // Say up front when "Next bed" will play the transition video (and what it pays).
+      const nextAdChip = document.getElementById("nextLevelAdChip");
+      if (nextAdChip) nextAdChip.hidden = isFinal || !AdMobBridge.transitionAdIsNext();
       nextLevelTransitionBusy = false;
       SoundFX.levelComplete();
       window.Meta?.onBedComplete?.({ wasNewCompletion, levelId: activeLevel.id, stars, seconds: secondsElapsed, hintsUsed: sessionHintsUsed, tone: activeLevel.tone, words: puzzle.words.length, isNewRecord });
@@ -11206,6 +11348,7 @@
     function openHintMoreModal() {
       syncHintMorePremiumState();
       setHintMoreStatus(isPremiumUser() ? t("premiumHintWaiting") : "");
+      try { window.Meta?.syncHintTrade?.(); } catch (_) {}
       hintMoreModalBackdrop?.classList.add("open");
       hintMoreModalBackdrop?.setAttribute("aria-hidden", "false");
       loadHintMorePlans();
@@ -11238,7 +11381,8 @@
       settingSoundFxInput.checked = Boolean(AppSettings.state.soundEnabled);
       if (settingMusicInput) settingMusicInput.checked = Boolean(AppSettings.state.musicEnabled);
       if (settingLanguageInput) settingLanguageInput.value = currentLanguage;
-      if (settingLeaderboardOptOutInput) settingLeaderboardOptOutInput.checked = Boolean(progress.leaderboardOptOut);
+      // The switch reads positively ("show me"), so it is the inverse of the stored opt-out.
+      if (settingLeaderboardOptOutInput) settingLeaderboardOptOutInput.checked = !progress.leaderboardOptOut;
       /* legacy refresh-mode text removed
         ? "Checking this screen's refresh rate…"
         : "Silkier word-dragging on capable screens."; */
@@ -11308,7 +11452,7 @@
     settingSoundFxInput.addEventListener("change", () => AppSettings.setSoundEnabled(settingSoundFxInput.checked));
     settingMusicInput?.addEventListener("change", () => AppSettings.setMusicEnabled(settingMusicInput.checked));
     settingLeaderboardOptOutInput?.addEventListener("change", () => {
-      progress.leaderboardOptOut = Boolean(settingLeaderboardOptOutInput.checked);
+      progress.leaderboardOptOut = !settingLeaderboardOptOutInput.checked;
       saveProgress();
       leaderboardMemoryCache.clear();
       if (leaderboardModalBackdrop.classList.contains("open")) void safeRenderLeaderboard(leaderboardCurrentLevelId);
@@ -11464,7 +11608,10 @@
       interstitialAdUnitId: "",
       rewardedAdUnitId: "ca-app-pub-7480771330660307/8820099189",
       interstitialInterval: 2, // Show interstitial ad every 2 completed levels
-      rewardedTransitionInterval: 2 // Show the rewarded interstitial every 2 completed levels
+      rewardedTransitionInterval: 3, // Show the rewarded interstitial every 3 completed levels
+      // A brand-new player gets this many beds before the first transition
+      // video: an unskippable ad after bed 2 is where most new players quit.
+      rewardedTransitionGraceBeds: 5
     };
 
     const AdMobBridge = {
@@ -11572,6 +11719,13 @@
         }
       },
 
+      // Mirrors the checks in showRewardedAtLevelTransition without counting.
+      transitionAdIsNext() {
+        if (progress.adsBypassEnabled || isPremiumUser() || !ADMOB_CONFIG.enabled) return false;
+        if (getCompletedBedCount() <= ADMOB_CONFIG.rewardedTransitionGraceBeds) return false;
+        return (this.completedLevelsSinceRewardedAd + 1) % ADMOB_CONFIG.rewardedTransitionInterval === 0;
+      },
+
       async showRewardedAtLevelTransition(onRewardGranted, onComplete) {
         let continued = false;
         let timeoutId = null;
@@ -11582,7 +11736,8 @@
           if (onComplete) onComplete();
         };
 
-        if (progress.adsBypassEnabled || isPremiumUser() || !ADMOB_CONFIG.enabled) {
+        if (progress.adsBypassEnabled || isPremiumUser() || !ADMOB_CONFIG.enabled
+          || getCompletedBedCount() <= ADMOB_CONFIG.rewardedTransitionGraceBeds) {
           continueToNextLevel();
           return;
         }
@@ -11634,10 +11789,62 @@
     document.getElementById("levelsBackHome").addEventListener("click", openHome);
     document.getElementById("backToLevels").addEventListener("click", openLevels);
     document.getElementById("hintButton").addEventListener("click", showHint);
+    // A locked theme first shows itself for a few seconds behind a small bar,
+    // so the player sees what Premium changes before the store opens.
+    const THEME_PREVIEW_TEXT = {
+      en: { label: "Preview", unlock: "Unlock with Premium", back: "Back" },
+      de: { label: "Vorschau", unlock: "Mit Premium freischalten", back: "Zurück" },
+      tr: { label: "Önizleme", unlock: "Premium ile aç", back: "Geri" }
+    };
+    // The preview sits in a full-screen layer: the page behind cannot be used
+    // while it is up (otherwise the borrowed scenery followed the player into
+    // beds). A tap outside the bar or Back just ends it; "Back" on the bar
+    // and the timer return to the theme list.
+    let themePreviewLayer = null;
+    let themePreviewTimer = 0;
+    function isThemePreviewOpen() { return Boolean(themePreviewLayer); }
+    function endThemePreview(next) {
+      window.clearTimeout(themePreviewTimer);
+      if (!themePreviewLayer) return;
+      themePreviewLayer.remove();
+      themePreviewLayer = null;
+      document.body.dataset.gameTheme = currentGameTheme;
+      try { window.FlutterTheme?.postMessage(currentGameTheme); } catch (_) {}
+      if (next === "market") openMarketModal();
+      else if (next === "themes") openThemesModal();
+    }
+    function previewLockedTheme(card) {
+      endThemePreview();
+      closeThemesModal();
+      const theme = card.dataset.gameTheme;
+      const text = THEME_PREVIEW_TEXT[currentLanguage] || THEME_PREVIEW_TEXT.en;
+      document.body.dataset.gameTheme = theme;
+      try { window.FlutterTheme?.postMessage(theme); } catch (_) {}
+      themePreviewLayer = document.createElement("div");
+      themePreviewLayer.className = "theme-preview-layer";
+      themePreviewLayer.addEventListener("click", event => {
+        if (event.target === themePreviewLayer) endThemePreview();
+      });
+      const themePreviewBar = document.createElement("div");
+      themePreviewBar.className = "theme-preview-bar glass";
+      themePreviewBar.innerHTML = `<span class="theme-preview-text"><small></small><strong></strong></span>
+        <button class="ghost-button" type="button" data-act="back"></button>
+        <button class="primary-button" type="button" data-act="unlock"></button>`;
+      themePreviewBar.querySelector("small").textContent = text.label;
+      themePreviewBar.querySelector("strong").textContent = card.querySelector(".game-theme-name")?.textContent || "";
+      themePreviewBar.querySelector('[data-act="back"]').textContent = text.back;
+      themePreviewBar.querySelector('[data-act="unlock"]').textContent = `✦ ${text.unlock}`;
+      themePreviewBar.querySelector('[data-act="back"]').addEventListener("click", () => endThemePreview("themes"));
+      themePreviewBar.querySelector('[data-act="unlock"]').addEventListener("click", () => endThemePreview("market"));
+      themePreviewLayer.appendChild(themePreviewBar);
+      document.body.appendChild(themePreviewLayer);
+      themePreviewTimer = window.setTimeout(() => endThemePreview("themes"), 6000);
+    }
     document.querySelectorAll(".game-theme-card").forEach(card => {
       card.addEventListener("click", () => {
         const applied = applyGameTheme(card.dataset.gameTheme);
         if (!applied) {
+          if (card.closest("#themesModalBackdrop")) { previewLockedTheme(card); return; }
           closeThemesModal();
           openMarketModal();
           return;
@@ -11940,6 +12147,7 @@
         return el && el.classList.contains("open");
       };
 
+      if (isThemePreviewOpen()) { endThemePreview(); return true; }
       if (openModal("leaderboardDetailModalBackdrop")) { closeLeaderboardEntryDetails(); return true; }
       if (openModal("usersDetailModalBackdrop")) { closeUsersDetail(); return true; }
       if (openModal("usersModalBackdrop")) { closeUsersModal(); return true; }
