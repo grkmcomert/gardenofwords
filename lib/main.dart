@@ -111,6 +111,10 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
   bool _bannerLoading = false;
   bool _bannerRequested = false;
   Timer? _bannerRetryTimer;
+  // Re-requests a rewarded ad in the background after a failed load, so the
+  // next level transition or hint has one ready.
+  Timer? _rewardedRetryTimer;
+  bool _lastRewardedShowFailed = false;
   bool _firebaseManualPremium = false;
   bool get _hasPremium =>
       _firebaseManualPremium || RevenueCatService.instance.hasProEntitlement();
@@ -726,6 +730,8 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
     _interstitialAd = null;
     _rewardedInterstitialAd?.dispose();
     _rewardedInterstitialAd = null;
+    _rewardedRetryTimer?.cancel();
+    _rewardedRetryTimer = null;
     _bannerLoading = false;
     if (mounted) {
       setState(() => _bannerVisible = false);
@@ -1420,7 +1426,7 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
     await completed.future;
   }
 
-  Future<void> _prepareRewarded() async {
+  Future<void> _prepareRewarded({bool force = false}) async {
     if (await _isPremiumForAds()) {
       _removeAdsForPremium();
       return;
@@ -1433,7 +1439,7 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
       return;
     }
 
-    final future = _loadRewarded(requestGeneration);
+    final future = _loadRewarded(requestGeneration, force: force);
     _rewardedLoadFuture = future;
     try {
       await future;
@@ -1442,7 +1448,10 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _loadRewarded(int requestGeneration) async {
+  Future<void> _loadRewarded(
+    int requestGeneration, {
+    bool force = false,
+  }) async {
     await _adsInitialization;
     if (!_adsCanRequest ||
         _isDisposed ||
@@ -1453,7 +1462,7 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
       }
       return;
     }
-    if (!_rewardedBackoff.tryStart()) return;
+    if (!_rewardedBackoff.tryStart(force: force)) return;
     try {
       await _loadRewardedAttempt(requestGeneration);
     } catch (error) {
@@ -1510,6 +1519,7 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
           if (requestGeneration == _adRequestGeneration) {
             _rewardedInterstitialAd = null;
           }
+          _scheduleRewardedRetry();
           if (!completed.isCompleted) {
             completed.complete(_RewardedLoadResult.failed);
           }
@@ -1519,25 +1529,60 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
     return completed.future;
   }
 
+  /// Shows a rewarded ad. If none loads or the SDK fails to show it, asks
+  /// again up to [_rewardedShowAttempts] times with a short pause, instead of
+  /// waiting out the background cooldown while the player is waiting.
+  static const _rewardedShowAttempts = 3;
+
   Future<bool> _showRewarded() async {
-    if (await _isPremiumForAds()) {
-      _removeAdsForPremium();
-      return false;
-    }
-    final ad = _rewardedInterstitialAd;
-    _rewardedInterstitialAd = null;
-    if (ad == null) {
-      await _prepareRewarded();
+    for (var attempt = 0; attempt < _rewardedShowAttempts; attempt++) {
       if (await _isPremiumForAds()) {
         _removeAdsForPremium();
         return false;
       }
-      final retry = _rewardedInterstitialAd;
-      if (retry == null) return false;
+      var ad = _rewardedInterstitialAd;
       _rewardedInterstitialAd = null;
-      return _showLoadedRewarded(retry);
+      if (ad == null) {
+        if (attempt > 0) {
+          await Future<void>.delayed(Duration(milliseconds: 1500 * attempt));
+          if (_isDisposed) return false;
+        }
+        _logAdEvent(
+          'rewarded',
+          'show_load_attempt',
+          adUnitId: _rewardedAdUnitId,
+          extra: {'attempt': attempt + 1},
+        );
+        await _prepareRewarded(force: true);
+        if (await _isPremiumForAds()) {
+          _removeAdsForPremium();
+          return false;
+        }
+        ad = _rewardedInterstitialAd;
+        _rewardedInterstitialAd = null;
+        if (ad == null) continue;
+      }
+      _lastRewardedShowFailed = false;
+      final rewarded = await _showLoadedRewarded(ad);
+      if (!_lastRewardedShowFailed) {
+        // Watched or closed by the player: load the next one in the background.
+        unawaited(_prepareRewarded());
+        return rewarded;
+      }
     }
-    return _showLoadedRewarded(ad);
+    _scheduleRewardedRetry();
+    return false;
+  }
+
+  void _scheduleRewardedRetry() {
+    if (_isDisposed || _hasPremium) return;
+    _rewardedRetryTimer?.cancel();
+    final wait = _rewardedBackoff.retryIn + const Duration(seconds: 1);
+    _rewardedRetryTimer = Timer(wait, () {
+      _rewardedRetryTimer = null;
+      if (_isDisposed || _hasPremium || _rewardedInterstitialAd != null) return;
+      unawaited(_prepareRewarded());
+    });
   }
 
   Future<bool> _isPremiumForAds() async {
@@ -1615,6 +1660,7 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
       },
       onAdFailedToShowFullScreenContent: (ad, error) {
         debugPrint('Rewarded show failed: $error');
+        _lastRewardedShowFailed = true;
         _logAdEvent(
           'rewarded',
           'show_failed',
@@ -1656,6 +1702,7 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
       }
     } catch (error) {
       debugPrint('Rewarded show threw: $error');
+      _lastRewardedShowFailed = true;
       _logAdEvent(
         'rewarded',
         'show_threw',
@@ -1676,6 +1723,7 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
     _webViewPageReady = false;
     WidgetsBinding.instance.removeObserver(this);
     _loadingFallbackTimer?.cancel();
+    _rewardedRetryTimer?.cancel();
     _cancelBannerRetry();
     _pendingNativeAudioState = null;
     _javaScriptReplies.clear();
@@ -1859,7 +1907,11 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
                         gradient: RadialGradient(
                           center: Alignment(0, -0.2),
                           radius: 1.1,
-                          colors: [Color(0xFF24402E), Color(0xFF12241B), Color(0xFF0B1612)],
+                          colors: [
+                            Color(0xFF24402E),
+                            Color(0xFF12241B),
+                            Color(0xFF0B1612),
+                          ],
                           stops: [0, 0.55, 1],
                         ),
                       ),
@@ -1881,7 +1933,13 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
                               fontSize: 46,
                               height: 1.0,
                               fontWeight: FontWeight.w900,
-                              shadows: [Shadow(color: Color(0xFF3B2410), offset: Offset(0, 4), blurRadius: 0)],
+                              shadows: [
+                                Shadow(
+                                  color: Color(0xFF3B2410),
+                                  offset: Offset(0, 4),
+                                  blurRadius: 0,
+                                ),
+                              ],
                             ),
                           ),
                           const SizedBox(height: 28),

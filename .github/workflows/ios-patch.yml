@@ -3,6 +3,12 @@
 #   git tag patch-2026-11-06 && git push origin patch-2026-11-06
 # A tag push patches the most recent Shorebird release on the stable track.
 # Native/asset differences stop the patch; those need the release workflow instead.
+#
+# patch-native-* tags (or allow_native_diffs) accept a Podfile.lock-only
+# difference, but only when a release-<version> tag exists for the installed
+# release and ios/, android/, pubspec.yaml and pubspec.lock are byte-identical
+# to it. That covers CocoaPods rewriting the lock on a different runner, never
+# real native changes.
 name: iOS Patch (Shorebird)
 
 on:
@@ -22,6 +28,10 @@ on:
         options:
           - stable
           - staging
+      allow_native_diffs:
+        description: "Sadece release-<sürüm> etiketinden beri native dosyalar aynıysa Podfile.lock farkını kabul et"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -46,8 +56,11 @@ jobs:
       SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
       PATCH_RELEASE_VERSION: ${{ inputs.release_version || 'latest' }}
       PATCH_TRACK: ${{ inputs.track || 'stable' }}
+      ALLOW_NATIVE_DIFFS: ${{ inputs.allow_native_diffs || startsWith(github.ref_name, 'patch-native-') }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Check inputs and secrets
         run: |
@@ -60,6 +73,19 @@ jobs:
           fi
           case "$PATCH_TRACK" in stable|staging) ;; *) echo "::error::Geçersiz track"; missing=1 ;; esac
           exit $missing
+
+      - name: Native files unchanged since the release
+        if: env.ALLOW_NATIVE_DIFFS == 'true'
+        run: |
+          NAME=$(grep '^version:' pubspec.yaml | sed 's/version: *//; s/+.*//')
+          TAG="release-$NAME"
+          git rev-parse -q --verify "refs/tags/$TAG" >/dev/null || { echo "::error::$TAG etiketi yok; native fark kabul edilmez"; exit 1; }
+          if ! git diff --quiet "$TAG" HEAD -- ios android pubspec.yaml pubspec.lock; then
+            echo "::error::$TAG etiketinden beri native dosyalar değişmiş; yeni release gerekir"
+            git diff --stat "$TAG" HEAD -- ios android pubspec.yaml pubspec.lock
+            exit 1
+          fi
+          echo "$TAG ile native dosyalar aynı; Podfile.lock farkı CocoaPods kaynaklı kabul edilecek."
 
       - name: Select latest Xcode
         run: |
@@ -86,8 +112,14 @@ jobs:
           dart tooling/build_shorebird_game.dart
           flutter test test/shorebird_game_test.dart
 
-      - name: Install CocoaPods dependencies
-        run: cd ios && pod install
+      - name: Install CocoaPods dependencies (version from Podfile.lock)
+        run: |
+          V=$(grep '^COCOAPODS:' ios/Podfile.lock | awk '{print $2}')
+          echo "CocoaPods $V"
+          gem install cocoapods -v "$V" --no-document || sudo gem install cocoapods -v "$V" --no-document
+          (cd ios && pod "_${V}_" install)
+          git diff --stat -- ios/Podfile.lock || true
+          git diff -- ios/Podfile.lock | head -60 || true
 
       - name: Code signing (App Store Connect API)
         run: |
@@ -102,11 +134,14 @@ jobs:
       - name: Shorebird iOS patch
         run: |
           shorebird releases list --platform=ios 2>/dev/null || true
-          echo "Patch hedefi: $PATCH_RELEASE_VERSION, kanal: $PATCH_TRACK"
-          # Native/asset differences make this fail in CI; never force them through.
+          echo "Patch hedefi: $PATCH_RELEASE_VERSION, kanal: $PATCH_TRACK, native fark izni: $ALLOW_NATIVE_DIFFS"
+          # Asset differences always fail; native ones only pass after the check above.
+          EXTRA=()
+          if [ "$ALLOW_NATIVE_DIFFS" = "true" ]; then EXTRA+=(--allow-native-diffs); fi
           shorebird patch ios \
             --release-version="$PATCH_RELEASE_VERSION" \
             --track="$PATCH_TRACK" \
+            "${EXTRA[@]}" \
             --export-options-plist="$HOME/export_options.plist"
 
       - name: Clean up keychain

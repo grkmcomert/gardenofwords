@@ -7,12 +7,23 @@ class AdLoadBackoff {
   int _failures = 0;
   bool _loading = false;
 
-  bool tryStart() {
-    if (_loading || (_retryAt != null && _now().isBefore(_retryAt!))) {
+  /// [force] is for a show the player is waiting on: it skips the cooldown
+  /// (still never two loads at once). Callers bound how often they force.
+  bool tryStart({bool force = false}) {
+    if (_loading ||
+        (!force && _retryAt != null && _now().isBefore(_retryAt!))) {
       return false;
     }
     _loading = true;
     return true;
+  }
+
+  /// Time left before an unforced load may start again.
+  Duration get retryIn {
+    final at = _retryAt;
+    if (at == null) return Duration.zero;
+    final left = at.difference(_now());
+    return left.isNegative ? Duration.zero : left;
   }
 
   void succeeded() {

@@ -22,4 +22,19 @@ void main() {
     now = now.add(const Duration(seconds: 30));
     expect(backoff.tryStart(), isTrue);
   });
+
+  test('a show the player waits on may skip the cooldown, never overlap', () {
+    var now = DateTime(2026);
+    final backoff = AdLoadBackoff(now: () => now);
+    expect(backoff.tryStart(), isTrue);
+    backoff.failed();
+    expect(backoff.retryIn, const Duration(seconds: 30));
+    expect(backoff.tryStart(), isFalse);
+    expect(backoff.tryStart(force: true), isTrue);
+    expect(backoff.tryStart(force: true), isFalse);
+    backoff.failed();
+    now = now.add(const Duration(seconds: 70));
+    expect(backoff.retryIn, Duration.zero);
+    expect(backoff.tryStart(), isTrue);
+  });
 }
