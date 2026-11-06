@@ -1,0 +1,114 @@
+# Garden of Words iOS: Shorebird patch (over-the-air game update, no App Store review).
+# Start it manually (Actions > iOS Patch (Shorebird) > Run workflow) or push a tag named patch-*:
+#   git tag patch-2026-11-06 && git push origin patch-2026-11-06
+# A tag push patches the most recent Shorebird release on the stable track.
+# Native/asset differences stop the patch; those need the release workflow instead.
+name: iOS Patch (Shorebird)
+
+on:
+  push:
+    tags:
+      - "patch-*"
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Patch edilecek Shorebird release'i (örn. 1.1.30+34) ya da latest"
+        type: string
+        default: latest
+      track:
+        description: "stable kullanıcılara gider; staging sadece test içindir"
+        type: choice
+        default: stable
+        options:
+          - stable
+          - staging
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-release
+  cancel-in-progress: false
+
+env:
+  BUNDLE_ID: com.grkmcomert.gardenofwords
+  FLUTTER_VERSION: "3.47.2"
+
+jobs:
+  patch:
+    runs-on: macos-latest
+    timeout-minutes: 90
+    env:
+      APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+      APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.APP_STORE_CONNECT_KEY_IDENTIFIER }}
+      APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+      CERTIFICATE_PRIVATE_KEY: ${{ secrets.CERTIFICATE_PRIVATE_KEY }}
+      SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
+      PATCH_RELEASE_VERSION: ${{ inputs.release_version || 'latest' }}
+      PATCH_TRACK: ${{ inputs.track || 'stable' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check inputs and secrets
+        run: |
+          missing=0
+          for v in APP_STORE_CONNECT_ISSUER_ID APP_STORE_CONNECT_KEY_IDENTIFIER APP_STORE_CONNECT_PRIVATE_KEY CERTIFICATE_PRIVATE_KEY SHOREBIRD_TOKEN; do
+            if [ -z "${!v}" ]; then echo "::error::$v secret eksik"; missing=1; fi
+          done
+          if [ "$PATCH_RELEASE_VERSION" != "latest" ] && [[ ! "$PATCH_RELEASE_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+\+[0-9]+$ ]]; then
+            echo "::error::release_version 'latest' ya da 1.1.30+34 biçiminde olmalı"; missing=1
+          fi
+          case "$PATCH_TRACK" in stable|staging) ;; *) echo "::error::Geçersiz track"; missing=1 ;; esac
+          exit $missing
+
+      - name: Select latest Xcode
+        run: |
+          XCODE_PATH=$(ls -d /Applications/Xcode*.app | sort -V | tail -1)
+          sudo xcode-select -s "$XCODE_PATH/Contents/Developer"
+          xcodebuild -version
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install Shorebird and codemagic-cli-tools
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh | bash
+          echo "$HOME/.shorebird/bin" >> "$GITHUB_PATH"
+          pip3 install --break-system-packages codemagic-cli-tools || pip3 install codemagic-cli-tools
+
+      - name: Prepare Flutter and patchable game code
+        run: |
+          flutter config --no-enable-swift-package-manager
+          flutter pub get
+          dart tooling/build_shorebird_game.dart
+          flutter test test/shorebird_game_test.dart
+
+      - name: Install CocoaPods dependencies
+        run: cd ios && pod install
+
+      - name: Code signing (App Store Connect API)
+        run: |
+          project_file="ios/Runner.xcodeproj/project.pbxproj"
+          grep -Fq "PRODUCT_BUNDLE_IDENTIFIER = $BUNDLE_ID;" "$project_file" || { echo "Bundle ID uyuşmuyor"; exit 1; }
+          perl -0pi -e 's/TARGETED_DEVICE_FAMILY = "1,2";/TARGETED_DEVICE_FAMILY = "1";/g' "$project_file"
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --strict-match-identifier --type IOS_APP_STORE --create
+          keychain add-certificates
+          xcode-project use-profiles --custom-export-options='{"manageAppVersionAndBuildNumber":false}'
+
+      - name: Shorebird iOS patch
+        run: |
+          shorebird releases list --platform=ios 2>/dev/null || true
+          echo "Patch hedefi: $PATCH_RELEASE_VERSION, kanal: $PATCH_TRACK"
+          # Native/asset differences make this fail in CI; never force them through.
+          shorebird patch ios \
+            --release-version="$PATCH_RELEASE_VERSION" \
+            --track="$PATCH_TRACK" \
+            --export-options-plist="$HOME/export_options.plist"
+
+      - name: Clean up keychain
+        if: always()
+        run: keychain use-login || true
