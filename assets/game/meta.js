@@ -1338,7 +1338,8 @@
     peekTimer = window.setTimeout(() => peekEl.classList.remove("open"), ms || 3800);
   }
 
-  // The name prompt (first launch or profile edit): Perl hops in and waves (or thinks when editing).
+  // The name prompt (first launch or profile edit): Perl hops in. The wave and think
+  // paintings show a third ear, so this screen uses the clean idle pose.
   function decoratePerlGreeting() {
     const bubble = $("perlGreeting");
     if (!bubble) return;
@@ -1346,7 +1347,7 @@
     try { editing = nicknameModalMode === "edit"; } catch (_) {}
     bubble.textContent = editing ? L("perlEdit") : L("perlHello");
     const figure = $("perlGreetingFigure");
-    if (figure) figure.innerHTML = perlFigure(editing ? "think" : "wave", "perl-enter perl-hello-figure");
+    if (figure) figure.innerHTML = perlFigure("idle", "perl-enter perl-hello-figure");
     const hello = bubble.closest(".perl-hello");
     hello.classList.remove("is-entering");
     void hello.offsetWidth;
