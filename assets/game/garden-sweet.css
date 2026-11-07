@@ -1,0 +1,684 @@
+/* Garden of Words — "Sweet Garden" layer.
+   Loaded after garden.css. Pastel garden palette, Baloo 2 headings, chunky
+   "pressable" buttons with a darker bottom edge, springy entrances and pop
+   effects. Only visuals live here: element ids, state classes and game logic
+   are untouched. Every theme keeps its painting; a soft pastel wash and white
+   cards sit on top of it. */
+
+:root {
+  --bg: #d7f1e3;
+  --panel: rgba(255, 255, 255, .9);
+  --panel-solid: #ffffff;
+  --panel-raised: #ffffff;
+  --wash: #f1f8f3;
+  --wash-2: #e3f2e8;
+  --stroke: rgba(29, 58, 51, .08);
+  --stroke-2: rgba(29, 58, 51, .14);
+  --text: #1d3a33;
+  --muted: #4f6f66;
+  --faint: rgba(29, 58, 51, .5);
+  --acc: #3fae72;
+  --acc-deep: #2a8a57;
+  --acc-ink: #ffffff;
+  --gold: #ffc23d;
+  --gold-deep: #e09a12;
+  --gold-ink: #5b3b00;
+  --petal: #ff7c9c;
+  --petal-deep: #e0577a;
+  --sky: #63c3f2;
+  --sky-deep: #3a9bd0;
+  --ember: #ff9a4d;
+  --danger: #ff5d5d;
+  --card-edge: #d5e4dc;
+  --shadow: 0 6px 0 rgba(29, 58, 51, .10), 0 14px 30px rgba(29, 58, 51, .12);
+  --font-display: "Baloo 2", "Nunito", "Trebuchet MS", system-ui, -apple-system, sans-serif;
+  --font-body: "Nunito", "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+  --ease-out: cubic-bezier(.2, .9, .25, 1);
+  color-scheme: light;
+}
+
+/* ---------- background: painting + pastel wash + falling petals ---------- */
+body {
+  font-weight: 700;
+  background-image:
+    linear-gradient(180deg, rgba(215, 241, 227, .78) 0%, rgba(227, 246, 228, .42) 30%, rgba(255, 245, 223, .38) 62%, rgba(255, 245, 223, .82) 100%),
+    var(--theme-img);
+}
+body.game-active {
+  background-image:
+    linear-gradient(180deg, rgba(215, 241, 227, .86), rgba(235, 248, 238, .7) 40%, rgba(255, 245, 223, .9)),
+    var(--theme-img);
+}
+.sweet-sky { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.sweet-sky .blob { position: absolute; border-radius: 50%; filter: blur(34px); opacity: .5; }
+.sweet-sky .b1 { left: -120px; top: -90px; width: 320px; height: 320px; background: #ffd0dc; }
+.sweet-sky .b2 { right: -120px; top: 32%; width: 260px; height: 260px; background: #fff2b8; }
+.sweet-sky .b3 { left: 8%; bottom: -230px; width: 380px; height: 380px; background: #bfe8c9; }
+.sweet-petal {
+  position: absolute;
+  top: -30px;
+  width: 14px;
+  height: 10px;
+  border-radius: 70% 0 70% 0;
+  background: var(--petal);
+  opacity: .6;
+  animation: sweetFall linear infinite;
+}
+.sweet-petal.leafy { background: #7ccf8f; border-radius: 0 80% 0 80%; }
+.sweet-petal.sunny { width: 8px; height: 8px; border-radius: 50%; background: #ffd56b; }
+@keyframes sweetFall {
+  0% { transform: translate3d(0, -40px, 0) rotate(0deg); }
+  50% { transform: translate3d(40px, 55vh, 0) rotate(200deg); }
+  100% { transform: translate3d(-20px, 110vh, 0) rotate(420deg); }
+}
+.app { z-index: 1; }
+.drift-leaves { display: none; }
+
+/* ---------- type ---------- */
+h1, h2, h3 { font-family: var(--font-display); font-weight: 800; letter-spacing: 0; }
+.modal h2 { color: var(--text); font-size: 1.65rem; line-height: 1.1; }
+
+/* ---------- screens slide in on a spring ---------- */
+.screen.active { animation: sweetScreenIn .5s var(--ease-out) both; }
+@keyframes sweetScreenIn { from { opacity: 0; transform: translate3d(0, 24px, 0) scale(.98); } to { opacity: 1; transform: none; } }
+
+/* ---------- surfaces ---------- */
+.glass,
+.panel,
+.map-header,
+.chapter-banner,
+.continue-card,
+.game-top,
+.word-panel {
+  border: 0;
+  background: rgba(255, 255, 255, .88);
+  box-shadow: 0 5px 0 rgba(29, 58, 51, .09), 0 12px 26px rgba(29, 58, 51, .12);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  backdrop-filter: blur(10px) saturate(1.2);
+}
+
+/* ---------- buttons: chunky, pressable ---------- */
+button:active { transform: translateY(2px) scale(.97); }
+.primary-button {
+  position: relative;
+  min-height: 56px;
+  border-radius: 20px;
+  background: var(--acc);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, .14);
+  box-shadow: 0 6px 0 var(--acc-deep), 0 12px 22px rgba(42, 138, 87, .28);
+  transition: transform .12s ease, box-shadow .12s ease, filter .2s ease;
+}
+.primary-button::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 5px;
+  height: 38%;
+  border-radius: 14px;
+  background: linear-gradient(rgba(255, 255, 255, .35), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+.primary-button:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--acc-deep); }
+.primary-button:disabled { filter: grayscale(.8) opacity(.6); }
+
+.ghost-button,
+.soft-button,
+.secondary-button {
+  min-height: 48px;
+  border: 0;
+  border-radius: 18px;
+  background: #fff;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  box-shadow: 0 5px 0 var(--card-edge), 0 10px 18px rgba(29, 58, 51, .08);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.ghost-button:active,
+.soft-button:active,
+.secondary-button:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--card-edge); }
+.ghost-button .icon, .soft-button .icon { color: var(--acc-deep); }
+
+.icon-button {
+  border: 0;
+  border-radius: 15px;
+  background: #fff;
+  color: var(--text);
+  box-shadow: 0 4px 0 var(--card-edge);
+}
+.icon-button:active { transform: translateY(3px) scale(.95); box-shadow: 0 1px 0 var(--card-edge); }
+
+/* ============================ Home ============================ */
+
+/* HUD */
+.player-pill { padding: 5px 14px 6px 5px; }
+.player-pill-avatar {
+  border: 3px solid #fff;
+  background: radial-gradient(circle at 35% 30%, #fffdf6, #ffe9b8);
+  box-shadow: 0 0 0 3px var(--acc), 0 4px 0 3px rgba(42, 138, 87, .25);
+  animation: sweetBob 3.6s ease-in-out infinite;
+}
+.player-pill-name-row { color: var(--text); font-family: var(--font-display); font-weight: 800; font-size: 1.08rem; }
+.player-pill-edit { background: var(--wash-2); color: var(--acc-deep); }
+.hud-greeting { color: var(--muted); }
+.level-bar-row .level-line { color: var(--acc-deep); font-weight: 900; }
+.level-xp { color: var(--muted); }
+.level-bar,
+.chapter-track,
+.quest-bar,
+.pot-progress,
+.chapter-meter i { background: rgba(29, 58, 51, .1); box-shadow: inset 0 1px 2px rgba(29, 58, 51, .12); }
+.level-bar > i,
+.chapter-track > i { background: linear-gradient(90deg, var(--acc), #8fdc9f); box-shadow: none; }
+.hud-chip {
+  height: 36px;
+  border: 0;
+  background: rgba(255, 255, 255, .9);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  font-weight: 800;
+  box-shadow: 0 3px 0 rgba(29, 58, 51, .12);
+}
+.hud-chip.bump { animation: sweetBump .5s var(--ease-spring); }
+.hud-icon { color: var(--text); }
+
+/* Shared little motions */
+@keyframes sweetPopIn { to { opacity: 1; transform: none; } }
+@keyframes sweetSway { 0%, 100% { rotate: -10deg; } 50% { rotate: 10deg; } }
+@keyframes sweetBob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -3px; } }
+@keyframes sweetBump { 0% { transform: scale(1); } 35% { transform: scale(1.22); } 100% { transform: scale(1); } }
+
+/* Journey card */
+.chapter-card { border-radius: 26px; animation: sweetRise .6s var(--ease-spring) .15s both; }
+@keyframes sweetRise { from { opacity: 0; transform: translateY(26px) scale(.94); } to { opacity: 1; transform: none; } }
+.chapter-thumb { border: 3px solid #fff; box-shadow: 0 0 0 3px var(--gold), 0 6px 14px rgba(29, 58, 51, .18); }
+.chapter-pill { background: #ffe3ea; color: #b8355a; font-weight: 900; }
+.chapter-card-title { color: var(--text); font-weight: 800; font-size: 1.45rem; }
+.chapter-card-sub, .chapter-card-progress { color: var(--muted); }
+.play-round {
+  background: var(--acc);
+  box-shadow: 0 6px 0 var(--acc-deep), 0 12px 22px rgba(42, 138, 87, .3);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.play-round::before { border-color: rgba(63, 174, 114, .55); }
+.play-round::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 6px;
+  height: 36%;
+  border-radius: 50%;
+  background: linear-gradient(rgba(255, 255, 255, .45), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+.play-round:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--acc-deep); }
+.play-round .icon { filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .15)); }
+
+/* Menu grid: white cards with a coloured bottom edge and a tinted icon disc. */
+.menu-card {
+  --edge: #cfe7d8;
+  --tint: #e5f6eb;
+  border: 0;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, .92);
+  box-shadow: 0 5px 0 var(--edge), 0 12px 22px rgba(29, 58, 51, .1);
+  animation: sweetCardIn .6s var(--ease-spring) calc(.25s + var(--d) * 55ms) both;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.menu-card::after { background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, .6) 50%, transparent 65%); }
+.menu-card:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--edge); }
+.menu-card:nth-child(4n + 1) { --edge: #cfe7d8; --tint: #e3f6ea; }
+.menu-card:nth-child(4n + 2) { --edge: #ffd0dc; --tint: #ffeef3; }
+.menu-card:nth-child(4n + 3) { --edge: #ffe2a3; --tint: #fff6dc; }
+.menu-card:nth-child(4n + 4) { --edge: #c6e7f8; --tint: #e8f6fe; }
+.menu-icon {
+  display: grid;
+  place-items: center;
+  width: 1.75em;
+  height: 1.75em;
+  margin-bottom: 2px;
+  border-radius: 50%;
+  background: var(--tint);
+  font-size: clamp(1.4rem, 3.2vh, 1.9rem);
+  filter: none;
+}
+.menu-title { color: var(--text); font-family: var(--font-display); font-weight: 800; }
+.menu-sub { color: var(--muted); }
+.menu-card.menu-market { --edge: #f2b84a; --tint: #fff1c7; background: linear-gradient(180deg, #fffaf0, #fff3d6); }
+.menu-card.is-ready { --edge: #ff9db7; }
+.tile-badge { color: #fff; box-shadow: 0 2px 0 var(--petal-deep); }
+@keyframes sweetCardIn { from { opacity: 0; transform: translateY(18px) scale(.86); } to { opacity: 1; transform: none; } }
+
+/* Music bar */
+.music-bar { color: var(--text); }
+.music-text b { color: var(--text); font-weight: 800; }
+.music-disc { box-shadow: 0 0 0 3px #fff, 0 3px 0 3px rgba(29, 58, 51, .1); }
+.home-music-control-button { color: var(--text); }
+.home-music-main-button { background: var(--acc); box-shadow: 0 4px 0 var(--acc-deep); }
+.home-music-main-button:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--acc-deep); }
+
+/* Perl speech bubbles stay readable on the light cards. */
+.perl-say { color: var(--text); }
+
+/* ============================ Bed map ============================ */
+.level-card.locked .node-disc { border-color: rgba(29, 58, 51, .1); background: #eef3ef; box-shadow: 0 5px 0 #d5e0d9; }
+.level-card .bloom-rating span,
+.level-card .bloom-rating span:nth-child(2) { text-shadow: 0 1px 0 rgba(0, 0, 0, .2); }
+
+/* ============================ Game ============================ */
+.game-top { border-radius: 22px; }
+.game-title h1 { color: var(--text); font-size: 1.4rem; }
+.timer-wrap { background: var(--wash); }
+.timer { color: var(--text); font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; }
+.progress-track { background: rgba(255, 255, 255, .75); box-shadow: inset 0 1px 3px rgba(29, 58, 51, .18); }
+.progress-fill { background: linear-gradient(90deg, var(--acc), #8fdc9f); box-shadow: none; }
+.progress-meta strong { color: var(--text); font-weight: 800; }
+.progress-bud { filter: grayscale(.6) opacity(.75); }
+
+/* The planter becomes a soft white card; letters sit on cream paper. */
+.board-frame {
+  border: 0;
+  background: #fff;
+  box-shadow: 0 6px 0 var(--card-edge), 0 16px 32px rgba(29, 58, 51, .14);
+  animation: sweetRise .55s var(--ease-spring) both;
+}
+.board-frame::before, .board-frame::after { filter: drop-shadow(0 3px 2px rgba(29, 58, 51, .2)); }
+.board-ivy { filter: drop-shadow(0 2px 1px rgba(29, 58, 51, .18)); }
+.board {
+  border: 2px solid #eef1e4;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(255, 124, 156, .07), transparent 40%),
+    radial-gradient(circle at 82% 78%, rgba(99, 195, 242, .08), transparent 42%),
+    radial-gradient(rgba(29, 58, 51, .06) 1px, transparent 1.5px) 0 0 / 9px 9px,
+    #fffdf6;
+  box-shadow: inset 0 2px 6px rgba(29, 58, 51, .08);
+}
+.cell {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: 800;
+  padding-top: .12em;
+  animation: sweetCellIn .45s var(--ease-spring) var(--enter-delay, 0ms) both;
+  transition: color .15s ease, transform .2s var(--ease-spring);
+}
+@keyframes sweetCellIn { from { opacity: 0; transform: scale(0) rotate(-12deg); } to { opacity: 1; transform: none; } }
+.cell.selecting { color: #fff; text-shadow: 0 1px 0 rgba(0, 0, 0, .15); animation: sweetCellPop .32s var(--ease-spring) both; }
+@keyframes sweetCellPop { 0% { transform: scale(1); } 45% { transform: scale(1.32); } 100% { transform: scale(1.14); } }
+.cell.found { color: var(--text); text-shadow: none; animation: sweetFoundWave .5s var(--ease-spring) both; }
+.cell.found.selecting { color: #fff; }
+@keyframes sweetFoundWave { 0% { transform: scale(1); } 40% { transform: scale(1.28) translateY(-3px); } 100% { transform: scale(1); } }
+.capsule.found-capsule {
+  border: 2px solid var(--c);
+  background: color-mix(in srgb, var(--c) 40%, #fff);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 70%, #000 8%);
+  animation: sweetCapsuleIn .45s var(--ease-spring) both;
+}
+@keyframes sweetCapsuleIn { from { opacity: 0; transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) scale(.3, .6); } to { opacity: 1; transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) scale(1); } }
+.capsule.live-capsule { background: var(--acc); box-shadow: 0 3px 0 var(--acc-deep); opacity: .95; }
+.cell.hinting-start::before,
+.cell.hinting::before { border-color: var(--sky); background: rgba(99, 195, 242, .22); }
+.cell.hinting-start::before { background: rgba(99, 195, 242, .4); }
+.impact-core { box-shadow: 0 0 18px 6px rgba(255, 194, 61, .7); }
+
+.selection-preview {
+  border: 0;
+  background: #fff;
+  color: var(--text);
+  font-weight: 800;
+  box-shadow: 0 4px 0 var(--card-edge), 0 10px 18px rgba(29, 58, 51, .15);
+  transition: opacity .12s ease, transform .25s var(--ease-spring), background-color .15s ease;
+}
+.selection-preview.is-found { background: var(--acc); color: #fff; box-shadow: 0 4px 0 var(--acc-deep); transform: translate(-50%, -50%) scale(1.12); }
+.board-coach { color: var(--text); }
+.bloom-popup { color: var(--text); font-family: var(--font-display); font-weight: 800; box-shadow: 0 4px 0 var(--card-edge), 0 10px 22px rgba(29, 58, 51, .18); }
+.board-loading { background: rgba(255, 253, 246, .94); color: var(--muted); }
+
+/* Word chips */
+.word-panel { border-radius: 22px; }
+.word-item {
+  border: 0;
+  background: #fff;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: .92rem;
+  font-weight: 800;
+  box-shadow: 0 3px 0 var(--card-edge);
+  animation: sweetChipIn .45s var(--ease-spring) calc(.2s + var(--word-index, 0) * 50ms) both;
+}
+.word-item.found {
+  background: var(--word-tint, var(--acc));
+  color: var(--text);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--word-tint, var(--acc)) 70%, #000 12%);
+  animation: sweetChipFound .55s var(--ease-spring) both;
+}
+.word-item.found::before { background: rgba(255, 255, 255, .75); }
+@keyframes sweetChipIn { from { opacity: 0; transform: translateY(10px) scale(.7); } to { opacity: 1; transform: none; } }
+@keyframes sweetChipFound { 0% { transform: scale(1); } 40% { transform: scale(1.22) rotate(-3deg); } 100% { transform: scale(1); } }
+
+/* Hint: sunny pressable pill */
+.hint-button {
+  background: var(--gold);
+  color: var(--gold-ink);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 800;
+  box-shadow: 0 6px 0 var(--gold-deep), 0 12px 22px rgba(224, 154, 18, .28);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.hint-button::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: 5px;
+  height: 36%;
+  border-radius: 99px;
+  background: linear-gradient(rgba(255, 255, 255, .45), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+.hint-button:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--gold-deep); }
+.hint-count-badge { background: #fff; color: var(--gold-ink); box-shadow: inset 0 -2px 0 rgba(224, 154, 18, .3); }
+.hint-button.hint-empty { background: var(--petal); color: #fff; box-shadow: 0 6px 0 var(--petal-deep), 0 12px 22px rgba(224, 87, 122, .25); }
+.hint-button.hint-empty .hint-count-badge { background: #fff; color: var(--petal-deep); }
+.combo-badge { background: var(--ember); color: #fff; box-shadow: 0 4px 0 #d9762a; }
+
+/* ============================ Modals ============================ */
+.modal-backdrop {
+  background: rgba(29, 58, 51, .42);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+.modal {
+  border: 0;
+  border-radius: 32px;
+  background: #fff;
+  color: var(--text);
+  box-shadow: 0 8px 0 rgba(29, 58, 51, .12), 0 30px 60px rgba(29, 58, 51, .28);
+  transform: translateY(40px) scale(.86);
+  transition: transform .5s var(--ease-spring);
+}
+.modal-backdrop.open .modal { transform: none; }
+.modal p { color: var(--muted); }
+.celebration {
+  border-radius: 22px;
+  background: var(--acc);
+  color: #fff;
+  box-shadow: 0 5px 0 var(--acc-deep);
+  animation: sweetPopIn2 .6s var(--ease-spring) both;
+}
+.modal-backdrop.open .celebration { animation: sweetPopIn2 .6s var(--ease-spring) .1s both; }
+.celebration .icon, .celebration svg { color: #fff; }
+@keyframes sweetPopIn2 { 0% { transform: scale(0) rotate(-30deg); } 100% { transform: none; } }
+.pin-field { border: 2px solid var(--card-edge); background: var(--wash); color: var(--text); }
+.avatar-option { border: 0; background: var(--wash); box-shadow: 0 3px 0 var(--card-edge); }
+.avatar-option.selected { background: #e3f6ea; box-shadow: 0 0 0 3px var(--acc), 0 3px 0 3px var(--acc-deep); }
+
+/* Win */
+.complete-crest { border-color: #fff; box-shadow: 0 6px 0 var(--gold-deep), 0 14px 30px rgba(224, 154, 18, .35); }
+.modal-backdrop.open .complete-crest { animation: sweetCrestIn .7s var(--ease-spring) both; }
+@keyframes sweetCrestIn { 0% { transform: translateX(-50%) scale(0) rotate(-40deg); } 100% { transform: translateX(-50%) scale(1); } }
+.complete-rays { background: repeating-conic-gradient(rgba(255, 194, 61, .38) 0 10deg, transparent 10deg 30deg); }
+.bloom-rating span { color: var(--gold); text-shadow: 0 3px 0 var(--gold-deep); }
+.bloom-rating span.dim { color: #e6ece8; text-shadow: 0 3px 0 #d5e0d9; }
+.modal-backdrop.open .bloom-rating span { animation: sweetStarPop .6s var(--ease-spring) calc(.25s + var(--s, 0) * .16s) both; }
+.bloom-rating span:nth-child(2) { --s: 1; }
+.bloom-rating span:nth-child(3) { --s: 2; }
+@keyframes sweetStarPop { 0% { opacity: 0; transform: scale(2.4) rotate(-40deg); } 100% { opacity: 1; transform: none; } }
+.new-record { color: #d48a00; }
+.reward-row { background: var(--wash); color: var(--text); box-shadow: 0 3px 0 #e1ece5; }
+.reward-row.streak { background: #fff1e4; box-shadow: 0 3px 0 #ffd9b8; }
+.reward-row.petals { background: #fff0f4; box-shadow: 0 3px 0 #ffd0dc; }
+.reward-row.petals b { color: var(--petal-deep); }
+.reward-row b { color: var(--acc-deep); font-weight: 800; }
+.modal-backdrop.open .reward-row { animation: sweetRise .55s var(--ease-spring) calc(.45s + var(--r, 0) * .1s) both; }
+.reward-row:nth-child(2) { --r: 1; }
+.reward-row:nth-child(3) { --r: 2; }
+.reward-row:nth-child(4) { --r: 3; }
+.reward-row .reward-bar { height: 9px; background: rgba(29, 58, 51, .1); box-shadow: inset 0 1px 2px rgba(29, 58, 51, .15); }
+.reward-row .reward-bar i { position: relative; background: linear-gradient(90deg, var(--acc), #8fdc9f); transform-origin: left center; }
+.reward-row .reward-bar i::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .7), transparent); transform: translateX(-100%); }
+.modal-backdrop.open .reward-row .reward-bar i { animation: sweetXpFill 1.1s var(--ease-out) .75s both; }
+.modal-backdrop.open .reward-row .reward-bar i::after { animation: barShine 1.4s ease-in-out 1.7s 2; }
+@keyframes sweetXpFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.modal-backdrop.open .complete-actions { animation: sweetRise .55s var(--ease-spring) .7s both; }
+.next-ad-chip { background: rgba(0, 0, 0, .14); color: #fff; }
+
+/* Level-up overlay */
+.levelup { background: radial-gradient(circle at 50% 42%, rgba(255, 245, 210, .95), rgba(190, 232, 205, .96) 70%); }
+.levelup-kicker { color: var(--acc-deep); }
+.levelup-title { color: var(--text); text-shadow: 0 3px 0 #fff; }
+.levelup-rewards span { border: 0; background: #fff; color: var(--text); box-shadow: 0 4px 0 var(--card-edge); }
+.levelup-badge { box-shadow: 0 0 0 8px #fff, 0 10px 0 8px rgba(224, 154, 18, .35), 0 0 60px rgba(255, 194, 61, .7); }
+
+/* Garden complete */
+.modal.garden-complete { background: radial-gradient(circle at 50% 45%, #fff3c9, #fff 65%); }
+.gc-kicker { color: var(--acc-deep) !important; }
+.gc-reward { border: 0; background: var(--wash); box-shadow: 0 3px 0 var(--card-edge); }
+
+/* ============================ Market ============================ */
+.market-kicker { color: var(--petal-deep) !important; }
+.premium-feature { background: var(--wash); box-shadow: 0 3px 0 #e1ece5; animation: sweetCardIn .55s var(--ease-spring) both; }
+.premium-feature:nth-child(2) { animation-delay: .06s; }
+.premium-feature:nth-child(3) { animation-delay: .12s; }
+.premium-feature:nth-child(4) { animation-delay: .18s; }
+.premium-feature strong { color: var(--text); }
+.premium-feature-icon { border-radius: 14px; background: var(--acc); color: #fff; box-shadow: 0 3px 0 var(--acc-deep); }
+.premium-feature:nth-child(2) .premium-feature-icon { background: var(--gold); color: var(--gold-ink); box-shadow: 0 3px 0 var(--gold-deep); }
+.premium-feature:nth-child(3) .premium-feature-icon { background: var(--petal); box-shadow: 0 3px 0 var(--petal-deep); }
+.premium-feature:nth-child(4) .premium-feature-icon { background: var(--sky); box-shadow: 0 3px 0 var(--sky-deep); }
+.market-plan-card {
+  border: 2px solid #e3efe7;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 4px 0 #e3efe7;
+  animation: sweetRise .55s var(--ease-spring) both;
+}
+.market-plan-card:nth-child(2) { animation-delay: .07s; }
+.market-plan-card:nth-child(3) { animation-delay: .14s; }
+.market-plan-card.featured { border-color: var(--gold); background: linear-gradient(110deg, #fff7dc, #fff); box-shadow: 0 4px 0 var(--gold-deep); }
+.market-plan-name { color: var(--text); font-weight: 800; font-size: 1.15rem; }
+.market-plan-price { color: #c27c00; }
+.market-plan-badge { color: var(--gold-ink); box-shadow: 0 2px 0 var(--gold-deep); animation: sweetBob 2.4s ease-in-out infinite; }
+.market-plan-action { min-height: 44px; font-size: 1rem; box-shadow: 0 4px 0 var(--acc-deep); }
+.market-plan-action:active { box-shadow: 0 1px 0 var(--acc-deep); }
+.hint-pack-section, .hint-premium-title { border-top: 2px dashed #e3efe7; }
+.market-premium-active, .hint-more-premium-active { color: var(--acc-deep) !important; }
+
+/* Achievements and toasts */
+.achievement-card { background: var(--wash); box-shadow: 0 3px 0 #e1ece5; }
+.achievement-card-icon { background: #fff4d0; }
+.achievement-toast, .hint-reward-toast { border: 0; background: #fff; color: var(--text); box-shadow: 0 5px 0 var(--card-edge), 0 18px 36px rgba(29, 58, 51, .22); }
+.achievement-toast-label, .hint-reward-toast-label { color: var(--acc-deep); }
+
+/* Settings switches and other dark leftovers */
+.switch-track, .settings-switch { background: #dfe8e2; }
+
+/* ============================ Confetti canvas ============================ */
+.sweet-fx { position: fixed; inset: 0; z-index: 90; width: 100%; height: 100%; pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sweet-petal, .sweet-fx { display: none; }
+}
+
+/* Fine-tuning after the phone check */
+.complete-modal { padding-bottom: 26px; }
+.levelup { background: radial-gradient(circle at 50% 42%, rgba(255, 247, 218, .98), rgba(196, 234, 210, .98) 70%); }
+
+/* Bed map: chunky round "buttons" on a dotted path */
+.level-card::before { background: repeating-linear-gradient(180deg, rgba(255, 255, 255, .95) 0 7px, transparent 7px 14px); opacity: .9; }
+.level-card.is-completed::before { background: repeating-linear-gradient(180deg, var(--acc) 0 7px, transparent 7px 14px); }
+.node-disc { border: 3px solid #fff; background: #fff; color: var(--text); box-shadow: 0 0 0 3px var(--card-glow, transparent), 0 6px 0 var(--card-edge), 0 12px 20px rgba(29, 58, 51, .16); }
+.level-card .number { font-weight: 800; padding-top: .1em; }
+.level-card.locked .node-disc { border-color: #fff; background: #e8efea; box-shadow: 0 5px 0 #d2ddd6; }
+.level-card.locked .stage-icon { color: #9db3a7; }
+.level-card.is-completed .node-disc { border-color: #fff; background: var(--acc); color: #fff; box-shadow: 0 6px 0 var(--acc-deep), 0 12px 20px rgba(42, 138, 87, .25); }
+.level-card.is-current .node-disc { color: var(--gold-ink); box-shadow: 0 6px 0 var(--gold-deep), 0 0 0 6px rgba(255, 194, 61, .35); animation: sweetNodePulse 1.8s ease-in-out infinite; }
+@keyframes sweetNodePulse { 0%, 100% { box-shadow: 0 6px 0 var(--gold-deep), 0 0 0 6px rgba(255, 194, 61, .35); } 50% { box-shadow: 0 6px 0 var(--gold-deep), 0 0 0 16px rgba(255, 194, 61, 0); } }
+.level-card-stars span { text-shadow: 0 1px 0 var(--gold-deep); }
+.level-card-stars span.dim { color: rgba(255, 255, 255, .85); text-shadow: 0 1px 0 rgba(29, 58, 51, .2); }
+.level-lb-btn { border-color: #fff; color: #fff; }
+.continue-card { background: rgba(255, 255, 255, .94); }
+.continue-copy strong { color: var(--text); font-weight: 800; }
+.continue-arrow { background: var(--acc); color: #fff; box-shadow: 0 5px 0 var(--acc-deep); }
+.continue-arrow:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--acc-deep); }
+.map-title h1 { color: var(--text); }
+
+/* Garden systems (meta.js): pots, gift calendar, quests */
+.pot { border: 0; background: linear-gradient(180deg, #fff, #f1f8f3); box-shadow: 0 4px 0 #e1ece5; }
+.pot-progress { background: rgba(29, 58, 51, .1); }
+.pot-action { background: #fff; color: var(--text); box-shadow: 0 3px 0 var(--card-edge); }
+.pot-action.is-primary { background: var(--acc); color: #fff; box-shadow: 0 3px 0 var(--acc-deep); }
+.pot-action:active { transform: translateY(2px); box-shadow: none; }
+.pot-lock-badge { color: var(--gold-ink); }
+.gift-cell { border-color: transparent; background: var(--wash); box-shadow: 0 3px 0 #e1ece5; }
+.gift-cell.today { border-color: var(--gold); background: #fff6d6; color: #c27c00; box-shadow: 0 4px 0 var(--gold-deep); animation: sweetBob 2s ease-in-out infinite; }
+
+/* ============================ Home: let the theme painting breathe ============================ */
+/* Themes are a Premium perk, so the home screen keeps a clear window onto the
+   painting: a thinner wash, compact cards pinned to the bottom. */
+body.home-active {
+  background-image:
+    linear-gradient(180deg, rgba(215, 241, 227, .55) 0%, rgba(227, 246, 228, .08) 28%, rgba(255, 245, 223, .04) 55%, rgba(255, 245, 223, .5) 100%),
+    var(--theme-img);
+}
+.home-screen { gap: 8px; }
+.home-screen .chapter-card { margin-top: auto; padding: 8px 10px 8px 8px; border-radius: 22px; }
+.home-screen .chapter-thumb { width: 64px; height: 64px; border-radius: 16px; }
+.home-screen .chapter-card-title { font-size: 1.2rem; }
+.home-screen .play-round { width: 54px; height: 54px; }
+.home-screen .play-round .icon { width: 24px; height: 24px; }
+.menu-grid { flex: 0 0 auto; grid-auto-rows: auto; max-height: none; gap: 7px; }
+.menu-card { padding: 7px 4px 6px; border-radius: 18px; background: rgba(255, 255, 255, .84); gap: 0; }
+.menu-icon { width: 1.6em; height: 1.6em; margin-bottom: 1px; font-size: 1.22rem; }
+.menu-title { font-size: .86rem; line-height: 1.15; }
+.menu-sub { font-size: .6rem; min-height: 0; }
+.music-bar { padding: 5px 7px; }
+.music-disc { width: 36px; height: 36px; }
+.home-music-main-button { width: 40px; height: 40px; }
+.chapter-card.glass, .music-bar.glass, .player-pill.glass, .hud-chip.glass { background: rgba(255, 255, 255, .84); }
+
+/* ============================ Premium nudges (free players only) ============================ */
+body.sweet-free #heroMarketButton::before,
+body.sweet-free #homeThemesButton::before {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 2;
+  padding: 1px 7px 0;
+  border-radius: 99px;
+  font-family: var(--font-display);
+  font-size: .62rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  line-height: 1.5;
+  animation: sweetBob 2.2s ease-in-out infinite;
+}
+body.sweet-free #heroMarketButton::before { content: "PRO"; background: var(--gold); color: var(--gold-ink); box-shadow: 0 2px 0 var(--gold-deep); }
+body.sweet-free #homeThemesButton::before { content: "👑"; padding: 0 5px; font-size: .82rem; line-height: 1.35; background: #fff3c4; box-shadow: 0 2px 0 #f2c94c; }
+body.sweet-free #heroMarketButton { --edge: #f2b84a; background: linear-gradient(180deg, #fff8e6, #ffeec2); }
+body.sweet-free #heroMarketButton::after { background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, .9) 50%, transparent 65%); animation-duration: 4s; }
+body.sweet-free #heroMarketButton .menu-icon { animation: sweetWiggle 3.2s ease-in-out infinite; }
+@keyframes sweetWiggle { 0%, 70%, 100% { rotate: 0deg; } 76% { rotate: -9deg; } 82% { rotate: 9deg; } 88% { rotate: -5deg; } 94% { rotate: 3deg; } }
+/* Locked themes: a crown chip invites the upgrade instead of a dull grey card. */
+.game-theme-card.is-locked .game-theme-art { filter: saturate(.85) brightness(.95); }
+.theme-premium-badge { border: 0; background: var(--gold); color: var(--gold-ink); font-family: var(--font-display); font-weight: 800; box-shadow: 0 2px 0 var(--gold-deep); animation: sweetBob 2.4s ease-in-out infinite; }
+.game-theme-art { border-color: #fff; box-shadow: 0 5px 0 var(--card-edge), 0 10px 18px rgba(29, 58, 51, .15); }
+.premium-teaser { border: 0; background: #fff6d6; color: #a86a00; box-shadow: 0 3px 0 #f2c94c; font-family: var(--font-display); font-weight: 800; }
+.premium-teaser:active { transform: translateY(2px); box-shadow: 0 1px 0 #f2c94c; }
+
+/* ============================ Perl ============================ */
+/* Home: Perl fits the smaller picture box again and pops out of its top
+   edge a little, like she is peeking over the card. */
+.home-screen .chapter-thumb { --thumb-size: 64px; overflow: visible; }
+.home-screen .chapter-thumb.perl-thumb { background: radial-gradient(circle at 50% 28%, #e3f6ff, #a9dcf5 58%, #8fd19a 59%, #5fb46e); }
+.home-screen .home-perl .perl { --perl-h: 82px; }
+.home-screen .home-perl .perl-sleep { --perl-h: 56px; }
+.home-screen .home-perl .home-perl-figure { margin-bottom: 1px; }
+.home-screen .home-perl .perl-thumb-badge { right: -6px; bottom: -6px; padding: 3px; border-radius: 50%; background: #fff; box-shadow: 0 2px 0 rgba(29, 58, 51, .15); }
+
+/* Livelier poses: smooth squash and stretch from the feet, a little hop in
+   idle, a jelly wobble on tap and a springy entrance. */
+.perl::before { background: radial-gradient(closest-side, rgba(29, 58, 51, .32), transparent); }
+.perl-pose { filter: drop-shadow(0 4px 4px rgba(29, 58, 51, .22)); will-change: transform; }
+.perl-idle .perl-pose { animation: sweetPerlIdle 4.2s cubic-bezier(.45, 0, .55, 1) infinite; }
+.perl-idle::before { animation: sweetPerlIdleShadow 4.2s cubic-bezier(.45, 0, .55, 1) infinite; }
+@keyframes sweetPerlIdle {
+  0%, 100% { transform: scale(1, 1) rotate(0); }
+  12% { transform: scale(1.015, .985) rotate(-1.5deg); }
+  26% { transform: scale(.99, 1.02) rotate(0); }
+  40% { transform: scale(1.015, .985) rotate(1.5deg); }
+  54% { transform: scale(1, 1) rotate(0); }
+  64% { transform: scale(1.09, .9); }
+  72% { transform: translateY(-13%) scale(.95, 1.07) rotate(-3deg); }
+  80% { transform: translateY(-15%) scale(.98, 1.03) rotate(2deg); }
+  88% { transform: translateY(0) scale(1.08, .92); }
+  94% { transform: scale(.98, 1.03); }
+}
+@keyframes sweetPerlIdleShadow { 0%, 64%, 88%, 100% { transform: scale(1); opacity: 1; } 76% { transform: scale(.7); opacity: .55; } }
+.perl-wave .perl-pose { animation: sweetPerlWave 1.6s cubic-bezier(.45, 0, .55, 1) infinite; }
+@keyframes sweetPerlWave {
+  0%, 100% { transform: rotate(-4deg) scale(1, 1); }
+  25% { transform: rotate(0) translateY(-4%) scale(.97, 1.04); }
+  50% { transform: rotate(4deg) scale(1.03, .97); }
+  75% { transform: rotate(0) translateY(-4%) scale(.97, 1.04); }
+}
+.perl-think .perl-pose { animation: sweetPerlThink 3.8s cubic-bezier(.45, 0, .55, 1) infinite; }
+@keyframes sweetPerlThink {
+  0%, 100% { transform: rotate(-3deg) scale(1, 1); }
+  30% { transform: rotate(4deg) translateX(2%) scale(1.01, .99); }
+  45% { transform: rotate(4deg) translateX(2%) scale(.99, 1.02); }
+  70% { transform: rotate(-1deg) scale(1.02, .98); }
+}
+.perl-celebrate .perl-pose { animation: sweetPerlJump 1.05s cubic-bezier(.33, 0, .3, 1) infinite; }
+@keyframes sweetPerlJump {
+  0% { transform: translateY(0) scale(1.12, .86); }
+  16% { transform: translateY(-6%) scale(.9, 1.12); }
+  42% { transform: translateY(-24%) scale(1, 1) rotate(-8deg); }
+  58% { transform: translateY(-22%) rotate(8deg); }
+  84% { transform: translateY(0) scale(1.12, .86); }
+  92% { transform: translateY(0) scale(.97, 1.04); }
+  100% { transform: translateY(0) scale(1.12, .86); }
+}
+.perl-celebrate::before { animation: sweetPerlJumpShadow 1.05s cubic-bezier(.33, 0, .3, 1) infinite; }
+@keyframes sweetPerlJumpShadow { 0%, 84%, 100% { transform: scale(1.05); opacity: 1; } 45% { transform: scale(.55); opacity: .45; } }
+.perl-sleep .perl-pose { animation: sweetPerlSleep 3.6s ease-in-out infinite; }
+@keyframes sweetPerlSleep { 0%, 100% { transform: scale(1, 1); } 45% { transform: scale(1.03, 1.06); } 55% { transform: scale(1.03, 1.06); } }
+.perl-water .perl-pose { animation: sweetPerlWater 2.4s cubic-bezier(.45, 0, .55, 1) infinite; }
+@keyframes sweetPerlWater { 0%, 100% { transform: rotate(-1deg); } 50% { transform: rotate(4deg) translateX(1.5%) scale(1.02, .98); } }
+.perl-enter, .home-perl .perl.perl-enter { animation: sweetPerlEnter .8s var(--ease-spring) both; }
+@keyframes sweetPerlEnter {
+  0% { opacity: 0; transform: translateY(60%) scale(.3, .5); }
+  55% { opacity: 1; transform: translateY(-10%) scale(.92, 1.1); }
+  75% { transform: translateY(0) scale(1.08, .92); }
+  100% { opacity: 1; transform: none; }
+}
+.perl-boing, .home-perl .perl.perl-boing { animation: sweetPerlJelly .7s ease both; }
+@keyframes sweetPerlJelly {
+  0% { transform: scale(1, 1); }
+  20% { transform: scale(1.22, .8); }
+  38% { transform: translateY(-10%) scale(.85, 1.16); }
+  55% { transform: translateY(0) scale(1.1, .92); }
+  70% { transform: scale(.96, 1.05); }
+  85% { transform: scale(1.02, .98); }
+  100% { transform: scale(1, 1); }
+}
+.perl-swap, .home-perl .perl.perl-swap { animation: sweetPerlSwap .45s var(--ease-spring) both; }
+@keyframes sweetPerlSwap { 0% { transform: scale(.85, 1.12); } 55% { transform: scale(1.08, .94); } 100% { transform: none; } }
+.perl-bubble, .perl-say { background: #fff; color: var(--text) !important; font-weight: 700 !important; box-shadow: 0 4px 0 var(--card-edge), 0 10px 20px rgba(29, 58, 51, .16); }
+.perl-bubble::before, .perl-say::before { background: #fff; }
+.perl-say.is-shown { animation: sweetBubbleIn .45s var(--ease-spring) both; }
+@keyframes sweetBubbleIn { 0% { opacity: 0; transform: translateY(8px) scale(.6); } 100% { opacity: 1; transform: none; } }
+.perl-say.is-action { box-shadow: 0 0 0 3px var(--acc), 0 4px 0 3px var(--acc-deep), 0 10px 20px rgba(29, 58, 51, .16); }
+@media (prefers-reduced-motion: reduce) {
+  .perl-pose, .perl::before { animation: none !important; }
+}

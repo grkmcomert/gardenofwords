@@ -105,6 +105,8 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
   // message reaches Flutter. Keep the native banner frame on that same surface
   // from the very first frame, otherwise the ad gets a garden-coloured surround.
   static const _darkSurface = Color(0xFF0E1A15);
+  // Pastel "sweet garden" chrome: light surface so status-bar icons turn dark.
+  static const _lightSurface = Color(0xFFD7F1E3);
   Color _themeSurfaceColor = _darkSurface;
   String _themeBackgroundAsset = 'assets/game/images/themes/rose-cottage.webp';
   bool _bannerVisible = false;
@@ -817,8 +819,8 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
   }
 
   void _handleGameThemeMessage(String theme) {
-    // Every theme shares the dark "night garden" chrome; only the painting changes.
-    const nextColor = _darkSurface;
+    // Every theme shares the pastel "sweet garden" chrome; only the painting changes.
+    const nextColor = _lightSurface;
     final nextBackgroundAsset = switch (theme) {
       'moonlit' => 'assets/game/images/themes/moonlit.webp',
       'autumn' => 'assets/game/images/themes/autumn.webp',
