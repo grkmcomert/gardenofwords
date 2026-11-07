@@ -19,6 +19,7 @@ import 'revenuecat_service.dart';
 import 'ad_load_backoff.dart';
 import 'javascript_reply_queue.dart';
 import 'generated/game_document.g.dart';
+import 'generated/perl_wave_fixed.g.dart';
 
 enum _RewardedLoadResult { loaded, failed }
 
@@ -1920,11 +1921,14 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Perl waits on the loading screen too.
-                          Image.asset(
-                            'assets/game/images/perl/wave.webp',
+                          // Perl waits on the loading screen too. The bundled
+                          // wave.webp has two extra ears; this is the fixed pose
+                          // (same art the game uses via perl-fixed.js).
+                          Image.memory(
+                            perlWaveFixedBytes,
                             height: 170,
                             fit: BoxFit.contain,
+                            gaplessPlayback: true,
                           ),
                           const SizedBox(height: 18),
                           const Text(
